@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+
+    <LinearLayout
+        android:id="@+id/refreshing_header_layout_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:background="@mipmap/bg_loadbar"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/refreshing_header_iv_arrow"
+                android:layout_width="60dip"
+                android:layout_height="60dip"
+                android:src="@mipmap/ic_common_droparrow_up"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/refreshing_header_iv_loading"
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:background="@mipmap/ic_loading"
+                android:scaleType="centerInside"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dip"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <lonng.com.tan8.view.HandyTextView
+                android:id="@+id/refreshing_header_htv_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+
+            <lonng.com.tan8.view.HandyTextView
+                android:id="@+id/refreshing_header_htv_time"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/refreshing_header_iv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_refresh_cancel"
+            android:paddingLeft="5dip"
+            android:paddingRight="10dip"
+            android:scaleType="center"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

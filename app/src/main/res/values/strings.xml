@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">tan8</string>
     <string name="action_settings">Settings</string>
+
+    <!--发帖-->
+    <string name="temporary_does_not">Currently the video size greater than 10M is not supported!</string>
+    <string name="Video_footage">Video record</string>
+    <string name="recording_video">Record video</string>
+    <string name="The_video_to_start">The video to start</string>
+    <string name="Whether_to_send">Are you sure to send?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="prompt">Prompt</string>
+    <string name="Open_the_equipment_failure">Open the equipment failure!</string>
+    <string name="sd_card_does_not_exist">"SD card does not exist, can't take pictures"</string>
 </resources>
