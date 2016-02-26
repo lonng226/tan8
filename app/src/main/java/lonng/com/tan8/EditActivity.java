@@ -1,6 +1,7 @@
 package lonng.com.tan8;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -30,13 +31,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lonng.com.tan8.base.BaseActivity;
+import lonng.com.tan8.dialog.BankDialog;
 import lonng.com.tan8.dialog.CustomDialog;
+import lonng.com.tan8.http.SendHttpThreadGet;
 import lonng.com.tan8.http.SendHttpThreadMime;
 import lonng.com.tan8.invitation.ImageGridActivity;
 import lonng.com.tan8.utils.CommonUtils;
 
 
-public class EditActivity extends Activity implements OnClickListener {
+public class EditActivity extends BaseActivity{
 	
 	String TAG = "tan8";
 
@@ -45,6 +49,15 @@ public class EditActivity extends Activity implements OnClickListener {
 	private TextView edit_tv1,edit_tv2,edit_tv3,edit_tv4,edit_tv5,edit_tv6;
 	private int addFileCount;
 	private Map<String,File> files;
+	private boolean isContainVideo;
+	private int bankType;
+
+	public static void startEditActivity(Context context,SendCompleteListener sl,int type){
+		sendComplete = sl;
+		Intent intent = new Intent(context, EditActivity.class);
+		intent.putExtra("type", type);
+		context.startActivity(intent);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +85,28 @@ public class EditActivity extends Activity implements OnClickListener {
 		edit_tv4.setOnClickListener(this);
 		edit_tv5.setOnClickListener(this);
 		edit_tv6.setOnClickListener(this);
-		
+
 		edit_tv1.setText("添加");
 		int type = getIntent().getIntExtra("type", 0);
 		show(type);
 	}
-	
+
+
+	@Override
+	protected void initView() {
+
+	}
+
+	@Override
+	protected void initData() {
+
+	}
+
+	@Override
+	protected void processClick(View v) {
+
+	}
+
 	/**
 	 * 
 	 */
@@ -119,7 +148,27 @@ public class EditActivity extends Activity implements OnClickListener {
 
 			break;
 		case R.id.edit_sf:
-
+            //
+			new BankDialog(EditActivity.this, new OnclikBank() {
+				@Override
+				public void clikBank(int bType) {
+                   bankType = bType;
+					switch (bankType){
+						case 0:
+							edit_f.setText("show");
+							break;
+						case 1:
+							edit_f.setText("成人学琴");
+							break;
+						case 2:
+							edit_f.setText("求谱");
+							break;
+						case 3:
+							edit_f.setText("初学问答");
+							break;
+					}
+				}
+			}).show();
 			break;
 		case R.id.edit_commit:
 			sendToserver();
@@ -130,6 +179,10 @@ public class EditActivity extends Activity implements OnClickListener {
 			}
 			break;
 		case R.id.edit_tv2:
+			if(isContainVideo){
+				Toast.makeText(EditActivity.this,"视屏只能发一个",Toast.LENGTH_SHORT).show();
+				return;
+			}
 			if (addFileCount == 1) {
 				startActivityToDialog();
 			}
@@ -164,26 +217,42 @@ public class EditActivity extends Activity implements OnClickListener {
 	}
 	
 	private void sendToserver(){
+		Log.i("tan8","sendtoServer");
 		String edtext = edit_ed.getEditableText().toString();
 //		String url = "http://120.24.16.24/tanqin/forum.php";
 		Map<String, String> param = new HashMap<String, String>();
-		param.put("authorid", "userid");
+		param.put("authorid", "12");
 		param.put("author", "usernickname");
-		param.put("fid", "test_fid");
+		param.put("fid", bankType+"");
 		param.put("message",edtext+"");
 		//pic1,pic2 ,filename
 		//video,videopreviewimage,filename
 
-        new SendHttpThreadMime(CommonUtils.SENDIVTATION, EditActivity.this, new Handler(){
+        new SendHttpThreadMime(CommonUtils.POST_SENDIVTATION, EditActivity.this, new Handler(){
         	@Override
         	public void handleMessage(Message msg) {
         		super.handleMessage(msg);
         		String result = (String) msg.obj;
         		Log.i(TAG, result+"");
+//				sendComplete.sendOk();
+				Intent intent = new Intent(EditActivity.this,BankActivity.class);
+				intent.putExtra("bankId",bankType);
+				EditActivity.this.startActivity(intent);
+				EditActivity.this.finish();
+
 
         	}
         }, param, 0,files).start();
 
+
+//		new SendHttpThreadGet(new Handler(){
+//			@Override
+//			public void handleMessage(Message msg) {
+//				super.handleMessage(msg);
+//				String result = (String) msg.obj;
+//				Log.i(TAG, result+"");
+//			}
+//		},CommonUtils.GET_INVATATIONLIST,0).start();
 	}
 	
 	
@@ -224,6 +293,7 @@ public class EditActivity extends Activity implements OnClickListener {
 							fos.close();
 							files.put("videopreviewimage",file);
 							files.put("video",new File(videoPath));
+							isContainVideo = true;
 							setImage(ThumbBitmap, null);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -251,7 +321,7 @@ public class EditActivity extends Activity implements OnClickListener {
 	 */
 
 	private void setFiles(File file){
-		files.put("pic"+files.size()+1,file);
+		files.put("pic"+(files.size()+1),file);
 	}
 
 
@@ -273,7 +343,6 @@ public class EditActivity extends Activity implements OnClickListener {
 		}
 
 		if (addFileCount == 0) {
-
 			 edit_tv1.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
 			 edit_tv2.setText("添加");
 			 edit_tv1.setText("");
@@ -395,14 +464,34 @@ public class EditActivity extends Activity implements OnClickListener {
 		new CustomDialog(EditActivity.this,1,new OnclickOfButton(){
 			@Override
 			public void onclick(int type) {
-               show(type);
+				if (type == 3 && addFileCount >0) {
+					Toast.makeText(EditActivity.this,"图片视频不能同时发出",Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				show(type);
 			}
-		}).show();
+		},null).show();
 		 
 	}
 	
 	public interface OnclickOfButton{
 		void onclick(int type);
+	}
+
+	public static SendCompleteListener sendComplete;
+
+	public  void setSendLitener(SendCompleteListener sendComplete){
+           this.sendComplete = sendComplete;
+	}
+
+	public interface SendCompleteListener{
+		void sendOk();
+	}
+
+	//板块dialog
+	public interface OnclikBank{
+		void clikBank(int bankType);
 	}
 
 }

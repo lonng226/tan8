@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal">
 
     <ImageView
@@ -25,18 +26,39 @@
             android:id="@+id/item_czx_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="11111111111111111111111111111111111111111111111111111111" />
+            android:text="" />
 
-        <ImageView
-            android:id="@+id/item_czx_pic"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@mipmap/ic_launcher" />
+        <LinearLayout
+            android:id="@+id/item_czx_pic_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/item_czx_pic"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerInside"
+                android:src="@mipmap/ic_launcher"
+                android:visibility="gone" />
+
+            <lonng.com.tan8.view.MultiImageView
+                android:id="@+id/multiImagView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dip"
+                android:visibility="gone"
+                android:layout_marginTop="5dp"></lonng.com.tan8.view.MultiImageView>
+
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/item_dzpersons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="12345666666666666666666666666666666666666666666666666666666666666"/>
+            android:text="" />
 
 
         <RelativeLayout
@@ -64,12 +86,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:src="@mipmap/ic_launcher" />
+                <TextView
+                    android:id="@+id/item_czx_dz_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="赞" />
 
                 <TextView
                     android:id="@+id/item_czx_dz"
@@ -77,10 +101,12 @@
                     android:layout_height="wrap_content"
                     android:text="12" />
 
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:src="@mipmap/ic_launcher" />
+                <TextView
+                    android:id="@+id/item_czx_pl_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="评论" />
 
                 <TextView
                     android:id="@+id/item_czx_pl"
@@ -90,15 +116,18 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <ListView
+        <lonng.com.tan8.view.AppNoScrollerListView
             android:id="@+id/item_czx_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cacheColorHint="#00000000"
-            android:divider="@null"
-            android:dividerHeight="0dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dip"
             android:fadingEdge="none"
-            android:scrollbars="none" />
+            android:fastScrollEnabled="false"
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"
+            android:listSelector="@drawable/selector_adapter_item_bg" />
     </LinearLayout>
 
 

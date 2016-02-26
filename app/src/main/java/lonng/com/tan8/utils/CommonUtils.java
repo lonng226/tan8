@@ -4,17 +4,33 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import java.text.DecimalFormat;
+
+import lonng.com.tan8.MainActivity;
+import lonng.com.tan8.page.Czxpage;
 
 public class CommonUtils {
 
 
+	//首选项中的key
+	//账号
+	public static String ACCOUNT = "account";
+	//密码
+	public static String PWD = "pwd";
+
+	//HOST
+	public static String HTTPHOST = "http://120.24.16.24/tanqin/forum.php";
 	//发送帖子的url
-	public static String SENDIVTATION = "http://120.24.16.24/tanqin/forum.php";
+	public static String POST_SENDIVTATION = "http://120.24.16.24/tanqin/forum.php";
 
 	//获取帖子列表
-	public static String GETLIST_INVATATION = "http://120.24.16.24/tanqin/forum.php";
+	public static String GET_INVATATIONLIST = "http://120.24.16.24/tanqin/forum.php";
+
+	//获取file，图片，视频
+	public static String GET_FILS = "http://120.24.16.24/tanqin";
 
 
 	
@@ -84,5 +100,31 @@ public class CommonUtils {
 		DecimalFormat df = new DecimalFormat("0.00");//格式化小数，不足的补0
 		return df.format(size_)+"M";
 	}
-	
+
+	public static void showSoftInput(Context context, View view,boolean isMainActivity){
+
+		if(isMainActivity){
+			((MainActivity)context).getMenuBarView().setVisibility(View.GONE);
+		}
+		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+		//imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+	}
+
+	public static void hideSoftInput(Context context, View view,boolean isMainActivity){
+		if (isMainActivity){
+			((MainActivity)context).getMenuBarView().setVisibility(View.VISIBLE);
+		}
+		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(view.getWindowToken(), 0); //强制隐藏键盘
+	}
+
+	public static boolean isShowSoftInput(Context context){
+		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		//获取状态信息
+		return imm.isActive();//true 打开
+	}
+
+
+
 }

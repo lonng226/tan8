@@ -8,6 +8,15 @@ public class Comment {
     private User plUser;
     private User replyUser;
     private String message;
+    private String pltime;
+
+    public String getPltime() {
+        return pltime;
+    }
+
+    public void setPltime(String pltime) {
+        this.pltime = pltime;
+    }
 
     public int getPlID() {
         return plID;

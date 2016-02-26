@@ -14,13 +14,14 @@ import android.widget.SeekBar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import lonng.com.tan8.base.BaseActivity;
 
 /**
  * Created by Administrator on 2015/12/21.
  */
-public class VideoPlayActivity  extends Activity implements MediaPlayer.OnCompletionListener,MediaPlayer.OnErrorListener
+public class VideoPlayActivity  extends BaseActivity implements MediaPlayer.OnCompletionListener,MediaPlayer.OnErrorListener
         ,MediaPlayer.OnInfoListener,MediaPlayer.OnPreparedListener,MediaPlayer.OnSeekCompleteListener,
-        MediaPlayer.OnVideoSizeChangedListener,View.OnClickListener{
+        MediaPlayer.OnVideoSizeChangedListener{
 
     @Bind(R.id.seekbar)
     SeekBar seekBar;
@@ -41,6 +42,11 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_videoplay);
         ButterKnife.bind(this);
+    }
+
+
+    @Override
+    protected void initView() {
         surfaceView.getHolder().setFixedSize(200, 200);
         surfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         surfaceView.getHolder().addCallback(new SurfaceCallback());
@@ -65,6 +71,16 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
         start_stop.setOnClickListener(this);
         seekBar.setOnSeekBarChangeListener(change);
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    protected void processClick(View v) {
+
     }
 
     @Override

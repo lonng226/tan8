@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import lonng.com.tan8.EditActivity;
@@ -20,12 +21,15 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
 	private Context context;
 	private int where;
 	private OnclickOfButton onclickbtn;
+	private EditActivity.SendCompleteListener sl;
 
-	public CustomDialog(Context context,int where,OnclickOfButton onclickbtn) {
+
+	public CustomDialog(Context context,int where,OnclickOfButton onclickbtn,EditActivity.SendCompleteListener sl) {
 		super(context, R.style.MyDialogStyleBottom);
 		this.context = context;
 		this.where = where;
 		this.onclickbtn = onclickbtn;
+		this.sl = sl;
 	}
 
 	@Override
@@ -93,9 +97,10 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
 		if (onclickbtn != null) {
 			onclickbtn.onclick(type);
 		}else{
-			Intent intent = new Intent(context, EditActivity.class);
-			intent.putExtra("type", type);
-			context.startActivity(intent);
+//			Intent intent = new Intent(context, EditActivity.class);
+//			intent.putExtra("type", type);
+//			context.startActivity(intent);
+			EditActivity.startEditActivity(context,sl,type);
 		}
 		this.dismiss();
 	}

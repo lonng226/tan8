@@ -2,6 +2,8 @@ package lonng.com.tan8.http;
 
 import android.util.Log;
 
+import com.nostra13.universalimageloader.utils.L;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -95,11 +97,10 @@ public class HttpEngine
 	 */
 	//发送个人头像
 	public static String uploadSubmit(String url, Map<String, String> param,Map<String,File> files) throws Exception {
-		System.out.println("11111");
-		Log.i("community", "url:" +url);
-		Log.i("community", "param:" +param.toString());
+		Log.i("tan8", "url:" +url);
+		Log.i("tan8", "param:" +param.toString());
 		if (files != null) {
-			Log.i("community", "files:" +files.size());
+			Log.i("tan8", "files:" +files.size());
 		}
 		HttpPost post = new HttpPost(url);
 		HttpClient httpClient=new DefaultHttpClient();
@@ -107,8 +108,7 @@ public class HttpEngine
 		if (param != null && !param.isEmpty()) {
 			for (Map.Entry<String, String> entry : param.entrySet()) {
 				if (entry.getValue() != null&& entry.getValue().trim().length() > 0) {
-					entity.addPart(entry.getKey(),new StringBody(entry.getValue(),
-							Charset.forName(org.apache.http.protocol.HTTP.UTF_8)));
+					entity.addPart(entry.getKey(),new StringBody(entry.getValue(),Charset.forName(org.apache.http.protocol.HTTP.UTF_8)));
 				}
 			}
 		}
@@ -116,6 +116,7 @@ public class HttpEngine
 		if (files != null) {
 			for (Map.Entry<String, File> entry : files.entrySet()) {
 				if (entry.getValue() != null) {
+					Log.i("tan8",entry.getKey()+"");
 					entity.addPart(entry.getKey(), new FileBody(entry.getValue()));
 				}
 			}

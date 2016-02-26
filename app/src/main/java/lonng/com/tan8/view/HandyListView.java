@@ -64,10 +64,8 @@ public abstract class HandyListView extends ListView implements OnScrollListener
 		// TODO Auto-generated method stub
 		mFirstVisbleItem = firstVisibleItem;
 		if (arg0.getFirstVisiblePosition() == 1) {
-			//��һ���ɼ��item��postion
 			mIsTop = true;
 		}else if (arg0.getLastVisiblePosition() == arg0.getCount() - 1) {
-			// ���һ���ɼ��item��postion
 			mIsBottom = true;
 		}else{
 			mIsTop = false;

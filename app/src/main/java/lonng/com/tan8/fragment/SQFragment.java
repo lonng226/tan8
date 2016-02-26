@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import lonng.com.tan8.MainActivity;
 import lonng.com.tan8.R;
+import lonng.com.tan8.application.TanApplication;
 import lonng.com.tan8.base.BaseFragment;
 import lonng.com.tan8.base.BasePage;
 import lonng.com.tan8.dialog.CustomDialog;
@@ -43,6 +45,11 @@ public class SQFragment extends BaseFragment implements View.OnClickListener{
     private Czxpage czxPage;
     private ZongbPage zongbPage;
     private BankPage bankPage;
+
+
+    @Bind(R.id.sqtitle)
+    LinearLayout title2Layout;
+
     @Override
     protected View initView(LayoutInflater inflater) {
         View view = inflater.inflate(R.layout.frag_community, null);
@@ -67,6 +74,8 @@ public class SQFragment extends BaseFragment implements View.OnClickListener{
         czx.setOnClickListener(this);
         bank.setOnClickListener(this);
         zongb.setOnClickListener(this);
+
+        mainActivity.setTitle2Layout(title2Layout);
 
         viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -119,7 +128,7 @@ public class SQFragment extends BaseFragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.community_sendt:
-                new CustomDialog(mainActivity,0,null).show();
+                new CustomDialog(mainActivity,0,null,czxPage.getSl()).show();
                 break;
             case R.id.czx:
                 viewpager.setCurrentItem(0);

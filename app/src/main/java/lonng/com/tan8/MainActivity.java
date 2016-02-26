@@ -3,11 +3,14 @@ package lonng.com.tan8;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import lonng.com.tan8.application.TanApplication;
 import lonng.com.tan8.base.BaseActivity;
 import lonng.com.tan8.fragment.SQFragment;
 import lonng.com.tan8.fragment.KTFragment;
@@ -23,6 +26,11 @@ public class MainActivity extends BaseActivity {
     public RadioGroup bottomBar;
     @Bind(R.id.titlename)
     public TextView titlename;
+    @Bind(R.id.menuBar)
+    RelativeLayout menuBarLayout;
+    @Bind(R.id.title)
+    RelativeLayout titleLayout;
+
 
     private FragmentManager fragmentManager;
 //    private FragmentTransaction fragmentTransaction;
@@ -39,6 +47,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
             SQFragment = new SQFragment();
@@ -50,6 +59,7 @@ public class MainActivity extends BaseActivity {
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment, SQFragment, "MAIN").commit();
         }
+
         bottomBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -85,6 +95,23 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    public RelativeLayout getMenuBarView(){
+        return menuBarLayout;
+    }
+
+    public RelativeLayout getTitleLayout(){
+        return titleLayout;
+    }
+
+    LinearLayout title2Layout;
+    public void setTitle2Layout(LinearLayout title2Layout){
+        this.title2Layout = title2Layout;
+    }
+
+    public LinearLayout getTitle2Layout(){
+        return title2Layout;
+    }
+
     @Override
     protected void initView() {
 
@@ -105,4 +132,5 @@ public class MainActivity extends BaseActivity {
     public void onClick(View v) {
 
     }
+
 }

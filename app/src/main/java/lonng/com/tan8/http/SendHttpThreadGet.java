@@ -2,6 +2,8 @@ package lonng.com.tan8.http;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.widget.LinearLayout;
 
 public class SendHttpThreadGet extends Thread {
 
@@ -24,6 +26,7 @@ public class SendHttpThreadGet extends Thread {
 		// TODO Auto-generated method stub
 		try {
 			String result = HttpEngine.executeGet(urlparams);
+			Log.i("tan8","url"+urlparams);
 			Message ms = Message.obtain();
 			ms.what = what;
 			ms.obj = result;

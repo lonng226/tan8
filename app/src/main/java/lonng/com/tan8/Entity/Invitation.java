@@ -8,19 +8,26 @@ import java.util.List;
 public class Invitation {
 
 
-
+    private int tid;
     private User sendUser;
-    private String headiconUrl;
-    private String nickName;
     private String content;
     private List<String> picUrls;
-    private List<User> users;
-    private String bank;
-    private String dzCount;
-    private String plCount;
+    private List<User> upUsers;
+    private int bankid;
     private List<Comment> comments;
     private String videoUrl;
     private String previewimage;
+
+
+    public List<User> getUpUsers() {
+        return upUsers;
+    }
+
+    public void setUpUsers(List<User> upUsers) {
+        this.upUsers = upUsers;
+    }
+
+
 
     public String getVideoUrl() {
         return videoUrl;
@@ -46,7 +53,7 @@ public class Invitation {
         this.tid = tid;
     }
 
-    private int tid;
+
 
     public User getSendUser() {
         return sendUser;
@@ -74,29 +81,7 @@ public class Invitation {
         this.comments = comments;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getHeadiconUrl() {
-        return headiconUrl;
-    }
-
-    public void setHeadiconUrl(String headiconUrl) {
-        this.headiconUrl = headiconUrl;
-    }
 
     public String getContent() {
         return content;
@@ -107,31 +92,26 @@ public class Invitation {
     }
 
 
-    public String getBank() {
-        return bank;
+    public int getBank() {
+        return bankid;
     }
 
-    public void setBank(String bank) {
-        this.bank = bank;
+    public void setBank(int bank) {
+        this.bankid = bank;
     }
 
-    public String getDzCount() {
-        return dzCount;
-    }
-
-    public void setDzCount(String dzCount) {
-        this.dzCount = dzCount;
-    }
-
-    public String getPlCount() {
-        return plCount;
-    }
-
-    public void setPlCount(String plCount) {
-        this.plCount = plCount;
+    public int getDzCount() {
+        if (upUsers== null)
+            return 0;
+        return upUsers.size();
     }
 
 
+    public int getPlCount() {
+        if (comments == null)
+            return 0;
+        return comments.size();
+    }
 
 
 

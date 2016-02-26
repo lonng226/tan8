@@ -3,14 +3,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <lonng.com.tan8.view.HandyRefreshListView
-        android:id="@+id/czx_listview"
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/mRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:cacheColorHint="#00000000"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:fadingEdge="none"
-        android:scrollbars="none">
-        </lonng.com.tan8.view.HandyRefreshListView>
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/circleLv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@null"
+                android:dividerHeight="0px"
+                android:fadingEdge="none"
+                android:fadingEdgeLength="0dp"
+                android:focusable="true"
+                android:listSelector="@android:color/transparent"
+                android:transcriptMode="normal"></ListView>
+
+            <LinearLayout
+                android:id="@+id/editTextBodyLl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#f6f6f6"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/circleEt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="说点什么..." />
+
+                <TextView
+                    android:id="@+id/sendTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:background="@android:color/white"
+                    android:padding="8dp"
+                    android:text="发送"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
