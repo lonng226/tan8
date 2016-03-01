@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +51,8 @@ public class EditActivity extends BaseActivity{
 	private int addFileCount;
 	private Map<String,File> files;
 	private boolean isContainVideo;
-	private int bankType;
+	private int bankType = -1;
+	private RelativeLayout progress_layout;
 
 	public static void startEditActivity(Context context,SendCompleteListener sl,int type){
 		sendComplete = sl;
@@ -75,6 +77,7 @@ public class EditActivity extends BaseActivity{
 		edit_tv4 = (TextView) findViewById(R.id.edit_tv4);
 		edit_tv5 = (TextView) findViewById(R.id.edit_tv5);
 		edit_tv6 = (TextView) findViewById(R.id.edit_tv6);
+		progress_layout = (RelativeLayout)findViewById(R.id.progress_layout);
 
 		edit_commit.setOnClickListener(this);
 		edit_f.setOnClickListener(this);
@@ -171,6 +174,10 @@ public class EditActivity extends BaseActivity{
 			}).show();
 			break;
 		case R.id.edit_commit:
+			if (bankType == -1){
+				Toast.makeText(EditActivity.this,"请选择板块",Toast.LENGTH_SHORT).show();
+				return ;
+			}
 			sendToserver();
 			break;
 		case R.id.edit_tv1:
@@ -217,12 +224,16 @@ public class EditActivity extends BaseActivity{
 	}
 	
 	private void sendToserver(){
+
+
+		progress_layout.setVisibility(View.VISIBLE);
+
 		Log.i("tan8","sendtoServer");
 		String edtext = edit_ed.getEditableText().toString();
 //		String url = "http://120.24.16.24/tanqin/forum.php";
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("authorid", "12");
-		param.put("author", "usernickname");
+		param.put("author", "zy");
 		param.put("fid", bankType+"");
 		param.put("message",edtext+"");
 		//pic1,pic2 ,filename
@@ -235,6 +246,7 @@ public class EditActivity extends BaseActivity{
         		String result = (String) msg.obj;
         		Log.i(TAG, result+"");
 //				sendComplete.sendOk();
+				progress_layout.setVisibility(View.GONE);
 				Intent intent = new Intent(EditActivity.this,BankActivity.class);
 				intent.putExtra("bankId",bankType);
 				EditActivity.this.startActivity(intent);

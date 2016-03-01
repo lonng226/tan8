@@ -212,7 +212,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         if (invitations.get(position).getPreviewimage()!= null && !invitations.get(position).getPreviewimage().equals("")){
             viewHolder.piclayout.setVisibility(View.VISIBLE);
             viewHolder.pic.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage(invitations.get(position).getPreviewimage(),viewHolder.pic,options);
+            ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+invitations.get(position).getPreviewimage(),viewHolder.pic,options);
             //视频播放
             viewHolder.pic.setOnClickListener(new View.OnClickListener() {
                 @Override

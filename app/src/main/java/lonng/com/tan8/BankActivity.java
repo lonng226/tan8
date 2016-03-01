@@ -28,6 +28,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import lonng.com.tan8.Adapter.BankAdapter;
 import lonng.com.tan8.Entity.Comment;
 import lonng.com.tan8.Entity.Invitation;
@@ -41,7 +42,7 @@ import lonng.com.tan8.utils.CommonUtils;
 /**
  * Created by Administrator on 2016/2/23.
  */
-public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener,AbsListView.OnScrollListener{
+public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener,AbsListView.OnScrollListener,View.OnClickListener{
 
     @Bind(R.id.bankRefreshLayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -56,6 +57,8 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
     EditText mEditText;
     @Bind(R.id.sendTv)
     TextView sendTv;
+    @Bind(R.id.bank_back)
+    TextView back;
 
     private int mScreenHeight;
     private int mEditTextBodyHeight;
@@ -84,6 +87,7 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
         setContentView(R.layout.bankactivity);
         ButterKnife.bind(this);
 
+        back.setOnClickListener(this);
         bankID = getIntent().getIntExtra("bankId",0);
 
         switch (bankID){
@@ -220,6 +224,15 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
     public void onRefresh() {
 
         updataPage(0,20,true);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.bank_back:
+                BankActivity.this.finish();
+                break;
+        }
     }
 
     public void updataPage(int fromIndex,int toIndex,boolean isPull_){

@@ -15,13 +15,14 @@ import android.widget.SeekBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import lonng.com.tan8.base.BaseActivity;
+import lonng.com.tan8.utils.CommonUtils;
 
 /**
  * Created by Administrator on 2015/12/21.
  */
-public class VideoPlayActivity  extends BaseActivity implements MediaPlayer.OnCompletionListener,MediaPlayer.OnErrorListener
+public class VideoPlayActivity  extends Activity implements MediaPlayer.OnCompletionListener,MediaPlayer.OnErrorListener
         ,MediaPlayer.OnInfoListener,MediaPlayer.OnPreparedListener,MediaPlayer.OnSeekCompleteListener,
-        MediaPlayer.OnVideoSizeChangedListener{
+        MediaPlayer.OnVideoSizeChangedListener,View.OnClickListener{
 
     @Bind(R.id.seekbar)
     SeekBar seekBar;
@@ -42,10 +43,11 @@ public class VideoPlayActivity  extends BaseActivity implements MediaPlayer.OnCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_videoplay);
         ButterKnife.bind(this);
+
+        initView();
     }
 
 
-    @Override
     protected void initView() {
         surfaceView.getHolder().setFixedSize(200, 200);
         surfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -61,7 +63,7 @@ public class VideoPlayActivity  extends BaseActivity implements MediaPlayer.OnCo
 
         String filepath = getIntent().getStringExtra("filepath");
         try{
-            mediaPlayer.setDataSource(filepath);
+            mediaPlayer.setDataSource(CommonUtils.GET_FILS+filepath);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -73,15 +75,7 @@ public class VideoPlayActivity  extends BaseActivity implements MediaPlayer.OnCo
         seekBar.setOnSeekBarChangeListener(change);
     }
 
-    @Override
-    protected void initData() {
 
-    }
-
-    @Override
-    protected void processClick(View v) {
-
-    }
 
     @Override
     public void onClick(View v) {

@@ -116,7 +116,7 @@ public class HttpEngine
 		if (files != null) {
 			for (Map.Entry<String, File> entry : files.entrySet()) {
 				if (entry.getValue() != null) {
-					Log.i("tan8",entry.getKey()+"");
+					Log.i("tan8",entry.getKey()+","+entry.getValue().getAbsolutePath());
 					entity.addPart(entry.getKey(), new FileBody(entry.getValue()));
 				}
 			}
