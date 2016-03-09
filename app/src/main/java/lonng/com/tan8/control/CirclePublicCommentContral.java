@@ -136,7 +136,7 @@ public class CirclePublicCommentContral {
 		int screenlH = ((Czxpage)mContext).getScreenHeight();//整个应用屏幕的高度
 
 		int listviewOffset = screenlH - mSelectCircleItemH - keyH - editTextBodyH;
-		Log.d(TAG, "offset=" + listviewOffset + " &mSelectCircleItemH=" + mSelectCircleItemH + " &keyH=" + keyH + " &editTextBodyH=" + editTextBodyH);
+//		Log.d(TAG, "offset=" + listviewOffset + " &mSelectCircleItemH=" + mSelectCircleItemH + " &keyH=" + keyH + " &editTextBodyH=" + editTextBodyH);
 		if(mCommentType == ICircleViewUpdate.TYPE_REPLY_COMMENT){
 			listviewOffset = listviewOffset + mSelectCommentItemBottom;
 		}

@@ -7,21 +7,21 @@
     android:orientation="vertical"
     tools:context="lonng.com.tan8.MainActivity">
 
-    <TextView
-        android:id="@+id/testText"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/apprecRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="赏析"
-        android:textColor="#000000"
-        android:textSize="50dp"
-        android:visibility="gone"/>
+        android:layout_height="match_parent">
 
-    <ListView
-        android:id="@+id/apprec_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <ListView
+                android:id="@+id/apprec_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></ListView>
+        </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

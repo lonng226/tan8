@@ -2,7 +2,11 @@ package lonng.com.tan8.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -11,10 +15,19 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+import org.json.JSONObject;
+
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import lonng.com.tan8.Entity.User;
+import lonng.com.tan8.LoginActivity;
+import lonng.com.tan8.MainActivity;
 import lonng.com.tan8.R;
+import lonng.com.tan8.http.SendHttpThreadMime;
+import lonng.com.tan8.utils.CommonUtils;
+import lonng.com.tan8.utils.SharePrefUtil;
 
 public class TanApplication extends Application {
 
@@ -31,19 +44,21 @@ public class TanApplication extends Application {
 	public static User curUser = new User();
 
 
-
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		login();
 		mContext = getApplicationContext();
 		initImageLoader();
 	}
 
-	public static Context getContext(){
+	public static Context getContext() {
 		return mContext;
 	}
 
-	/** 初始化imageLoader */
+	/**
+	 * 初始化imageLoader
+	 */
 	private void initImageLoader() {
 		DisplayImageOptions options = new DisplayImageOptions.Builder().showImageForEmptyUri(R.color.bg_no_photo)
 				.showImageOnFail(R.color.bg_no_photo).showImageOnLoading(R.color.bg_no_photo).cacheInMemory(true)
@@ -62,4 +77,39 @@ public class TanApplication extends Application {
 		ImageLoader.getInstance().init(imageconfig);
 	}
 
+
+	private void login() {
+
+		Map<String, String> map = new HashMap<String, String>();
+		String uid_ = SharePrefUtil.getString(this,CommonUtils.UID,"-1");
+		if (uid_.equals("-1")){
+			return ;
+		}
+		map.put("uname",SharePrefUtil.getString(this,CommonUtils.ACCOUNT,"-1"));
+		map.put("userpassword",SharePrefUtil.getString(this,CommonUtils.PWD,"-1"));
+
+		new SendHttpThreadMime(CommonUtils.LOGINURL, null, new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				String result = (String) msg.obj;
+				Log.i("tan8","login:"+result);
+				if (result == null || result.equals("")||!result.contains("uid")) {
+					return;
+				}
+				String uid = "";
+				try {
+					JSONObject json = new JSONObject(result);
+					uid = json.getString("uid");
+					//存入首选项
+					TanApplication.isLogin = true;
+					TanApplication.curUser .setUserId(uid);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}, map, 0, null).start();
+
+	}
 }

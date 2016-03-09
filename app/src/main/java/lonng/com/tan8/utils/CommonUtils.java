@@ -16,6 +16,8 @@ public class CommonUtils {
 
 
 	//首选项中的key
+	//用户id
+	public static String UID = "uid";
 	//账号
 	public static String ACCOUNT = "account";
 	//密码
@@ -31,6 +33,13 @@ public class CommonUtils {
 
 	//获取file，图片，视频
 	public static String GET_FILS = "http://120.24.16.24/tanqin";
+
+	//注册
+	public static String REGISTERURL = "http://120.24.16.24/tanqin/user.php?action=register";
+
+	//登录
+	public static String LOGINURL = "http://120.24.16.24/tanqin/user.php?action=login";
+
 
 
 	

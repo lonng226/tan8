@@ -85,7 +85,6 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
         mCircleLv.addFooterView(footerview);
 
 
-        //待处理
         mCircleLv.setOnScrollListener(new SwpipeListViewOnScrollListener(mSwipeRefreshLayout,this));
         mCircleLv.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -106,6 +105,11 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
         mCirclePublicCommentContral = new CirclePublicCommentContral(this, mEditTextBody, mEditText, sendTv);
         mCirclePublicCommentContral.setmListView(mCircleLv);
 
+        if (invitations == null)
+            invitations = new ArrayList<Invitation>();
+        czxAdapter = new CzxAdapter(invitations,ct);
+        czxAdapter.setmCirclePublicCommentContral(mCirclePublicCommentContral);
+        mCircleLv.setAdapter(czxAdapter);
 
         setViewTreeObserver();
         return view;
@@ -124,7 +128,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                 if(keyH == TanApplication.mKeyBoardH){//有变化时才处理，否则会陷入死循环
                     return;
                 }
-                Log.d("tan8", "keyH = " + keyH + " &r.bottom=" + r.bottom + " &top=" + r.top);
+//                Log.d("tan8", "keyH = " + keyH + " &r.bottom=" + r.bottom + " &top=" + r.top);
                 TanApplication.mKeyBoardH = keyH;
                 mScreenHeight = screenH;//应用屏幕的高度
                 mEditTextBodyHeight = mEditTextBody.getHeight();
@@ -153,10 +157,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
 
     @Override
     public void initData() {
-        if (invitations == null)
-            invitations = new ArrayList<Invitation>();
-        czxAdapter = new CzxAdapter(invitations,ct);
-        mCircleLv.setAdapter(czxAdapter);
+
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -303,7 +304,6 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                                 if (comment.has("replyauthorid")){
                                     replayuser.setUserId(comment.getString("replyauthorid"));
                                 }
-
                             }
                             commentList.add(c);
                         }

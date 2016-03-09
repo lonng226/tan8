@@ -134,7 +134,9 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
         invitations = new ArrayList<Invitation>();
         bankAdapter = new BankAdapter(invitations,BankActivity.this);
+        bankAdapter.setmCirclePublicCommentContral(mCirclePublicCommentContral);
         bankcircleLv.setAdapter(bankAdapter);
+
 
         bankcircleLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -152,8 +154,8 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
             @Override
             public void run() {
 
-                updataPage(0,20,true);
                 mSwipeRefreshLayout.setRefreshing(true);
+                updataPage(0,20,true);
             }
         });
 
@@ -222,7 +224,7 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-
+        mSwipeRefreshLayout.setRefreshing(true);
         updataPage(0,20,true);
     }
 

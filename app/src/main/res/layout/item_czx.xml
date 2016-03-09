@@ -35,21 +35,33 @@
             android:orientation="vertical"
             android:visibility="invisible">
 
-            <ImageView
-                android:id="@+id/item_czx_pic"
+            <RelativeLayout
+                android:id="@+id/item_czx_pic_pre"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:scaleType="centerInside"
-                android:src="@mipmap/ic_launcher"
-                android:visibility="gone" />
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/item_czx_pic"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="fitXY" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/play" />
+            </RelativeLayout>
 
             <lonng.com.tan8.view.MultiImageView
                 android:id="@+id/multiImagView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dip"
-                android:visibility="gone"
-                android:layout_marginTop="5dp"></lonng.com.tan8.view.MultiImageView>
+                android:layout_marginTop="5dp"
+                android:visibility="gone"></lonng.com.tan8.view.MultiImageView>
 
 
         </LinearLayout>

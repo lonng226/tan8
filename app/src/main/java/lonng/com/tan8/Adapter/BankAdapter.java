@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,11 +53,11 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
     private CirclePresenter mPresenter;
     private CirclePublicCommentContralBank mCirclePublicCommentContral;
 
-    private List<Invitation> invitations ;
+    private List<Invitation> invitations;
     private Context ct;
     private DisplayImageOptions options;
 
-    public BankAdapter(List<Invitation> invitations, Context ct){
+    public BankAdapter(List<Invitation> invitations, Context ct) {
         this.invitations = invitations;
         this.ct = ct;
         mPresenter = new CirclePresenter(this);
@@ -75,12 +76,12 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
     public List<Invitation> getDatas() {
         return invitations;
     }
+
     public void setDatas(List<Invitation> datas) {
-        if(datas != null){
+        if (datas != null) {
             this.invitations = datas;
         }
     }
-
 
 
     @Override
@@ -102,56 +103,56 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         final ViewHolder viewHolder;
-        if (convertView == null){
-            convertView = LayoutInflater.from(ct).inflate(R.layout.item_czx,null);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(ct).inflate(R.layout.item_czx, null);
             viewHolder = new ViewHolder();
-            viewHolder.headicom = (ImageView)convertView.findViewById(R.id.item_czx_headicon);
-            viewHolder.nickname =(TextView)convertView.findViewById(R.id.item_czx_nickname);
-            viewHolder.content = (TextView)convertView.findViewById(R.id.item_czx_content);
-            viewHolder.pic = (ImageView)convertView.findViewById(R.id.item_czx_pic);
-            viewHolder.dzpersons = (TextView)convertView.findViewById(R.id.item_dzpersons);
-            viewHolder.bank = (TextView)convertView.findViewById(R.id.item_czx_bank);
-            viewHolder.dz = (TextView)convertView.findViewById(R.id.item_czx_dz);
-            viewHolder.pl = (TextView)convertView.findViewById(R.id.item_czx_pl);
-            viewHolder.pllistview = (AppNoScrollerListView)convertView.findViewById(R.id.item_czx_listview);
-            viewHolder.iv_dz =(TextView) convertView.findViewById(R.id.item_czx_dz_iv);
-            viewHolder.iv_pl = (TextView)convertView.findViewById(R.id.item_czx_pl_iv);
+            viewHolder.headicom = (ImageView) convertView.findViewById(R.id.item_czx_headicon);
+            viewHolder.nickname = (TextView) convertView.findViewById(R.id.item_czx_nickname);
+            viewHolder.content = (TextView) convertView.findViewById(R.id.item_czx_content);
+            viewHolder.pic = (ImageView) convertView.findViewById(R.id.item_czx_pic);
+            viewHolder.dzpersons = (TextView) convertView.findViewById(R.id.item_dzpersons);
+            viewHolder.bank = (TextView) convertView.findViewById(R.id.item_czx_bank);
+            viewHolder.dz = (TextView) convertView.findViewById(R.id.item_czx_dz);
+            viewHolder.pl = (TextView) convertView.findViewById(R.id.item_czx_pl);
+            viewHolder.pllistview = (AppNoScrollerListView) convertView.findViewById(R.id.item_czx_listview);
+            viewHolder.iv_dz = (TextView) convertView.findViewById(R.id.item_czx_dz_iv);
+            viewHolder.iv_pl = (TextView) convertView.findViewById(R.id.item_czx_pl_iv);
             //
-            viewHolder.piclayout = (LinearLayout)convertView.findViewById(R.id.item_czx_pic_layout);
-            viewHolder.multiImagView =(MultiImageView) convertView.findViewById(R.id.multiImagView);
-
+            viewHolder.piclayout = (LinearLayout) convertView.findViewById(R.id.item_czx_pic_layout);
+            viewHolder.multiImagView = (MultiImageView) convertView.findViewById(R.id.multiImagView);
+            viewHolder.item_czx_pic_layout = (RelativeLayout) convertView.findViewById(R.id.item_czx_pic_pre);
 
             convertView.setTag(viewHolder);
 
-        }else {
-            viewHolder =(ViewHolder)convertView.getTag();
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        ImageLoader.getInstance().displayImage(invitations.get(position).getSendUser().getHeadiconUrl(),viewHolder.headicom,options);
+        ImageLoader.getInstance().displayImage(invitations.get(position).getSendUser().getHeadiconUrl(), viewHolder.headicom, options);
         viewHolder.nickname.setText(invitations.get(position).getSendUser().getUserNickname());
         viewHolder.content.setText(invitations.get(position).getContent());
 
         //点赞的user
         List<User> users = invitations.get(position).getUpUsers();
-        if (users != null){
+        if (users != null) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < users.size(); i++) {
                 String nickName = users.get(i).getUserNickname();
-                if(nickName != null && !nickName.equals("")){
+                if (nickName != null && !nickName.equals("")) {
                     sb.append(nickName);
-                    if (i != users.size() - 1){
+                    if (i != users.size() - 1) {
                         sb.append(",");
                     }
                 }
             }
 
-           viewHolder.dzpersons.setText(sb.toString());
+            viewHolder.dzpersons.setText(sb.toString());
             viewHolder.dzpersons.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             viewHolder.dzpersons.setVisibility(View.GONE);
         }
 
         int fid = invitations.get(position).getBank();
-        switch (fid){
+        switch (fid) {
             case 0:
                 viewHolder.bank.setText("show");
                 break;
@@ -165,25 +166,25 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
                 viewHolder.bank.setText("初学问答");
                 break;
         }
-        viewHolder.dz.setText(invitations.get(position).getDzCount()+"");
-        viewHolder.pl.setText(invitations.get(position).getPlCount()+"");
+        viewHolder.dz.setText(invitations.get(position).getDzCount() + "");
+        viewHolder.pl.setText(invitations.get(position).getPlCount() + "");
 
         //评论
         final List<Comment> pls = invitations.get(position).getComments();
 
-         List<Comment> pls_ = new ArrayList<Comment>();
-        if (pls != null && pls.size()>0){
-            viewHolder.pllistview.setAdapter(new PlAdapter(pls,ct));
-        }else{
+        List<Comment> pls_ = new ArrayList<Comment>();
+        if (pls != null && pls.size() > 0) {
+            viewHolder.pllistview.setAdapter(new PlAdapter(pls, ct));
+        } else {
 //            //test
             Comment c = new Comment();
             User u1 = new User();
             u1.setUserNickname("1111");
-            u1.setUserId(12+"");
+            u1.setUserId(12 + "");
 
             User u2 = new User();
             u2.setUserNickname("2222");
-            u2.setUserId(13+"");
+            u2.setUserId(13 + "");
 
             c.setReplyUser(u1);
             c.setPltime("2013-10-20");
@@ -192,29 +193,29 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
             c.setMessage("什么什么");
 
             pls_.add(c);
-            viewHolder.pllistview.setAdapter(new PlAdapter(pls_,ct));
+            viewHolder.pllistview.setAdapter(new PlAdapter(pls_, ct));
         }
 
         //图片
-       final  List<String> picurls  = invitations.get(position).getPicUrls();
+        final List<String> picurls = invitations.get(position).getPicUrls();
 
-        if (invitations.get(position).getPreviewimage()!= null && !invitations.get(position).getPreviewimage().equals("")){
+        if (invitations.get(position).getPreviewimage() != null && !invitations.get(position).getPreviewimage().equals("")) {
             viewHolder.piclayout.setVisibility(View.VISIBLE);
-            viewHolder.pic.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+invitations.get(position).getPreviewimage(),viewHolder.pic,options);
+            viewHolder.item_czx_pic_layout.setVisibility(View.VISIBLE);
+            ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + invitations.get(position).getPreviewimage(), viewHolder.pic, options);
             //视频播放
             viewHolder.pic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("tan8","pic");
-                Intent intent = new Intent(ct, VideoPlayActivity.class);
-                intent.putExtra("filepath",invitations.get(position).getVideoUrl());
-                ct.startActivity(intent);
+                    Log.i("tan8", "pic");
+                    Intent intent = new Intent(ct, VideoPlayActivity.class);
+                    intent.putExtra("filepath", invitations.get(position).getVideoUrl());
+                    ct.startActivity(intent);
                 }
             });
-        }else if (picurls != null && picurls.size()>0){
+        } else if (picurls != null && picurls.size() > 0) {
             viewHolder.piclayout.setVisibility(View.VISIBLE);
-            viewHolder.pic.setVisibility(View.GONE);
+            viewHolder.item_czx_pic_layout.setVisibility(View.GONE);
             viewHolder.multiImagView.setVisibility(View.VISIBLE);
             viewHolder.multiImagView.setList(picurls);
             viewHolder.multiImagView.setOnItemClickListener(new MultiImageView.OnItemClickListener() {
@@ -224,25 +225,24 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
                     ImagePagerActivity.startImagePagerActivity(ct, picurls, position);
                 }
             });
-        }else {
+        } else {
             viewHolder.multiImagView.setVisibility(View.GONE);
             viewHolder.piclayout.setVisibility(View.GONE);
-            viewHolder.pic.setVisibility(View.GONE);
+            viewHolder.item_czx_pic_layout.setVisibility(View.GONE);
         }
-
-
 
 
         boolean isZan = false;
         if (TanApplication.isLogin) {
             //当前用户是否赞
-            for (int i = 0; i < users.size(); i++) {
-                if (users.get(i).getUserId() == TanApplication.curUser.getUserId()) {
-                    isZan = true;
-                    break;
+            if (users != null) {
+                for (int i = 0; i < users.size(); i++) {
+                    if (users.get(i).getUserId() == TanApplication.curUser.getUserId()) {
+                        isZan = true;
+                        break;
+                    }
                 }
             }
-
             if (isZan) {
                 viewHolder.iv_dz.setText("取消赞");
             } else {
@@ -260,7 +260,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
                     } else {
                         mPresenter.addFavort(position, invitations.get(position).getTid());
                     }
-                }else {
+                } else {
                     Toast.makeText(ct, "请登录", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -276,8 +276,8 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
                     if (mCirclePublicCommentContral != null) {
                         mCirclePublicCommentContral.editTextBodyVisible(View.VISIBLE, mPresenter, position, TYPE_PUBLIC_COMMENT, null, 0, invitations.get(position).getTid());
                     }
-                }else {
-                    Toast.makeText(ct,"请登录",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ct, "请登录", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -287,7 +287,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
         viewHolder.pllistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int commentPosition, long id) {
-                Log.i("tan8","plitem");
+                Log.i("tan8", "plitem");
 
                 if (TanApplication.isLogin) {
                     Comment commentItem = p.get(commentPosition);
@@ -301,24 +301,23 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
                             mCirclePublicCommentContral.editTextBodyVisible(View.VISIBLE, mPresenter, position, TYPE_REPLY_COMMENT, commentItem.getReplyUser(), commentPosition, invitations.get(position).getTid());
                         }
                     }
-                }else {
-                    Toast.makeText(ct,"请登录",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ct, "请登录", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
 
-
         return convertView;
     }
 
-    class ViewHolder{
-        ImageView headicom,pic;
-        TextView content,bank,dz,pl,nickname,dzpersons,iv_dz,iv_pl;
+    class ViewHolder {
+        ImageView headicom, pic;
+        TextView content, bank, dz, pl, nickname, dzpersons, iv_dz, iv_pl;
         AppNoScrollerListView pllistview;
         LinearLayout piclayout;
         MultiImageView multiImagView;
-
+        RelativeLayout item_czx_pic_layout;
 
 
     }
@@ -392,45 +391,45 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
     }
 
     @Override
-    public void update2AddFavorite(final int circlePosition,int Tid) {
-        Map<String,String> map = new HashMap<String, String>();
+    public void update2AddFavorite(final int circlePosition, int Tid) {
+        Map<String, String> map = new HashMap<String, String>();
         map.put("Tid", "" + Tid);
 
-        new SendHttpThreadMime(CommonUtils.HTTPHOST, (MainActivity)ct,new Handler(){
+        new SendHttpThreadMime(CommonUtils.HTTPHOST, (MainActivity) ct, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 getDatas().get(circlePosition).getUpUsers().add(TanApplication.curUser);
                 notifyDataSetChanged();
             }
-        },map,0,null).start();
+        }, map, 0, null).start();
     }
 
     @Override
-    public void update2DeleteFavort(final int circlePosition, String favortId,int Tid) {
-        Map<String,String> map = new HashMap<String, String>();
-        map.put("Tid",""+Tid);
+    public void update2DeleteFavort(final int circlePosition, String favortId, int Tid) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("Tid", "" + Tid);
 
-        new SendHttpThreadMime(CommonUtils.HTTPHOST, (MainActivity)ct,new Handler(){
+        new SendHttpThreadMime(CommonUtils.HTTPHOST, (MainActivity) ct, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                for (int i =0;i<getDatas().get(circlePosition).getUpUsers().size();i++){
+                for (int i = 0; i < getDatas().get(circlePosition).getUpUsers().size(); i++) {
                     User u = getDatas().get(circlePosition).getUpUsers().get(i);
-                    if (u.getUserId() == TanApplication.curUser.getUserId()){
+                    if (u.getUserId() == TanApplication.curUser.getUserId()) {
                         getDatas().get(circlePosition).getUpUsers().remove(i);
                         break;
                     }
                 }
                 notifyDataSetChanged();
             }
-        },map,0,null).start();
+        }, map, 0, null).start();
     }
 
     @Override
     public void update2AddComment(final int circlePosition, int type, User replyUser) {
         String content = "";
-        if(mCirclePublicCommentContral!=null){
+        if (mCirclePublicCommentContral != null) {
             content = mCirclePublicCommentContral.getEditTextString();
         }
 //        if(type == TYPE_PUBLIC_COMMENT){
@@ -440,11 +439,11 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
 //        }
 //
 
-        Map<String,String> map = new HashMap<String,String>();
-        map.put("content",content);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("content", content);
 
 
-        new SendHttpThreadMime(CommonUtils.HTTPHOST,(MainActivity)ct,new Handler(){
+        new SendHttpThreadMime(CommonUtils.HTTPHOST, (MainActivity) ct, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -453,26 +452,26 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
 
                 getDatas().get(circlePosition).getComments().add(c);
                 notifyDataSetChanged();
-                if(mCirclePublicCommentContral!=null){
+                if (mCirclePublicCommentContral != null) {
                     mCirclePublicCommentContral.clearEditText();
                 }
 
             }
-        },map,0,null).start();
+        }, map, 0, null).start();
     }
 
     @Override
     public void update2DeleteComment(final int circlePosition, final String commentId) {
-        Map<String,String> map = new HashMap<String,String>();
+        Map<String, String> map = new HashMap<String, String>();
 
 
-        new SendHttpThreadMime(CommonUtils.HTTPHOST,(MainActivity)ct,new Handler(){
+        new SendHttpThreadMime(CommonUtils.HTTPHOST, (MainActivity) ct, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
 
-                for (int i=0;i<getDatas().get(circlePosition).getComments().size();i++){
-                    if (getDatas().get(circlePosition).getComments().get(i).getPlID() == Integer.parseInt(commentId)){
+                for (int i = 0; i < getDatas().get(circlePosition).getComments().size(); i++) {
+                    if (getDatas().get(circlePosition).getComments().get(i).getPlID() == Integer.parseInt(commentId)) {
                         getDatas().get(circlePosition).getComments().remove(i);
                         break;
                     }
@@ -480,7 +479,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
                 notifyDataSetChanged();
 
             }
-        },map,0,null).start();
+        }, map, 0, null).start();
     }
 
 }

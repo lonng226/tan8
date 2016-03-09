@@ -56,7 +56,6 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
 		}else{
 			btn_text.setOnClickListener(this);
 		}
-
 	}
 	
 	
