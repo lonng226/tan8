@@ -91,16 +91,21 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 if (result == null || result.equals("")) {
                     return;
                 }
-                String uid = "";
+
+
+                String uid = "",uname = "";
                 try {
                     JSONObject json = new JSONObject(result);
                     uid = json.getString("uid");
+                    uname = json.getString("uname");
                     //存入首选项
                     SharePrefUtil.saveString(LoginActivity.this,CommonUtils.UID,uid);
                     SharePrefUtil.saveString(LoginActivity.this, CommonUtils.ACCOUNT, account);
                     SharePrefUtil.saveString(LoginActivity.this, CommonUtils.PWD, pwd);
                     TanApplication.isLogin = true;
-                    TanApplication.curUser = null;
+                    TanApplication.curUser.setUserId(uid);
+                    TanApplication.curUser.setUserNickname(uname);
+                    TanApplication.curUser.setHeadiconUrl("");
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginActivity.this.startActivity(intent);

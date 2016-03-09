@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.text.DecimalFormat;
 
+import lonng.com.tan8.BankActivity;
 import lonng.com.tan8.MainActivity;
 import lonng.com.tan8.page.Czxpage;
 
@@ -40,8 +41,11 @@ public class CommonUtils {
 	//登录
 	public static String LOGINURL = "http://120.24.16.24/tanqin/user.php?action=login";
 
+	//点赞
+	public static String NEWUP = "http://120.24.16.24/tanqin/forum.php?action=newup";
 
-
+    //评论
+	public static String NEWCOMMENT = "http://120.24.16.24/tanqin/forum.php?action=newcomment";
 	
 	/**
 	 * 检测网络是否可用
@@ -110,19 +114,23 @@ public class CommonUtils {
 		return df.format(size_)+"M";
 	}
 
-	public static void showSoftInput(Context context, View view,boolean isMainActivity){
+	public static void showSoftInput(Context context, View view,int isActivity){
 
-		if(isMainActivity){
+		if(isActivity ==0){
 			((MainActivity)context).getMenuBarView().setVisibility(View.GONE);
+		}else if(isActivity == 1){
+			((BankActivity)context).getRe().setVisibility(View.GONE);
 		}
 		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 		//imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
 	}
 
-	public static void hideSoftInput(Context context, View view,boolean isMainActivity){
-		if (isMainActivity){
+	public static void hideSoftInput(Context context, View view,int isActivity){
+		if (isActivity == 0){
 			((MainActivity)context).getMenuBarView().setVisibility(View.VISIBLE);
+		}else if(isActivity == 1) {
+			((BankActivity)context).getRe().setVisibility(View.VISIBLE);
 		}
 		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0); //强制隐藏键盘

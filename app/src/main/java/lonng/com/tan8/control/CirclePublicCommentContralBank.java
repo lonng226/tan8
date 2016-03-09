@@ -150,11 +150,11 @@ public class CirclePublicCommentContralBank {
 			if(View.VISIBLE==visibility){
 				mEditText.requestFocus();
 				//弹出键盘
-				CommonUtils.showSoftInput(mEditText.getContext(), mEditText,false);
+				CommonUtils.showSoftInput(mEditText.getContext(), mEditText,1);
 				
 			}else if(View.GONE==visibility){
 				//隐藏键盘
-				CommonUtils.hideSoftInput(mEditText.getContext(), mEditText,false);
+				CommonUtils.hideSoftInput(mEditText.getContext(), mEditText,1);
 			}
 		}
 	}

@@ -59,6 +59,8 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
     TextView sendTv;
     @Bind(R.id.bank_back)
     TextView back;
+    @Bind(R.id.bank_backlayout)
+    RelativeLayout bank_backlayout;
 
     private int mScreenHeight;
     private int mEditTextBodyHeight;
@@ -118,7 +120,7 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
             public boolean onTouch(View v, MotionEvent event) {
                 if(mEditTextBody.getVisibility()==View.VISIBLE){
                     mEditTextBody.setVisibility(View.GONE);
-                    CommonUtils.hideSoftInput(BankActivity.this, mEditText,false);
+                    CommonUtils.hideSoftInput(BankActivity.this, mEditText,1);
                     return true;
                 }
                 return false;
@@ -160,6 +162,10 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
         });
 
 
+    }
+
+    public RelativeLayout getRe(){
+        return bank_backlayout;
     }
     public int getScreenHeight(){
         return mScreenHeight;

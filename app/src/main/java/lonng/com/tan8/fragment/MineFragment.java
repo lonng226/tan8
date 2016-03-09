@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,6 +45,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener{
     LinearLayout shoucangl;
     @Bind(R.id.loginview_yuepu)
     LinearLayout yuepul;
+    @Bind(R.id.loginview_headicon)
+    ImageView loginview_headicon;
+    @Bind(R.id.loginview_nickname)
+    TextView loginview_nickname;
+    @Bind(R.id.loginview_address)
+    TextView loginview_address;
+
 
 
     @Override
@@ -58,6 +66,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener{
         shoucangl.setOnClickListener(this);
         guanzhul.setOnClickListener(this);
         fansl.setOnClickListener(this);
+
+
+
         return view;
 
     }
@@ -104,6 +115,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener{
         if (TanApplication.isLogin){
             loginview.setVisibility(View.VISIBLE);
             nologinview.setVisibility(View.GONE);
+            loginview_headicon.setImageResource(R.mipmap.ic_launcher);
+            loginview_nickname.setText(TanApplication.curUser.getUserNickname());
+            loginview_address.setText("北京");
         }else {
             loginview.setVisibility(View.GONE);
             nologinview.setVisibility(View.VISIBLE);

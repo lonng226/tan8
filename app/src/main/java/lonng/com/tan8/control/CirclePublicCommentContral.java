@@ -67,7 +67,7 @@ public class CirclePublicCommentContral {
 				if(mCirclePresenter!=null){
 					//发布评论
 //					mCirclePresenter.addComment(mCirclePosition, mCommentType, mReplyUser);
-					mCirclePresenter.addComment(Tid, mCommentType, mReplyUser);
+					mCirclePresenter.addComment(mCirclePosition, mCommentType, mReplyUser);
 				}
 				editTextBodyVisible(View.GONE);
 			}
@@ -153,11 +153,11 @@ public class CirclePublicCommentContral {
 			if(View.VISIBLE==visibility){
 				mEditText.requestFocus();
 				//弹出键盘
-				CommonUtils.showSoftInput(mEditText.getContext(), mEditText,true);
+				CommonUtils.showSoftInput(mEditText.getContext(), mEditText,0);
 				
 			}else if(View.GONE==visibility){
 				//隐藏键盘
-				CommonUtils.hideSoftInput(mEditText.getContext(), mEditText,true);
+				CommonUtils.hideSoftInput(mEditText.getContext(), mEditText,0);
 			}
 		}
 	}

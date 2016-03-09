@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lonng.com.tan8.application.TanApplication;
 import lonng.com.tan8.base.BaseActivity;
 import lonng.com.tan8.dialog.BankDialog;
 import lonng.com.tan8.dialog.CustomDialog;
@@ -226,14 +227,18 @@ public class EditActivity extends BaseActivity{
 	private void sendToserver(){
 
 
+		if (!TanApplication.isLogin){
+                Toast.makeText(EditActivity.this,"请登录",Toast.LENGTH_SHORT).show();
+			return;
+		}
 		progress_layout.setVisibility(View.VISIBLE);
 
 		Log.i("tan8","sendtoServer");
 		String edtext = edit_ed.getEditableText().toString();
 //		String url = "http://120.24.16.24/tanqin/forum.php";
 		Map<String, String> param = new HashMap<String, String>();
-		param.put("authorid", "12");
-		param.put("author", "zy");
+		param.put("authorid", TanApplication.curUser.getUserId());
+		param.put("author", TanApplication.curUser.getUserNickname());
 		param.put("fid", bankType+"");
 		param.put("message",edtext+"");
 		//pic1,pic2 ,filename

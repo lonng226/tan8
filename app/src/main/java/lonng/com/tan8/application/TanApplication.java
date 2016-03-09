@@ -97,13 +97,18 @@ public class TanApplication extends Application {
 				if (result == null || result.equals("")||!result.contains("uid")) {
 					return;
 				}
-				String uid = "";
+				String uid = "",uname = "";
 				try {
 					JSONObject json = new JSONObject(result);
 					uid = json.getString("uid");
+					uname = json.getString("uname");
+
 					//存入首选项
 					TanApplication.isLogin = true;
 					TanApplication.curUser .setUserId(uid);
+					TanApplication.curUser.setUserNickname(uname);
+					TanApplication.curUser.setHeadiconUrl("");
+
 
 				} catch (Exception e) {
 					e.printStackTrace();

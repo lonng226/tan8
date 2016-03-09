@@ -23,6 +23,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -185,28 +187,8 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
 
         //评论
         final List<Comment> pls = invitations.get(position).getComments();
-        List<Comment> pls_ = new ArrayList<Comment>();
         if (pls != null && pls.size() > 0) {
             viewHolder.pllistview.setAdapter(new PlAdapter(pls, ct));
-        } else {
-//            //test
-            Comment c = new Comment();
-            User u1 = new User();
-            u1.setUserNickname("1111");
-            u1.setUserId(12 + "");
-
-            User u2 = new User();
-            u2.setUserNickname("2222");
-            u2.setUserId(13 + "");
-
-            c.setReplyUser(u1);
-            c.setPltime("2013-10-20");
-            c.setPlUser(u2);
-            c.setPlID(2);
-            c.setMessage("什么什么");
-
-            pls_.add(c);
-            viewHolder.pllistview.setAdapter(new PlAdapter(pls_, ct));
         }
 
         //图片
@@ -249,7 +231,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
             //当前用户是否赞
             if (users != null) {
                 for (int i = 0; i < users.size(); i++) {
-                    if (users.get(i).getUserId() == TanApplication.curUser.getUserId()) {
+                    if (users.get(i).getUserId().equals(TanApplication.curUser.getUserId())) {
                         isZan = true;
                         break;
                     }
@@ -279,7 +261,6 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         });
 
 
-        final List<Comment> p = pls_;
         //发表评论
         viewHolder.iv_pl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,8 +282,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
             public void onItemClick(AdapterView<?> parent, View view, int commentPosition, long id) {
                 Log.i("tan8", "plitem");
                 if (TanApplication.isLogin) {
-//                Comment commentItem = pls.get(commentPosition);
-                    Comment commentItem = p.get(commentPosition);
+                Comment commentItem = pls.get(commentPosition);
                     if (commentItem.getPlUser().getUserId().equals(TanApplication.curUser.getUserId())) {
                         //自己的评论
                         CommentDialog dialog = new CommentDialog(ct, mPresenter, commentItem, position);
@@ -404,20 +384,47 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
     public void update2AddFavorite(final int circlePosition, int Tid) {
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("Tid", "" + Tid);
+        map.put("tid", "" + Tid);
+        map.put("userid",TanApplication.curUser.getUserId());
+        map.put("username",TanApplication.curUser.getUserNickname());
 
-        new SendHttpThreadMime(CommonUtils.HTTPHOST, (MainActivity) ct, new Handler() {
+        new SendHttpThreadMime(CommonUtils.NEWUP, (MainActivity) ct, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                if( getDatas().get(circlePosition).getUpUsers() !=null){
-                    getDatas().get(circlePosition).getUpUsers().add(TanApplication.curUser);
-                }else {
-                    List<User>  upusers = new ArrayList<User>();
-                    upusers.add(TanApplication.curUser);
-                    getDatas().get(circlePosition).setUpUsers(upusers);
+                String result = (String)msg.obj;
+                Log.i("tan8","result:"+result );
+                if (result == null || result.equals("")){
+                    return;
                 }
-                notifyDataSetChanged();
+                try{
+                    String resultjson = "";
+                    JSONObject json = new JSONObject(result);
+                    if (json.has("result")){
+                        resultjson = json.getString("result");
+                        if (!resultjson.equals("success")){
+                            return;
+                        }
+                    }
+                    if( getDatas().get(circlePosition).getUpUsers() !=null){
+                        getDatas().get(circlePosition).getUpUsers().add(TanApplication.curUser);
+                    }else {
+                        List<User>  upusers = new ArrayList<User>();
+                        upusers.add(TanApplication.curUser);
+                        getDatas().get(circlePosition).setUpUsers(upusers);
+                    }
+                    notifyDataSetChanged();
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+
+
+
+
+
             }
         }, map, 0, null).start();
     }
@@ -426,26 +433,48 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
     public void update2DeleteFavort(final int circlePosition, String favortId, int Tid) {
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("Tid", "" + Tid);
+        map.put("tid", "" + Tid);
+        map.put("userid",TanApplication.curUser.getUserId());
+        map.put("username",TanApplication.curUser.getUserNickname());
 
-        new SendHttpThreadMime(CommonUtils.HTTPHOST, (MainActivity) ct, new Handler() {
+        new SendHttpThreadMime(CommonUtils.NEWUP, (MainActivity) ct, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                for (int i = 0; i < getDatas().get(circlePosition).getUpUsers().size(); i++) {
-                    User u = getDatas().get(circlePosition).getUpUsers().get(i);
-                    if (u.getUserId() == TanApplication.curUser.getUserId()) {
-                        getDatas().get(circlePosition).getUpUsers().remove(i);
-                        break;
-                    }
+
+                String result = (String)msg.obj;
+                Log.i("tan8","result:"+result );
+                if (result == null || result.equals("")){
+                   return;
                 }
-                notifyDataSetChanged();
+
+                try{
+                    String resultjson = "";
+                    JSONObject json = new JSONObject(result);
+                       if (json.has("result")){
+                             resultjson = json.getString("result");
+                           if (!resultjson.equals("success")){
+                               return;
+                           }
+                       }
+                    for (int i = 0; i < getDatas().get(circlePosition).getUpUsers().size(); i++) {
+                        User u = getDatas().get(circlePosition).getUpUsers().get(i);
+                        if (u.getUserId() == TanApplication.curUser.getUserId()) {
+                            getDatas().get(circlePosition).getUpUsers().remove(i);
+                            break;
+                        }
+                    }
+                    notifyDataSetChanged();
+                }catch (Exception e){
+                     e.printStackTrace();
+                }
+
             }
         }, map, 0, null).start();
     }
 
     @Override
-    public void update2AddComment(final int circlePosition, int type, User replyUser) {
+    public void update2AddComment(final int circlePosition, final int type, final User replyUser) {
         String content = "";
         if (mCirclePublicCommentContral != null) {
             content = mCirclePublicCommentContral.getEditTextString();
@@ -458,27 +487,60 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
 //
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("content", content);
+        map.put("tid", "" + getDatas().get(circlePosition).getTid());
+        map.put("userid",TanApplication.curUser.getUserId());
+        map.put("username",TanApplication.curUser.getUserNickname());
+        map.put("comment", content);
+        if (type == TYPE_REPLY_COMMENT){
+            map.put("replyauthor", replyUser.getUserNickname());
+            map.put("replyauthorid", replyUser.getUserId());
+        }
 
-
-        new SendHttpThreadMime(CommonUtils.HTTPHOST, (MainActivity) ct, new Handler() {
+        final String content_ = content;
+        new SendHttpThreadMime(CommonUtils.NEWCOMMENT, (MainActivity) ct, new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
 
-                Comment c = new Comment();
 
-                if(getDatas().get(circlePosition).getComments() != null){
-                    getDatas().get(circlePosition).getComments().add(c);
-                }else {
-                    List<Comment>  comments = new ArrayList<Comment>();
-                    comments.add(c);
-                    getDatas().get(circlePosition).setComments(comments);
+                String result = (String)msg.obj;
+                Log.i("tan8","result:"+result);
+
+                if (result == null || result.equals("")){
+                    return;
                 }
-                notifyDataSetChanged();
-                if (mCirclePublicCommentContral != null) {
-                    mCirclePublicCommentContral.clearEditText();
+
+                try {
+
+                    JSONObject jsonObject = new JSONObject(result);
+
+
+                    Comment c = new Comment();
+                    if (type == TYPE_PUBLIC_COMMENT){
+                        c.setPlUser(TanApplication.curUser);
+                        c.setMessage(content_);
+
+                    }else if (type == TYPE_REPLY_COMMENT){
+                        c.setMessage(content_);
+                        c.setReplyUser(replyUser);
+                        c.setPlUser(TanApplication.curUser);
+                    }
+
+                    if(getDatas().get(circlePosition).getComments() != null){
+                        getDatas().get(circlePosition).getComments().add(c);
+                    }else {
+                        List<Comment>  comments = new ArrayList<Comment>();
+                        comments.add(c);
+                        getDatas().get(circlePosition).setComments(comments);
+                    }
+                    notifyDataSetChanged();
+                    if (mCirclePublicCommentContral != null) {
+                        mCirclePublicCommentContral.clearEditText();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
+
 
             }
         }, map, 0, null).start();

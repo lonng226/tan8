@@ -91,7 +91,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
             public boolean onTouch(View v, MotionEvent event) {
                 if(mEditTextBody.getVisibility()==View.VISIBLE){
                     mEditTextBody.setVisibility(View.GONE);
-                    CommonUtils.hideSoftInput(ct, mEditText,true);
+                    CommonUtils.hideSoftInput(ct, mEditText,0);
                     return true;
                 }
                 return false;
