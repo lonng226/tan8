@@ -177,6 +177,8 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
 
         if (pls != null && pls.size() > 0) {
             viewHolder.pllistview.setAdapter(new PlAdapter(pls, ct));
+        }else{
+            viewHolder.pllistview.setVisibility(View.GONE);
         }
 
         //图片
@@ -289,7 +291,6 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
             }
         });
 
-
         return convertView;
     }
 
@@ -300,7 +301,6 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
         LinearLayout piclayout;
         MultiImageView multiImagView;
         RelativeLayout item_czx_pic_layout;
-
 
     }
 

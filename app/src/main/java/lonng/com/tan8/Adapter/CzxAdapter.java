@@ -189,6 +189,8 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         final List<Comment> pls = invitations.get(position).getComments();
         if (pls != null && pls.size() > 0) {
             viewHolder.pllistview.setAdapter(new PlAdapter(pls, ct));
+        }else{
+            viewHolder.pllistview.setVisibility(View.GONE);
         }
 
         //图片
@@ -282,6 +284,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
             public void onItemClick(AdapterView<?> parent, View view, int commentPosition, long id) {
                 Log.i("tan8", "plitem");
                 if (TanApplication.isLogin) {
+                    Log.i("tan8","pls:"+pls);
                 Comment commentItem = pls.get(commentPosition);
                     if (commentItem.getPlUser().getUserId().equals(TanApplication.curUser.getUserId())) {
                         //自己的评论

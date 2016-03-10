@@ -65,7 +65,7 @@ public class CirclePublicCommentContralBank {
 			public void onClick(View v) {
 				if(mCirclePresenter!=null){
 					//发布评论
-					mCirclePresenter.addComment(Tid, mCommentType, mReplyUser);
+					mCirclePresenter.addComment(mCirclePosition, mCommentType, mReplyUser);
 				}
 				editTextBodyVisible(View.GONE);
 			}

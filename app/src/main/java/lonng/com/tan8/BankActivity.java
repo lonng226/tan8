@@ -261,6 +261,8 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 return ;
             }
 
+            parseJson(result);
+            startIndex = invitations.size();
             Log.i("tan8","invatationslistjson:"+result);
             if(!isPull) {
                 progressBar.setVisibility(View.GONE);
@@ -273,10 +275,6 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
             }else {
                 bankcircleLv.setAdapter(bankAdapter);
             }
-            parseJson(result);
-            startIndex = invitations.size();
-
-
             mSwipeRefreshLayout.setRefreshing(false);
         }
     };

@@ -207,6 +207,8 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
             }
 
             Log.i("tan8","invatationslistjson:"+result);
+            parseJson(result);
+            startIndex = invitations.size();
 
             if(!isPull) {
                 progressBar.setVisibility(View.GONE);
@@ -219,8 +221,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
             }else {
                 mCircleLv.setAdapter(czxAdapter);
             }
-            parseJson(result);
-            startIndex = invitations.size();
+
             mSwipeRefreshLayout.setRefreshing(false);
         }
     };
