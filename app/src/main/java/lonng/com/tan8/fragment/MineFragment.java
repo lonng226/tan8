@@ -68,7 +68,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener{
         fansl.setOnClickListener(this);
 
 
-
         return view;
 
     }
@@ -93,6 +92,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener{
                 break;
             case R.id.loginview_goin:
                 Intent in = new Intent(ct, UserCenterActivity.class);
+                in.putExtra("uid",TanApplication.curUser.getUserId());
                 ct.startActivity(in);
                 break;
             case R.id.loginview_tiezi:

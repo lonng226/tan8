@@ -93,11 +93,25 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 }
 
 
-                String uid = "",uname = "";
+                String uid = "",uname = "",headiconUrl= "";
                 try {
                     JSONObject json = new JSONObject(result);
-                    uid = json.getString("uid");
-                    uname = json.getString("uname");
+                    // login:{"uid":"8","uname":"555","uprofile":""}
+                    if (json.has("uid")){
+                        uid = json.getString("uid");
+                        if (uid.equals("-1")){
+                            Toast.makeText(LoginActivity.this,"登录失败",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                    if (json.has("uname")){
+                        uname = json.getString("uname");
+                    }
+                    if (json.has("uprofile")){
+                        if(!json.getString("uprofile").equals("")){
+                            headiconUrl = json.getString("uprofile");
+                        }
+                    }
                     //存入首选项
                     SharePrefUtil.saveString(LoginActivity.this,CommonUtils.UID,uid);
                     SharePrefUtil.saveString(LoginActivity.this, CommonUtils.ACCOUNT, account);

@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -97,11 +98,24 @@ public class TanApplication extends Application {
 				if (result == null || result.equals("")||!result.contains("uid")) {
 					return;
 				}
-				String uid = "",uname = "";
+				String uid = "",uname = "",headiconUrl="";
 				try {
 					JSONObject json = new JSONObject(result);
-					uid = json.getString("uid");
-					uname = json.getString("uname");
+					if (json.has("uid")){
+						uid = json.getString("uid");
+						if (uid.equals("-1")){
+							Toast.makeText(TanApplication.this, "登录失败", Toast.LENGTH_SHORT).show();
+							return;
+						}
+					}
+					if (json.has("uname")){
+						uname = json.getString("uname");
+					}
+					if (json.has("uprofile")){
+						if(!json.getString("uprofile").equals("")){
+							headiconUrl = json.getString("uprofile");
+						}
+					}
 
 					//存入首选项
 					TanApplication.isLogin = true;

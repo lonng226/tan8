@@ -290,7 +290,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
                     } else {
                         //回复别人的评论
                         if (mCirclePublicCommentContral != null) {
-                            mCirclePublicCommentContral.editTextBodyVisible(View.VISIBLE, mPresenter, position, TYPE_REPLY_COMMENT, commentItem.getReplyUser(), commentPosition, invitations.get(position).getTid());
+                            mCirclePublicCommentContral.editTextBodyVisible(View.VISIBLE, mPresenter, position, TYPE_REPLY_COMMENT, commentItem.getPlUser(), commentPosition, invitations.get(position).getTid());
                         }
                     }
                 } else {
