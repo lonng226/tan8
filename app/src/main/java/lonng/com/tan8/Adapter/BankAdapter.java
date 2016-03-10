@@ -177,6 +177,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
 
         if (pls != null && pls.size() > 0) {
             viewHolder.pllistview.setAdapter(new PlAdapter(pls, ct));
+            viewHolder.pllistview.setVisibility(View.VISIBLE);
         }else{
             viewHolder.pllistview.setVisibility(View.GONE);
         }

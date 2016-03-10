@@ -189,6 +189,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         final List<Comment> pls = invitations.get(position).getComments();
         if (pls != null && pls.size() > 0) {
             viewHolder.pllistview.setAdapter(new PlAdapter(pls, ct));
+            viewHolder.pllistview.setVisibility(View.VISIBLE);
         }else{
             viewHolder.pllistview.setVisibility(View.GONE);
         }
