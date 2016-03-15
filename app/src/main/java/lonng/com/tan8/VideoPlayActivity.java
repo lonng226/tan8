@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -219,9 +220,13 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     public void onCompletion(MediaPlayer mp) {
 
         //mediaplayer 播放完成后出发
+        mediaPlayer.stop();
+        mediaPlayer.release();
         this.finish();
     }
 
+    //videopath":"\/data\/attachments\/0AEE7BBB-A5ED-918F-5247-6EB32E41456E\/video\/1448924547466.mp4"
+    //"videopath":"\/data\/attachments\/24DFD7FB-4508-E073-2F8B-E6B39A4139BE\/video\/VID_20160312_104056.mp4
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         switch (what) {
@@ -237,4 +242,8 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         return false;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

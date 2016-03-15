@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -56,6 +57,11 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
     @Bind(R.id.center_titlename)
     TextView titlename;
 
+    @Bind(R.id.center_listview)
+    ListView listview;
+    @Bind(R.id.center_null)
+    TextView tvnull;
+
     private String Uid;
 
 
@@ -88,8 +94,7 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
     private void getUserInfo(String uid){
         new SendHttpThreadGet(new Handler(){
             @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
+            public void handleMessage(Message msg) {super.handleMessage(msg);
             }
         }, CommonUtils.HTTPHOST+"",0).start();
     }

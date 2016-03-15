@@ -77,6 +77,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
 
     @Override
     protected View initView(LayoutInflater inflater) {
+        Log.i("tan8","initview");
         View view = inflater.inflate(R.layout.page_czx,null);
         ButterKnife.bind(this, view);
         footerview = inflater.inflate(R.layout.footer_layout,null);
@@ -110,8 +111,8 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
         czxAdapter = new CzxAdapter(invitations,ct);
         czxAdapter.setmCirclePublicCommentContral(mCirclePublicCommentContral);
         mCircleLv.setAdapter(czxAdapter);
-
         setViewTreeObserver();
+//
         return view;
     }
     private void setViewTreeObserver() {
@@ -157,7 +158,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
 
     @Override
     public void initData() {
-
+        Log.i("tan8","initData");
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,20 +56,22 @@ public class SQFragment extends BaseFragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.frag_community, null);
         ButterKnife.bind(this, view);
         return view;
-
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        mainActivity = (MainActivity) ct;
-        mainActivity.titlename.setText("社区");
-        czxPage = new Czxpage(ct);
-        bankPage = new BankPage(ct);
-        zongbPage = new ZongbPage(ct);
-        pagelist.clear();
-        pagelist.add(czxPage);
-        pagelist.add(bankPage);
-        pagelist.add(zongbPage);
+            mainActivity = (MainActivity) ct;
+            mainActivity.titlename.setText("社区");
+            if (pagelist .size()==0){
+                czxPage = new Czxpage(ct);
+                bankPage = new BankPage(ct);
+                zongbPage = new ZongbPage(ct);
+                pagelist.clear();
+                pagelist.add(czxPage);
+                pagelist.add(bankPage);
+                pagelist.add(zongbPage);
+        }
+
         viewpager.setAdapter(new SqAdapter(pagelist,ct));
         viewpager.setOffscreenPageLimit(0);
         czx.setOnClickListener(this);
@@ -114,6 +117,7 @@ public class SQFragment extends BaseFragment implements View.OnClickListener{
             }
         });
         czx.setBackgroundColor(Color.parseColor("#00ff00"));
+        Log.i("tan8","3");
         viewpager.setCurrentItem(0);
         czxPage.initData();
         sendInvitation.setOnClickListener(this);

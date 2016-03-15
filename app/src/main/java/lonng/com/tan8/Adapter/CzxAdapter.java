@@ -154,6 +154,9 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
             for (int i = 0; i < users.size(); i++) {
                 String nickName = users.get(i).getUserNickname();
                 if (nickName != null && !nickName.equals("")) {
+                    if(i==0){
+                        sb.append("赞：");
+                    }
                     sb.append(nickName);
                     if (i != users.size() - 1) {
                         sb.append(",");
@@ -250,7 +253,12 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         viewHolder.iv_dz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+
                 Log.i("tan8", "dz");
+                if(isClickMuch()){
+                    Toast.makeText(ct,"操作频繁",Toast.LENGTH_SHORT).show();
+                     return;
+                }
                 if (TanApplication.isLogin) {
                     if (isZan_) {
                         mPresenter.deleteFavort(position, "", invitations.get(position).getTid());
@@ -314,6 +322,16 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         LinearLayout piclayout;
         MultiImageView multiImagView;
         RelativeLayout item_czx_pic_layout;
+    }
+
+    public static long lastClickTime ;
+    private boolean isClickMuch(){
+
+        if(System.currentTimeMillis() - lastClickTime > 2000){
+            lastClickTime = System.currentTimeMillis();
+            return false;
+        }
+        return true;
     }
 
     //setadapter之后调用
@@ -463,7 +481,9 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
                        }
                     for (int i = 0; i < getDatas().get(circlePosition).getUpUsers().size(); i++) {
                         User u = getDatas().get(circlePosition).getUpUsers().get(i);
-                        if (u.getUserId() == TanApplication.curUser.getUserId()) {
+                        Log.i("tan8","upuserid:"+u.getUserId());
+                        if (u.getUserId().equals(TanApplication.curUser.getUserId())) {
+                            Log.i("tan8","up:"+i);
                             getDatas().get(circlePosition).getUpUsers().remove(i);
                             break;
                         }

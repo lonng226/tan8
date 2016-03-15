@@ -34,6 +34,7 @@
 
 
             <RelativeLayout
+                android:id="@+id/center_head"
                 android:layout_width="match_parent"
                 android:layout_height="130dp"
                 android:background="@color/color_gray_light">
@@ -214,6 +215,26 @@
 
                 </LinearLayout>
             </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/center_head">
+
+                <ListView
+                    android:id="@+id/center_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/center_null"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="没有"
+                    android:textSize="20dp"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+
 
         </RelativeLayout>
 

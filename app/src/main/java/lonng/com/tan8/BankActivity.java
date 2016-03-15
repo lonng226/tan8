@@ -195,7 +195,7 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 if(keyH == TanApplication.mKeyBoardH){//有变化时才处理，否则会陷入死循环
                     return;
                 }
-                Log.d("tan8", "keyH = " + keyH + " &r.bottom=" + r.bottom + " &top=" + r.top);
+//                Log.d("tan8", "keyH = " + keyH + " &r.bottom=" + r.bottom + " &top=" + r.top);
                 TanApplication.mKeyBoardH = keyH;
                 mScreenHeight = screenH;//应用屏幕的高度
                 mEditTextBodyHeight = mEditTextBody.getHeight();
