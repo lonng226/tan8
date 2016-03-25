@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,6 +34,8 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     Button start_stop;
     @Bind(R.id.surfaceview)
     SurfaceView surfaceView;
+    @Bind(R.id.videoplay_back)
+    TextView videoplay_back;
     MediaPlayer mediaPlayer;
     int postion;
     Display currDisplay;
@@ -46,10 +51,14 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         ButterKnife.bind(this);
 
         initView();
+
     }
 
 
     protected void initView() {
+
+        videoplay_back.setOnClickListener(this);
+
         surfaceView.getHolder().setFixedSize(200, 200);
         surfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         surfaceView.getHolder().addCallback(new SurfaceCallback());
@@ -64,6 +73,8 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
         String filepath = getIntent().getStringExtra("filepath");
         try{
+//            Cache cache = new FileCache(new File(getExternalCacheDir(), VIDEO_CACHE_NAME));
+
             mediaPlayer.setDataSource(CommonUtils.GET_FILS+filepath);
         } catch (Exception e){
             e.printStackTrace();
@@ -82,6 +93,8 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     public void onClick(View v) {
         if (v.getId() == R.id.start_stop){
             startOrStop();
+        }else if(v.getId() ==R.id.videoplay_back){
+            VideoPlayActivity.this.finish();
         }
     }
 
@@ -137,10 +150,11 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
 
-            if (mediaPlayer != null && mediaPlayer.isPlaying()){
-                currPosition = mediaPlayer.getCurrentPosition();
-                mediaPlayer.stop();
-            }
+//            if (mediaPlayer != null && mediaPlayer.isPlaying()){
+//                currPosition = mediaPlayer.getCurrentPosition();
+//                mediaPlayer.stop();
+                isPlaying = false;
+//            }
         }
     }
 
@@ -197,29 +211,45 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         }
 
         seekBar.setMax(mediaPlayer.getDuration());
+
         isPlaying = true;
+
 
         new Thread(new Runnable() {
             @Override
             public void run() {
 
                 while (isPlaying){
-                    int progress = mediaPlayer.getCurrentPosition();
-                    seekBar.setProgress(progress);
+
+//                    if (mediaPlayer == null ||!mediaPlayer.isPlaying()){
+//
+//                        Log.i("tan8","mediaPlayer break");
+//                            break;
+//                    }
+
                     try{
                         Thread.sleep(100);
+                        if(mediaPlayer != null && mediaPlayer.isPlaying()){
+                            int progress = mediaPlayer.getCurrentPosition();
+                            seekBar.setProgress(progress);
+                        }else{
+                            break;
+                        }
+
                     }catch (Exception e){
                         e.printStackTrace();
                     }
                 }
             }
         }).start();
+
         mediaPlayer.start();
     }
     @Override
     public void onCompletion(MediaPlayer mp) {
 
         //mediaplayer 播放完成后出发
+
         mediaPlayer.stop();
         mediaPlayer.release();
         this.finish();
@@ -243,7 +273,15 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        isPlaying = false;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i("tan8","Video onDestroy()");
+        isPlaying = false;
     }
 }

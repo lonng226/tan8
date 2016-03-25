@@ -18,7 +18,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -27,16 +26,13 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import lonng.com.tan8.application.TanApplication;
 import lonng.com.tan8.base.BaseActivity;
 import lonng.com.tan8.dialog.BankDialog;
 import lonng.com.tan8.dialog.CustomDialog;
-import lonng.com.tan8.http.SendHttpThreadGet;
 import lonng.com.tan8.http.SendHttpThreadMime;
 import lonng.com.tan8.invitation.ImageGridActivity;
 import lonng.com.tan8.utils.CommonUtils;
@@ -54,6 +50,7 @@ public class EditActivity extends BaseActivity{
 	private boolean isContainVideo;
 	private int bankType = -1;
 	private RelativeLayout progress_layout;
+	private TextView progress_text;
 
 	public static void startEditActivity(Context context,SendCompleteListener sl,int type){
 		sendComplete = sl;
@@ -61,6 +58,7 @@ public class EditActivity extends BaseActivity{
 		intent.putExtra("type", type);
 		context.startActivity(intent);
 	}
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +77,7 @@ public class EditActivity extends BaseActivity{
 		edit_tv5 = (TextView) findViewById(R.id.edit_tv5);
 		edit_tv6 = (TextView) findViewById(R.id.edit_tv6);
 		progress_layout = (RelativeLayout)findViewById(R.id.progress_layout);
+		progress_text = (TextView)findViewById(R.id.progress_text);
 
 		edit_commit.setOnClickListener(this);
 		edit_f.setOnClickListener(this);
@@ -93,6 +92,19 @@ public class EditActivity extends BaseActivity{
 		edit_tv1.setText("添加");
 		int type = getIntent().getIntExtra("type", 0);
 		show(type);
+	}
+
+	public native int ffmpegcore(int argc,String[] argv);
+	static{
+		System.loadLibrary("avutil-54");
+		System.loadLibrary("swresample-1");
+		System.loadLibrary("avcodec-56");
+		System.loadLibrary("avformat-56");
+		System.loadLibrary("swscale-3");
+		System.loadLibrary("postproc-53");
+		System.loadLibrary("avfilter-5");
+		System.loadLibrary("avdevice-56");
+		System.loadLibrary("sfftranscoder");
 	}
 
 
@@ -233,6 +245,41 @@ public class EditActivity extends BaseActivity{
 		}
 		progress_layout.setVisibility(View.VISIBLE);
 
+		if (files.containsKey("video")) {
+
+			File videoFile = files.get("video");
+			if (videoSize  > 1024 * 1024 * 10) {
+
+				progress_text.setText("正在压缩视频文件。。。");
+				MyThread mThread = new MyThread(videoFile,new Handler(){
+					@Override
+					public void handleMessage(Message msg) {
+						super.handleMessage(msg);
+						progress_text.setText("发送中。。。");
+                         sendToSerVer_();
+
+					}
+				});
+				mThread.start();
+				return;
+			}
+		}
+
+		sendToSerVer_();
+
+//		new SendHttpThreadGet(new Handler(){
+//			@Override
+//			public void handleMessage(Message msg) {
+//				super.handleMessage(msg);
+//				String result = (String) msg.obj;
+//				Log.i(TAG, result+"");
+//			}
+//		},CommonUtils.GET_INVATATIONLIST,0).start();
+	}
+
+
+	private void sendToSerVer_(){
+
 		Log.i("tan8","sendtoServer");
 		String edtext = edit_ed.getEditableText().toString();
 //		String url = "http://120.24.16.24/tanqin/forum.php";
@@ -244,12 +291,12 @@ public class EditActivity extends BaseActivity{
 		//pic1,pic2 ,filename
 		//video,videopreviewimage,filename
 
-        new SendHttpThreadMime(CommonUtils.POST_SENDIVTATION, EditActivity.this, new Handler(){
-        	@Override
-        	public void handleMessage(Message msg) {
-        		super.handleMessage(msg);
-        		String result = (String) msg.obj;
-        		Log.i(TAG, result+"");
+		new SendHttpThreadMime(CommonUtils.POST_SENDIVTATION, EditActivity.this, new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				String result = (String) msg.obj;
+				Log.i(TAG, result+"");
 //				sendComplete.sendOk();
 				progress_layout.setVisibility(View.GONE);
 				Intent intent = new Intent(EditActivity.this,BankActivity.class);
@@ -258,22 +305,49 @@ public class EditActivity extends BaseActivity{
 				EditActivity.this.finish();
 
 
-        	}
-        }, param, 0,files).start();
-
-
-//		new SendHttpThreadGet(new Handler(){
-//			@Override
-//			public void handleMessage(Message msg) {
-//				super.handleMessage(msg);
-//				String result = (String) msg.obj;
-//				Log.i(TAG, result+"");
-//			}
-//		},CommonUtils.GET_INVATATIONLIST,0).start();
+			}
+		}, param, 0,files).start();
 	}
+
+	class MyThread extends Thread{
+
+		private File videoFile;
+		private Handler hanlder;
+
+		public MyThread(File videoFile,Handler handler){
+			this.videoFile = videoFile;
+			this.hanlder = handler;
+		}
+
+		@Override
+		public void run() {
+			super.run();
+			try{
+			String videopath = videoFile.getAbsolutePath();
+			Log.i("tan8", "vedeopath:" + videopath+",videoFile.getName:"+videoFile.getName());
+			String ffcmd = "ffmpeg -i "+videopath + " "+"/storage/emulated/0/tan8/"+videoFile.getName().replace("mp4","mkv");
+			String[] argv = ffcmd.split(" ");
+			Log.i("tan8","ffcmd:"+ffcmd+",argv:"+argv.length);
+			Integer argc = argv.length;
+			ffmpegcore(argc, argv);
+			Log.i("tan8","ffmpegcore finished");
+			files.put("video",new File("/storage/emulated/0/tan8/"+videoFile.getName()));
+			if(hanlder != null){
+				Message m = new Message();
+				m.obj = "";
+				m.what = 0;
+				hanlder.sendMessage(m);
+			}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+
 	
-	
-	
+	int videoSize;
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -298,6 +372,7 @@ public class EditActivity extends BaseActivity{
 					if (data != null) {
 						int duration = data.getIntExtra("dur", 0);
 						String videoPath = data.getStringExtra("path");
+						 videoSize = data.getIntExtra("size",0);
 						
 						//file 是保存截图的文件 就是那个图片文件
 						File file = new File(CommonUtils.getPath(),"thvideo" + System.currentTimeMillis());
@@ -510,5 +585,7 @@ public class EditActivity extends BaseActivity{
 	public interface OnclikBank{
 		void clikBank(int bankType);
 	}
+
+
 
 }

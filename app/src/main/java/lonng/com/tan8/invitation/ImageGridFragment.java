@@ -156,12 +156,12 @@ public class ImageGridFragment extends Fragment implements OnItemClickListener {
         } else {
             VideoEntity vEntty = mList.get(position - 1);
             // 限制大小不能超过10M
-            if (vEntty.size > 1024 * 1024 * 10) {
+            if (vEntty.size > 1024 * 1024 * 100) {
                 String st = getResources().getString(R.string.temporary_does_not);
                 Toast.makeText(getActivity(), st, Toast.LENGTH_SHORT).show();
                 return;
             }
-            Intent intent = getActivity().getIntent().putExtra("path", vEntty.filePath).putExtra("dur", vEntty.duration);
+            Intent intent = getActivity().getIntent().putExtra("path", vEntty.filePath).putExtra("dur", vEntty.duration).putExtra("size",vEntty.size);
             getActivity().setResult(Activity.RESULT_OK, intent);
             getActivity().finish();
         }

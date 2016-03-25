@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,12 +35,13 @@ import lonng.com.tan8.utils.CommonUtils;
 /**
  * Created by yiw on 2016/1/6.
  */
-public class ImagePagerActivity extends Activity {
+public class ImagePagerActivity extends Activity implements View.OnClickListener{
     public static final String INTENT_IMGURLS = "imgurls";
     public static final String INTENT_POSITION = "position";
     private List<View> guideViewList = new ArrayList<View>();
     private LinearLayout guideGroup;
     public static ImageSize imageSize;
+    private TextView imagepager_back;
 
 
     public static void startImagePagerActivity(Context context, List<String> imgUrls, int position){
@@ -53,6 +55,8 @@ public class ImagePagerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_imagepager);
+        imagepager_back = (TextView)findViewById(R.id.imagepager_back);
+        imagepager_back.setOnClickListener(this);
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         guideGroup = (LinearLayout) findViewById(R.id.guideGroup);
 
@@ -84,6 +88,15 @@ public class ImagePagerActivity extends Activity {
         viewPager.setCurrentItem(startPos);
 
         addGuideView(guideGroup, startPos, imgUrls);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.imagepager_back:
+                ImagePagerActivity.this.finish();
+                break;
+        }
     }
 
     private void addGuideView(LinearLayout guideGroup, int startPos, ArrayList<String> imgUrls) {

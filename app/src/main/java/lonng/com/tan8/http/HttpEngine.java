@@ -12,6 +12,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -104,7 +105,8 @@ public class HttpEngine
 		}
 		HttpPost post = new HttpPost(url);
 		HttpClient httpClient=new DefaultHttpClient();
-		MultipartEntity entity = new MultipartEntity();
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,
+				null, Charset.forName("UTF-8"));
 		if (param != null && !param.isEmpty()) {
 			for (Map.Entry<String, String> entry : param.entrySet()) {
 				if (entry.getValue() != null&& entry.getValue().trim().length() > 0) {
