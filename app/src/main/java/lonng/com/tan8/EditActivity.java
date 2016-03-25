@@ -448,6 +448,7 @@ public class EditActivity extends BaseActivity{
 					super.handleMessage(msg);
 					progress_layout.setVisibility(View.GONE);
                     setImage_(b_);
+					progress_text.setText("发送中。。。");
 				}
 			});
 			mbt.start();
