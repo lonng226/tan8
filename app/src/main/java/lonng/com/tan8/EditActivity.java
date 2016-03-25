@@ -248,7 +248,7 @@ public class EditActivity extends BaseActivity{
 		if (files.containsKey("video")) {
 
 			File videoFile = files.get("video");
-			if (videoSize  > 1024 * 1024 * 10) {
+			if (videoSize  < 1024 * 1024 * 10) {
 
 				progress_text.setText("正在压缩视频文件。。。");
 				MyThread mThread = new MyThread(videoFile,new Handler(){
@@ -325,7 +325,7 @@ public class EditActivity extends BaseActivity{
 			try{
 			String videopath = videoFile.getAbsolutePath();
 			Log.i("tan8", "vedeopath:" + videopath+",videoFile.getName:"+videoFile.getName());
-			String ffcmd = "ffmpeg -i "+videopath + " "+"/storage/emulated/0/tan8/"+videoFile.getName().replace("mp4","mkv");
+			String ffcmd = "ffmpeg -i "+videopath + " "+"/storage/emulated/0/tan8/"+videoFile.getName();
 			String[] argv = ffcmd.split(" ");
 			Log.i("tan8","ffcmd:"+ffcmd+",argv:"+argv.length);
 			Integer argc = argv.length;

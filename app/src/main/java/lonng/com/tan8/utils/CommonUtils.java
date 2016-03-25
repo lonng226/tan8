@@ -46,6 +46,9 @@ public class CommonUtils {
 
     //评论
 	public static String NEWCOMMENT = "http://120.24.16.24/tanqin/forum.php?action=newcomment";
+
+	//设置头像
+	public static String HEADICON = "http://120.24.16.24/tanqin/user.php?action=createheadportrait";
 	
 	/**
 	 * 检测网络是否可用
