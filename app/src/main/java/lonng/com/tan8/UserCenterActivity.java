@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,6 +84,11 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
     TextView tvnull;
     @Bind(R.id.loginview_headicon)
     ImageView loginview_headicon;
+
+    @Bind(R.id.progress_layout)
+    RelativeLayout progress_layout;
+    @Bind(R.id.progress_text)
+    TextView progress_text;
 
     private String Uid;
 
@@ -302,9 +308,56 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
             }
         }
 
-        bp = compressImage(bp);
 
-        loginview_headicon.setImageBitmap(bp);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        if (baos.toByteArray().length / 1024>200){
+            progress_layout.setVisibility(View.VISIBLE);
+            MyBitmapThread mbt = new MyBitmapThread(bp,new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    progress_layout.setVisibility(View.GONE);
+                    loginview_headicon.setImageBitmap(b_);
+                }
+            });
+            mbt.start();
+            return;
+        }
+
+
+        loginview_headicon.setImageBitmap(b_);
+    }
+
+
+    Bitmap b_;
+    class MyBitmapThread extends Thread{
+
+        private Bitmap b;
+        private Handler hanlder;
+
+        public MyBitmapThread(Bitmap b,Handler handler){
+            this.b = b;
+            this.hanlder = handler;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            try{
+
+                b_ = compressImage(b);
+
+                if(hanlder != null){
+                    Message m = new Message();
+                    m.obj = "";
+                    m.what = 0;
+                    hanlder.sendMessage(m);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
