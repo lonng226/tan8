@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -299,6 +301,9 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
                 return;
             }
         }
+
+        bp = compressImage(bp);
+
         loginview_headicon.setImageBitmap(bp);
     }
 
@@ -311,6 +316,29 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
             return null;
         }
         return BitmapFactory.decodeFile(file.getAbsolutePath());
+    }
+
+    private Bitmap compressImage(Bitmap image) {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        int options = 100;
+        while ( baos.toByteArray().length / 1024>200) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+            baos.reset();//重置baos即清空baos
+            Log.i("tan8","options:"+options);
+
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+            if (options <= 10){
+                options -= 1;
+            }else if(options < 1){
+                break;
+            }else {
+                options -= 10;//每次都减少10
+            }
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
+        return bitmap;
     }
 
     private void setFiles(File file){
@@ -336,6 +364,7 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
         }, map, 0,filesMap).start();
 
     }
+
 
 
 }

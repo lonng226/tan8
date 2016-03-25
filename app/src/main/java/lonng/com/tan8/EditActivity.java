@@ -24,6 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -248,7 +250,7 @@ public class EditActivity extends BaseActivity{
 		if (files.containsKey("video")) {
 
 			File videoFile = files.get("video");
-			if (videoSize  < 1024 * 1024 * 10) {
+			if (videoSize  > 1024 * 1024 * 10) {
 
 				progress_text.setText("正在压缩视频文件。。。");
 				MyThread mThread = new MyThread(videoFile,new Handler(){
@@ -427,12 +429,15 @@ public class EditActivity extends BaseActivity{
 			bp = bitmap;
 		} else {
 			Bitmap bp_ = fileToBitmap(file);
+
 			if (bp_ != null) {
 				bp = bp_;
 			} else {
 				return;
 			}
 		}
+
+		bp = compressImage(bp);
 
 		if (addFileCount == 0) {
 			 edit_tv1.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
@@ -472,8 +477,31 @@ public class EditActivity extends BaseActivity{
 		}
 		return BitmapFactory.decodeFile(file.getAbsolutePath());
 	}
-	
-	 /**
+
+	private Bitmap compressImage(Bitmap image) {
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+		int options = 100;
+		while ( baos.toByteArray().length / 1024>200) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+			baos.reset();//重置baos即清空baos
+			Log.i("tan8","options:"+options);
+
+			image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+			if (options <= 10){
+				options -= 1;
+			}else if(options < 1){
+                 break;
+			}else {
+				options -= 10;//每次都减少10
+			}
+		}
+		ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+		Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
+		return bitmap;
+	}
+
+	/**
      * 照相获取图片
      */
 	protected File cameraFile;

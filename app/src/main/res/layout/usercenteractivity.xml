@@ -51,6 +51,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
+                        android:scaleType="fitXY"
                         android:src="@mipmap/ic_launcher" />
 
                     <LinearLayout
