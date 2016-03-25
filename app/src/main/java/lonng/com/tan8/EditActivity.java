@@ -437,20 +437,42 @@ public class EditActivity extends BaseActivity{
 			}
 		}
 
-		bp = compressImage(bp);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		bp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+		if (baos.toByteArray().length / 1024>200){
+			progress_text.setText("正在获取缩略图。。。");
+			progress_layout.setVisibility(View.VISIBLE);
+			MyBitmapThread mbt = new MyBitmapThread(bp,new Handler(){
+				@Override
+				public void handleMessage(Message msg) {
+					super.handleMessage(msg);
+					progress_layout.setVisibility(View.GONE);
+                    setImage_(b_);
+				}
+			});
+			mbt.start();
+			return;
+		}
+
+
+		setImage_(bp);
+
+	}
+
+	private void setImage_(Bitmap bp){
 
 		if (addFileCount == 0) {
-			 edit_tv1.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
-			 edit_tv2.setText("添加");
-			 edit_tv1.setText("");
+			edit_tv1.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
+			edit_tv2.setText("添加");
+			edit_tv1.setText("");
 		}else if (addFileCount == 1) {
-			 edit_tv2.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
-			 edit_tv3.setText("添加");
-			 edit_tv2.setText("");
+			edit_tv2.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
+			edit_tv3.setText("添加");
+			edit_tv2.setText("");
 		}else if (addFileCount == 2) {
-			 edit_tv3.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
-			 edit_tv4.setText("添加");
-			 edit_tv3.setText("");
+			edit_tv3.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
+			edit_tv4.setText("添加");
+			edit_tv3.setText("");
 		}else if (addFileCount == 3) {
 			edit_tv4.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
 			edit_tv5.setText("添加");
@@ -463,8 +485,39 @@ public class EditActivity extends BaseActivity{
 			edit_tv6.setBackgroundDrawable(new BitmapDrawable(EditActivity.this.getResources(), bp));
 			edit_tv6.setText("");
 		}
-		
+
 		addFileCount++;
+	}
+
+
+	Bitmap b_;
+	class MyBitmapThread extends Thread{
+
+		private Bitmap b;
+		private Handler hanlder;
+
+		public MyBitmapThread(Bitmap b,Handler handler){
+			this.b = b;
+			this.hanlder = handler;
+		}
+
+		@Override
+		public void run() {
+			super.run();
+			try{
+
+				b_ = compressImage(b);
+
+				if(hanlder != null){
+					Message m = new Message();
+					m.obj = "";
+					m.what = 0;
+					hanlder.sendMessage(m);
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
