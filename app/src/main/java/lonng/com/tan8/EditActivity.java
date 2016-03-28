@@ -327,7 +327,7 @@ public class EditActivity extends BaseActivity{
 			try{
 			String videopath = videoFile.getAbsolutePath();
 			Log.i("tan8", "vedeopath:" + videopath+",videoFile.getName:"+videoFile.getName());
-			String ffcmd = "ffmpeg -i "+videopath + " "+"/storage/emulated/0/tan8/"+videoFile.getName();
+			String ffcmd = "ffmpeg -i "+videopath + " -vcodec mpeg4 "+"/storage/emulated/0/tan8/"+videoFile.getName();
 			String[] argv = ffcmd.split(" ");
 			Log.i("tan8","ffcmd:"+ffcmd+",argv:"+argv.length);
 			Integer argc = argv.length;
