@@ -54,7 +54,8 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
 		if (where == 1) {
 			btn_text.setVisibility(View.INVISIBLE);
 		}else if(where == 12){
-
+            btn_text.setVisibility(View.GONE);
+			btn_video.setVisibility(View.GONE);
 		}else{
 			btn_text.setOnClickListener(this);
 		}

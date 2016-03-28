@@ -326,7 +326,7 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
         }
 
 
-        loginview_headicon.setImageBitmap(b_);
+        loginview_headicon.setImageBitmap(bp);
     }
 
 
