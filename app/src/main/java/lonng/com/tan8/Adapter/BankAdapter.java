@@ -191,6 +191,8 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
         if (invitations.get(position).getPreviewimage() != null && !invitations.get(position).getPreviewimage().equals("")) {
             viewHolder.piclayout.setVisibility(View.VISIBLE);
             viewHolder.item_czx_pic_layout.setVisibility(View.VISIBLE);
+            viewHolder.multiImagView.setVisibility(View.GONE);
+
             ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + invitations.get(position).getPreviewimage(), viewHolder.pic, options);
             //视频播放
             viewHolder.pic.setOnClickListener(new View.OnClickListener() {
@@ -206,6 +208,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
             viewHolder.piclayout.setVisibility(View.VISIBLE);
             viewHolder.item_czx_pic_layout.setVisibility(View.GONE);
             viewHolder.multiImagView.setVisibility(View.VISIBLE);
+
             viewHolder.multiImagView.setList(picurls);
             viewHolder.multiImagView.setOnItemClickListener(new MultiImageView.OnItemClickListener() {
                 @Override
@@ -215,6 +218,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
                 }
             });
         } else {
+
             viewHolder.multiImagView.setVisibility(View.GONE);
             viewHolder.piclayout.setVisibility(View.GONE);
             viewHolder.item_czx_pic_layout.setVisibility(View.GONE);

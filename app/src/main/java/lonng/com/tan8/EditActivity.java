@@ -252,6 +252,7 @@ public class EditActivity extends BaseActivity{
 			File videoFile = files.get("video");
 			if (videoSize  > 1024 * 1024 * 5) {
 
+				Log.i("tan8","压缩");
 				progress_text.setText("正在压缩视频文件。。。");
 				MyThread mThread = new MyThread(videoFile,new Handler(){
 					@Override
