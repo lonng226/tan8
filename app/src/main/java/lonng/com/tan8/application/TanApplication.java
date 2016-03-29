@@ -121,7 +121,7 @@ public class TanApplication extends Application {
 					TanApplication.isLogin = true;
 					TanApplication.curUser .setUserId(uid);
 					TanApplication.curUser.setUserNickname(uname);
-					TanApplication.curUser.setHeadiconUrl("");
+					TanApplication.curUser.setHeadiconUrl(headiconUrl);
 
 
 				} catch (Exception e) {

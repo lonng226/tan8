@@ -1,25 +1,28 @@
 package lonng.com.tan8;
 
 import android.app.Activity;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
-import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.io.File;
+import java.util.logging.Logger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import lonng.com.tan8.base.BaseActivity;
 import lonng.com.tan8.utils.CommonUtils;
+
+import static android.widget.FrameLayout.*;
 
 /**
  * Created by Administrator on 2015/12/21.
@@ -36,12 +39,15 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     SurfaceView surfaceView;
     @Bind(R.id.videoplay_back)
     TextView videoplay_back;
+    @Bind(R.id.timetv)
+    TextView timetv;
     MediaPlayer mediaPlayer;
     int postion;
     Display currDisplay;
-    int vWidth,vHeight;
+    int vWidth,vHeight,mSurfaceViewHeight,mSurfaceViewWidth;
     int currPosition;
     boolean isPlaying;
+
 
 
     @Override
@@ -50,6 +56,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         setContentView(R.layout.activity_videoplay);
         ButterKnife.bind(this);
 
+        Log.i("tan8","onCreate");
         initView();
 
     }
@@ -59,7 +66,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
         videoplay_back.setOnClickListener(this);
 
-        surfaceView.getHolder().setFixedSize(200, 200);
+//        surfaceView.getHolder().setFixedSize(200, 200);
         surfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         surfaceView.getHolder().addCallback(new SurfaceCallback());
 
@@ -75,12 +82,20 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         try{
 //            Cache cache = new FileCache(new File(getExternalCacheDir(), VIDEO_CACHE_NAME));
 
+            Log.i("tan8","initView");
             mediaPlayer.setDataSource(CommonUtils.GET_FILS+filepath);
+//            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//            mediaPlayer.getDuration();
+
         } catch (Exception e){
             e.printStackTrace();
         }
 
         currDisplay = this.getWindowManager().getDefaultDisplay();
+        mSurfaceViewHeight = currDisplay.getHeight();
+        mSurfaceViewWidth = currDisplay.getWidth();
+
+
 
 
         start_stop.setOnClickListener(this);
@@ -124,6 +139,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
 
+            Log.i("tan8","onStopTrackingTouch");
             int progress = seekBar.getProgress();
             if (mediaPlayer != null && mediaPlayer.isPlaying()){
                 mediaPlayer.seekTo(progress);
@@ -135,11 +151,13 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
+            Log.i("tan8","surfaceCreated");
             // 当SurfaceView中的Surface被创建的时候被调用
             //在这里我们指定MediaPlayer在当前的Surface中进行播放
             mediaPlayer.setDisplay(holder);
             //在指定了MediaPlayer播放的容器后，我们就可以使用prepare或者prepareAsync来准备播放了
             mediaPlayer.prepareAsync();
+
         }
 
         @Override
@@ -150,6 +168,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
 
+            Log.i("tan8","surfaceDestroyed");
 //            if (mediaPlayer != null && mediaPlayer.isPlaying()){
 //                currPosition = mediaPlayer.getCurrentPosition();
 //                mediaPlayer.stop();
@@ -161,6 +180,29 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
     @Override
     public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+        if (width == 0 || height == 0) {
+            Log.e("tan8", "invalid video width(" + width + ") or height(" + height
+                    + ")");
+            return;
+        }
+
+        Log.i("tan8","width:"+width);
+//        mIsVideoSizeKnown = true;
+//        mVideoHeight = height;
+//        mVideoWidth = width;
+
+//        int w = mSurfaceViewHeight * width / height;
+//        int margin = (mSurfaceViewWidth - w) / 2;
+//        Log.i("tan8", "margin:" + margin);
+//        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+//                RelativeLayout.LayoutParams.MATCH_PARENT,
+//                RelativeLayout.LayoutParams.MATCH_PARENT);
+//        lp.setMargins(margin, 0, margin, 0);
+//        surfaceView.setLayoutParams(lp);
+
+//        if (mIsVideoReadyToBePlayed && mIsVideoSizeKnown) {
+//            startVideoPlayback();
+//        }
 
     }
 
@@ -171,6 +213,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        Log.i("tan8","onInfo");
         // 当一些特定信息出现或者警告时触发
         switch(what){
             case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
@@ -188,27 +231,42 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     @Override
     public void onPrepared(MediaPlayer mp) {
         //当prepare完成后，该方法触发，在这里我们播放视频
-
+        Log.i("tan8","onPrepared");
         //首先取得video的宽和高
         vWidth = mediaPlayer.getVideoWidth();
         vHeight = mediaPlayer.getVideoHeight();
+        int time = mediaPlayer.getDuration();
+        int mins = time/1000/60;
+        int secs = time/1000-mins*60;
+        timetv.setText(String.format("%02d",mins)+":"+String.format("%02d",secs));
 
-        if (vWidth > currDisplay.getWidth() || vHeight > currDisplay.getHeight()) {
-            //如果video的宽或者高超出了当前屏幕的大小，则要进行缩放
-            float wRatio = (float) vWidth / (float) currDisplay.getWidth();
-            float hRatio = (float) vHeight / (float) currDisplay.getHeight();
+        Log.i("tan8", "总时长：" + mediaPlayer.getDuration() /1000/60);
+        Log.i("tan8","vWidth:"+vWidth+",vHeight:"+vHeight);
+        Log.i("tan8","currDisplay.getWidth():"+currDisplay.getWidth()+",currDisplay.getHeight():"+currDisplay.getHeight());
 
-            //选择大的一个进行缩放
+//        if (vWidth > currDisplay.getWidth() || vHeight > currDisplay.getHeight()) {
+        //如果video的宽或者高超出了当前屏幕的大小，则要进行缩放
+        float wRatio = (float) vWidth / (float) currDisplay.getWidth();
+        float hRatio = (float) vHeight / (float) currDisplay.getHeight();
+
+        //选择大的一个进行缩放
             float ratio = Math.max(wRatio, hRatio);
 
             vWidth = (int) Math.ceil((float) vWidth / ratio);
             vHeight = (int) Math.ceil((float) vHeight / ratio);
 
-            //设置surfaceView的布局参数
-            surfaceView.setLayoutParams(new LinearLayout.LayoutParams(vWidth, vHeight));
+//        }else{
+//
+//        }
 
-            //然后开始播放视频
-        }
+
+        Log.i("tan8","vWidth："+vWidth+",vHeight:"+vHeight);
+        //设置surfaceView的布局参数
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(vWidth, vHeight);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT,RelativeLayout.TRUE);
+        surfaceView.setLayoutParams(lp);
+
+        //然后开始播放视频
 
         seekBar.setMax(mediaPlayer.getDuration());
 
@@ -232,6 +290,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
                         if(mediaPlayer != null && mediaPlayer.isPlaying()){
                             int progress = mediaPlayer.getCurrentPosition();
                             seekBar.setProgress(progress);
+//                            Log.i("tan8","progress:"+progress);
                         }else{
                             break;
                         }
@@ -249,7 +308,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     public void onCompletion(MediaPlayer mp) {
 
         //mediaplayer 播放完成后出发
-
+        Log.i("tan8","onCompletion");
         mediaPlayer.stop();
         mediaPlayer.release();
         this.finish();

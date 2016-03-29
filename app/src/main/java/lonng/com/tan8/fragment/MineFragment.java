@@ -12,6 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import lonng.com.tan8.EditActivity;
@@ -21,6 +25,7 @@ import lonng.com.tan8.R;
 import lonng.com.tan8.UserCenterActivity;
 import lonng.com.tan8.application.TanApplication;
 import lonng.com.tan8.base.BaseFragment;
+import lonng.com.tan8.utils.CommonUtils;
 
 
 public class MineFragment extends BaseFragment implements View.OnClickListener{
@@ -52,12 +57,20 @@ public class MineFragment extends BaseFragment implements View.OnClickListener{
     @Bind(R.id.loginview_address)
     TextView loginview_address;
 
+    private DisplayImageOptions options;
 
 
     @Override
     protected View initView(LayoutInflater inflater) {
         View view = inflater.inflate(R.layout.frag_me, null);
         ButterKnife.bind(this, view);
+
+        options = new DisplayImageOptions.Builder()
+                .showStubImage(R.mipmap.ic_launcher)
+                .showImageForEmptyUri(R.mipmap.ic_launcher)
+                .showImageOnFail(R.mipmap.ic_launcher).cacheInMemory()
+                .cacheOnDisc().displayer(new RoundedBitmapDisplayer(5)).build();
+
         loginbtn.setOnClickListener(this);
 
         gointv.setOnClickListener(this);
@@ -115,7 +128,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener{
         if (TanApplication.isLogin){
             loginview.setVisibility(View.VISIBLE);
             nologinview.setVisibility(View.GONE);
-            loginview_headicon.setImageResource(R.mipmap.ic_launcher);
+            ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + TanApplication.curUser.getHeadiconUrl(), loginview_headicon, options);
+//            loginview_headicon.setImageResource(R.mipmap.ic_launcher);
             loginview_nickname.setText(TanApplication.curUser.getUserNickname());
             loginview_address.setText("北京");
         }else {

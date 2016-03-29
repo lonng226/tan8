@@ -24,6 +24,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
@@ -91,6 +95,7 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
     TextView progress_text;
 
     private String Uid;
+    private DisplayImageOptions options;
 
 
     @Override
@@ -98,6 +103,12 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.usercenteractivity);
         ButterKnife.bind(this);
+
+        options = new DisplayImageOptions.Builder()
+                .showStubImage(R.mipmap.ic_launcher)
+                .showImageForEmptyUri(R.mipmap.ic_launcher)
+                .showImageOnFail(R.mipmap.ic_launcher).cacheInMemory()
+                .cacheOnDisc().displayer(new RoundedBitmapDisplayer(5)).build();
 
         ucenterRefreshLayout.setOnRefreshListener(this);
         ucenterRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
@@ -110,6 +121,8 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
         guanzhul.setOnClickListener(this);
         fansl.setOnClickListener(this);
         loginview_headicon.setOnClickListener(this);
+
+        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + TanApplication.curUser.getHeadiconUrl(), loginview_headicon, options);
 
         Uid = getIntent().getStringExtra("uid");
         if (TanApplication.isLogin) {

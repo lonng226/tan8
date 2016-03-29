@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black_deep">
 
 
 
     <SurfaceView
         android:id="@+id/surfaceview"
         android:layout_width="match_parent"
+        android:layout_centerInParent="true"
         android:layout_height="match_parent" />
 
     <TextView
@@ -42,8 +44,18 @@
             android:id="@+id/seekbar"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
-
+            android:layout_marginLeft="10dp"
+            android:maxHeight="2dp"
+            android:minHeight="2dp"
+            android:progressDrawable="@drawable/seekbar_style"
+            />
+       <TextView
+           android:id="@+id/timetv"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="00:00"
+           android:textColor="@color/white"
+           android:paddingBottom="8dp"/>
 
     </LinearLayout>
 </RelativeLayout>

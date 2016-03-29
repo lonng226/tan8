@@ -119,7 +119,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     TanApplication.isLogin = true;
                     TanApplication.curUser.setUserId(uid);
                     TanApplication.curUser.setUserNickname(uname);
-                    TanApplication.curUser.setHeadiconUrl("");
+                    TanApplication.curUser.setHeadiconUrl(headiconUrl);
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginActivity.this.startActivity(intent);
