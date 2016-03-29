@@ -250,7 +250,7 @@ public class EditActivity extends BaseActivity{
 		if (files.containsKey("video")) {
 
 			File videoFile = files.get("video");
-			if (videoSize  > 1024 * 1024 * 10) {
+			if (videoSize  > 1024 * 1024 * 5) {
 
 				progress_text.setText("正在压缩视频文件。。。");
 				MyThread mThread = new MyThread(videoFile,new Handler(){
