@@ -359,7 +359,8 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
             super.run();
             try{
 
-                b_ = compressImage(b);
+//                b_ = compressImage(b);
+                b_ = ThumbnailUtils.extractThumbnail(b, 100, 100);
 
                 if(hanlder != null){
                     Message m = new Message();
@@ -422,6 +423,7 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
 //				sendComplete.sendOk();
 //                progress_layout.setVisibility(View.GONE);
                 if (result.contains("success")){
+
 
                     Toast.makeText(UserCenterActivity.this,"设置成功",Toast.LENGTH_SHORT).show();
                 }

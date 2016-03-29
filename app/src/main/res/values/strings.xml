@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
 
     <!--发帖-->
-    <string name="temporary_does_not">Currently the video size greater than 10M is not supported!</string>
+    <string name="temporary_does_not">Currently the video size greater than 100M is not supported!</string>
     <string name="Video_footage">Video record</string>
     <string name="recording_video">Record video</string>
     <string name="The_video_to_start">The video to start</string>

@@ -507,7 +507,8 @@ public class EditActivity extends BaseActivity{
 			super.run();
 			try{
 
-				b_ = compressImage(b);
+//				b_ = compressImage(b);
+				b_ = ThumbnailUtils.extractThumbnail(b, 100, 100);
 
 				if(hanlder != null){
 					Message m = new Message();
