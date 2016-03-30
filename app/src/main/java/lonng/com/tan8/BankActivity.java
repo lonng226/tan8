@@ -335,7 +335,7 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
                             if (comment.has("replyauthorid")){
                                 replayuser.setUserId(comment.getString("replyauthorid"));
                             }
-
+                            c.setReplyUser(replayuser);
                         }
                         commentList.add(c);
                     }

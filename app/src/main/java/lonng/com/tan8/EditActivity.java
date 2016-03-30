@@ -299,13 +299,21 @@ public class EditActivity extends BaseActivity{
 			public void handleMessage(Message msg) {
 				super.handleMessage(msg);
 				String result = (String) msg.obj;
+
 				Log.i(TAG, result+"");
+				if(result != null && result.contains("tid")){
+					if (files.containsKey("video")){
+						if (files.get("video").getPath().contains("tan8")){
+							files.get("video").delete();
+						}
+					}
 //				sendComplete.sendOk();
-				progress_layout.setVisibility(View.GONE);
-				Intent intent = new Intent(EditActivity.this,BankActivity.class);
-				intent.putExtra("bankId",bankType);
-				EditActivity.this.startActivity(intent);
-				EditActivity.this.finish();
+					progress_layout.setVisibility(View.GONE);
+					Intent intent = new Intent(EditActivity.this,BankActivity.class);
+					intent.putExtra("bankId",bankType);
+					EditActivity.this.startActivity(intent);
+					EditActivity.this.finish();
+				}
 
 
 			}

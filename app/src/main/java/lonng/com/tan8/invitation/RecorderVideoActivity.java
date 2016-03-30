@@ -366,7 +366,7 @@ public class RecorderVideoActivity extends Activity implements
 		// 设置视频文件输出的路径
 		localPath = CommonUtils.getPath() + "/"+ System.currentTimeMillis() + ".mp4";
 		mediaRecorder.setOutputFile(localPath);
-		mediaRecorder.setMaxDuration(30000);
+		mediaRecorder.setMaxDuration(30000*2*5);
 		mediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
 		try {
             mediaRecorder.prepare();

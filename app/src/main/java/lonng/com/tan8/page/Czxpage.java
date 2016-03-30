@@ -306,6 +306,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                                 if (comment.has("replyauthorid")){
                                     replayuser.setUserId(comment.getString("replyauthorid"));
                                 }
+                                c.setReplyUser(replayuser);
                             }
                             commentList.add(c);
                         }

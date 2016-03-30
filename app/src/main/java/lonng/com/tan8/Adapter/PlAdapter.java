@@ -1,6 +1,7 @@
 package lonng.com.tan8.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +71,8 @@ public class PlAdapter extends BaseAdapter{
         }
 
         User replayu = list.get(position).getReplyUser();
-        if (replayu != null && replayu.getUserNickname() != null){
+//        Log.i("tan8","replayuName:"+replayu.getUserNickname());
+        if (replayu != null && replayu.getUserNickname() != null&&!replayu.getUserNickname().equals("")){
           viewHolder.restring.setVisibility(View.VISIBLE);
             viewHolder.replayuser.setVisibility(View.VISIBLE);
             viewHolder.replayuser.setText(replayu.getUserNickname());
