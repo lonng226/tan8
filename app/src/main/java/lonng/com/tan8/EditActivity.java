@@ -302,11 +302,11 @@ public class EditActivity extends BaseActivity{
 
 				Log.i(TAG, result+"");
 				if(result != null && result.contains("tid")){
-					if (files.containsKey("video")){
-						if (files.get("video").getPath().contains("tan8")){
-							files.get("video").delete();
-						}
-					}
+//					if (files.containsKey("video")){
+//						if (files.get("video").getPath().contains("tan8")){
+//							files.get("video").delete();
+//						}
+//					}
 //				sendComplete.sendOk();
 					progress_layout.setVisibility(View.GONE);
 					Intent intent = new Intent(EditActivity.this,BankActivity.class);
@@ -336,7 +336,7 @@ public class EditActivity extends BaseActivity{
 			try{
 			String videopath = videoFile.getAbsolutePath();
 			Log.i("tan8", "vedeopath:" + videopath+",videoFile.getName:"+videoFile.getName());
-			String ffcmd = "ffmpeg -i "+videopath + " -vcodec mpeg4 "+"/storage/emulated/0/tan8/"+videoFile.getName();
+			String ffcmd = "ffmpeg -i "+videopath + " -vcodec mpeg4 -b:v 400k -r 15 "+"/storage/emulated/0/tan8/"+videoFile.getName();
 			String[] argv = ffcmd.split(" ");
 			Log.i("tan8","ffcmd:"+ffcmd+",argv:"+argv.length);
 			Integer argc = argv.length;

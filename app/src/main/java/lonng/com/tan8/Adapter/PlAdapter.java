@@ -82,8 +82,6 @@ public class PlAdapter extends BaseAdapter{
         }
 
         viewHolder.plcontent.setText(":"+list.get(position).getMessage());
-
-
         return convertView;
     }
 

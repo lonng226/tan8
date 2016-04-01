@@ -158,10 +158,8 @@ public class RecorderVideoActivity extends Activity implements
 			return;
 		}
 		boolean hasSupportRate = false;
-		List<Integer> supportedPreviewFrameRates = mCamera.getParameters()
-				.getSupportedPreviewFrameRates();
-		if (supportedPreviewFrameRates != null
-				&& supportedPreviewFrameRates.size() > 0) {
+		List<Integer> supportedPreviewFrameRates = mCamera.getParameters().getSupportedPreviewFrameRates();
+		if (supportedPreviewFrameRates != null&& supportedPreviewFrameRates.size() > 0) {
 			Collections.sort(supportedPreviewFrameRates);
 			for (int i = 0; i < supportedPreviewFrameRates.size(); i++) {
 				int supportRate = supportedPreviewFrameRates.get(i);
