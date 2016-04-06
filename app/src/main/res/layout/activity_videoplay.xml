@@ -4,25 +4,27 @@
     android:layout_height="match_parent"
     android:background="@color/black_deep">
 
-
-
-    <SurfaceView
-        android:id="@+id/surfaceview"
-        android:layout_width="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_height="match_parent" />
-
     <TextView
         android:id="@+id/videoplay_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:gravity="center"
         android:text="返回"
+        android:background="@drawable/selector_btn_bg"
+        android:clickable="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="10dp"
         android:textSize="20sp"
         android:textColor="@color/white"
         android:layout_marginTop="10dp"/>
+
+    <SurfaceView
+        android:id="@+id/surfaceview"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/videoplay_back"
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,14 +37,22 @@
 
         <Button
             android:id="@+id/start_stop"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="40dp"
             android:gravity="center"
             android:text="pause" />
 
+        <TextView
+            android:id="@+id/curtimetv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="@color/white"
+            android:paddingBottom="8dp"/>
+
         <SeekBar
             android:id="@+id/seekbar"
-            android:layout_width="200dp"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:maxHeight="2dp"

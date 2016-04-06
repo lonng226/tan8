@@ -1,28 +1,23 @@
 package lonng.com.tan8;
 
 import android.app.Activity;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.util.logging.Logger;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import lonng.com.tan8.utils.CommonUtils;
-
-import static android.widget.FrameLayout.*;
 
 /**
  * Created by Administrator on 2015/12/21.
@@ -42,6 +37,8 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     @Bind(R.id.timetv)
     TextView timetv;
     MediaPlayer mediaPlayer;
+    @Bind(R.id.curtimetv)
+    TextView curtimetv;
     int postion;
     Display currDisplay;
     int vWidth,vHeight,mSurfaceViewHeight,mSurfaceViewWidth;
@@ -290,6 +287,12 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
                         if(mediaPlayer != null && mediaPlayer.isPlaying()){
                             int progress = mediaPlayer.getCurrentPosition();
                             seekBar.setProgress(progress);
+
+                            Message msg = new Message();
+                            msg.what = 0;
+                            msg.obj = "";
+                            hprogress.sendMessage(msg);
+
 //                            Log.i("tan8","progress:"+progress);
                         }else{
                             break;
@@ -304,14 +307,26 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
         mediaPlayer.start();
     }
+
+
     @Override
     public void onCompletion(MediaPlayer mp) {
 
         //mediaplayer 播放完成后出发
         Log.i("tan8","onCompletion");
+        int time = mediaPlayer.getDuration();
+        int mins = time/1000/60;
+        int secs = time/1000-mins*60;
+        curtimetv.setText(String.format("%02d",mins)+":"+String.format("%02d",secs));
         mediaPlayer.stop();
         mediaPlayer.release();
-        this.finish();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                VideoPlayActivity.this.finish();
+            }
+        },1000);
+
     }
 
     //videopath":"\/data\/attachments\/0AEE7BBB-A5ED-918F-5247-6EB32E41456E\/video\/1448924547466.mp4"
@@ -330,6 +345,22 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         }
         return false;
     }
+
+
+
+    private Handler hprogress = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            int progress = mediaPlayer.getCurrentPosition();
+            seekBar.setProgress(progress);
+            int mins = progress/1000/60;
+            int secs = progress/1000-mins*60;
+            curtimetv.setText(String.format("%02d",mins)+":"+String.format("%02d",secs));
+
+
+        }
+    };
 
     @Override
     protected void onStop() {

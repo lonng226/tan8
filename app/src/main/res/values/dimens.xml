@@ -8,7 +8,7 @@
     <dimen name="shadow_width">5dp</dimen>
     <dimen name="bottom_tab_padding_drawable">2.0dip</dimen>
     <dimen name="bottom_tab_padding_up">2.0dip</dimen>
-    <dimen name="bottom_tab_font_size">12.0sp</dimen>
+    <dimen name="bottom_tab_font_size">15.0sp</dimen>
 
     <!--发帖-->
     <dimen name="image_thumbnail_size">100dp</dimen>

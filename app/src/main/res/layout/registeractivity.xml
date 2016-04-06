@@ -84,6 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/register_edit"
         android:text="注册"
+        android:background="@drawable/selector_btn_bg"
         android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
         />

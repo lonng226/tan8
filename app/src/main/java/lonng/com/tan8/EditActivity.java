@@ -240,18 +240,26 @@ public class EditActivity extends BaseActivity{
 	
 	private void sendToserver(){
 
-
 		if (!TanApplication.isLogin){
                 Toast.makeText(EditActivity.this,"请登录",Toast.LENGTH_SHORT).show();
 			return;
 		}
+
+
+		final String edtext = edit_ed.getEditableText().toString();
+
+		if(edtext.length() >200){
+			Toast.makeText(EditActivity.this, "文字最多200", Toast.LENGTH_SHORT).show();
+			return ;
+		}
+
+
 		progress_layout.setVisibility(View.VISIBLE);
 
 		if (files.containsKey("video")) {
 
 			File videoFile = files.get("video");
 			if (videoSize  > 1024 * 1024 * 5) {
-
 				Log.i("tan8","压缩");
 				progress_text.setText("正在压缩视频文件。。。");
 				MyThread mThread = new MyThread(videoFile,new Handler(){
@@ -259,7 +267,7 @@ public class EditActivity extends BaseActivity{
 					public void handleMessage(Message msg) {
 						super.handleMessage(msg);
 						progress_text.setText("发送中。。。");
-                         sendToSerVer_();
+                         sendToSerVer_(edtext);
 
 					}
 				});
@@ -268,7 +276,7 @@ public class EditActivity extends BaseActivity{
 			}
 		}
 
-		sendToSerVer_();
+		sendToSerVer_(edtext);
 
 //		new SendHttpThreadGet(new Handler(){
 //			@Override
@@ -281,10 +289,10 @@ public class EditActivity extends BaseActivity{
 	}
 
 
-	private void sendToSerVer_(){
+	private void sendToSerVer_(String edtext){
 
 		Log.i("tan8","sendtoServer");
-		String edtext = edit_ed.getEditableText().toString();
+
 //		String url = "http://120.24.16.24/tanqin/forum.php";
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("authorid", TanApplication.curUser.getUserId());

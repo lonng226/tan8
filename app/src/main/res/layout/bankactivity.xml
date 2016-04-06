@@ -35,13 +35,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:cacheColorHint="@android:color/transparent"
-                android:divider="@null"
-                android:dividerHeight="0px"
+
+                android:divider="@color/gray"
+                android:dividerHeight="1px"
                 android:fadingEdge="none"
                 android:fadingEdgeLength="0dp"
                 android:focusable="true"
                 android:listSelector="@android:color/transparent"
-                android:transcriptMode="normal"></ListView>
+                android:transcriptMode="normal"/>
 
             <LinearLayout
                 android:id="@+id/editTextBodyLl"
@@ -60,7 +61,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="说点什么..." />
-
                 <TextView
                     android:id="@+id/sendTv"
                     android:layout_width="wrap_content"
@@ -84,10 +84,13 @@
 
         <TextView
             android:id="@+id/bank_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:textSize="15dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
+            android:background="@drawable/selector_btn_bg"
             android:text="返回" />
     </RelativeLayout>
 

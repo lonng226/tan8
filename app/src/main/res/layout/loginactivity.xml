@@ -71,6 +71,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:background="@drawable/selector_btn_bg"
         android:text="登录"/>
 
     <Button
@@ -79,6 +80,7 @@
         android:layout_height="wrap_content"
         android:text="注册"
         android:layout_below="@id/login_btn"
+        android:background="@drawable/selector_btn_bg"
         android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
         />

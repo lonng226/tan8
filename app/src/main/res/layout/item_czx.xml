@@ -20,6 +20,7 @@
             android:id="@+id/item_czx_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/top_bar_normal_bg"
             android:text="aaa" />
 
         <TextView
@@ -84,8 +85,9 @@
 
                 <TextView
                     android:layout_width="wrap_content"
+                    android:textColor="@color/top_bar_normal_bg"
                     android:layout_height="wrap_content"
-                    android:text="bank：" />
+                    android:text="版块：" />
 
                 <TextView
                     android:id="@+id/item_czx_bank"
@@ -104,6 +106,7 @@
                 <TextView
                     android:id="@+id/item_czx_dz_iv"
                     android:layout_width="wrap_content"
+                    android:textColor="@color/top_bar_normal_bg"
                     android:layout_height="wrap_content"
                     android:text="赞" />
 
@@ -117,6 +120,7 @@
                     android:id="@+id/item_czx_pl_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/top_bar_normal_bg"
                     android:layout_marginLeft="10dp"
                     android:text="评论" />
 

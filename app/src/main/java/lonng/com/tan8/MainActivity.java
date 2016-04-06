@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,6 +34,14 @@ public class MainActivity extends BaseActivity {
     RelativeLayout menuBarLayout;
     @Bind(R.id.title)
     RelativeLayout titleLayout;
+    @Bind(R.id.shequ)
+    RadioButton shequ;
+    @Bind(R.id.ketang)
+    RadioButton ketang;
+    @Bind(R.id.qupu)
+    RadioButton qupu;
+    @Bind(R.id.mine)
+    RadioButton mine;
 
 
     private FragmentManager fragmentManager;
@@ -60,9 +72,13 @@ public class MainActivity extends BaseActivity {
                     .replace(R.id.fragment, SQFragment, "MAIN").commit();
         }
 
+        shequ.setBackgroundColor(this.getResources().getColor(R.color.top_bar_normal_bg));
+
         bottomBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                setbtnbg(checkedId);
                 switch (checkedId) {
                     case R.id.shequ:
                         fragmentManager.beginTransaction()
@@ -130,6 +146,28 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onClick(View v) {
+
+    }
+
+    private List<RadioButton> radioButtons ;
+    private void setbtnbg(int id){
+
+        if (radioButtons == null) {
+            radioButtons = new ArrayList<RadioButton>();
+            radioButtons.add(shequ);
+            radioButtons.add(ketang);
+            radioButtons.add(qupu);
+            radioButtons.add(mine);
+        }
+
+        for (int i=0;i<radioButtons.size();i++){
+              RadioButton r = radioButtons.get(i);
+            if (r.getId() == id){
+                r.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.top_bar_normal_bg));
+            }else {
+                r.setBackgroundColor(0);
+            }
+        }
 
     }
 

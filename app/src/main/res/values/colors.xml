@@ -28,4 +28,6 @@
     <color name="im_line_color">#dadada</color>
     <color name="transparent">#00000000</color>
 
+
+    <color name="radiobtnbg">#9900ff88</color>
 </resources>

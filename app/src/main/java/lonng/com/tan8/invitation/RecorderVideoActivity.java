@@ -361,6 +361,8 @@ public class RecorderVideoActivity extends Activity implements
 		if (defaultVideoFrameRate != -1) {
 			mediaRecorder.setVideoFrameRate(defaultVideoFrameRate);
 		}
+
+		Log.i("tan8","分辨率:"+previewWidth+"*"+previewHeight+",比特率："+384 * 1024+",帧率："+defaultVideoFrameRate);
 		// 设置视频文件输出的路径
 		localPath = CommonUtils.getPath() + "/"+ System.currentTimeMillis() + ".mp4";
 		mediaRecorder.setOutputFile(localPath);

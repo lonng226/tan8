@@ -43,37 +43,33 @@
                 android:id="@+id/shequ"
                 style="@style/main_tab_bottom"
                 android:checked="true"
-                android:drawableTop="@mipmap/newscenter2"
                 android:text="社区" />
 
             <RadioButton
                 android:id="@+id/ketang"
                 style="@style/main_tab_bottom"
-                android:drawableTop="@mipmap/newscenter2"
                 android:text="课堂" />
 
             <RadioButton
                 android:id="@+id/qupu"
                 style="@style/main_tab_bottom"
-                android:drawableTop="@mipmap/newscenter2"
                 android:text="曲谱" />
 
             <RadioButton
                 android:id="@+id/zhengyue"
                 style="@style/main_tab_bottom"
-                android:drawableTop="@mipmap/newscenter2"
+                android:visibility="gone"
                 android:text="筝乐" />
 
             <RadioButton
                 android:id="@+id/show"
                 style="@style/main_tab_bottom"
-                android:drawableTop="@mipmap/newscenter2"
+                android:visibility="gone"
                 android:text="show" />
 
             <RadioButton
                 android:id="@+id/mine"
                 style="@style/main_tab_bottom"
-                android:drawableTop="@mipmap/newscenter2"
                 android:text="我的" />
         </RadioGroup>
     </RelativeLayout>
