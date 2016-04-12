@@ -48,7 +48,7 @@ public class TanApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		login();
+//		login();
 		mContext = getApplicationContext();
 		initImageLoader();
 	}

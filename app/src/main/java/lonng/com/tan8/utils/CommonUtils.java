@@ -49,6 +49,9 @@ public class CommonUtils {
 
 	//设置头像
 	public static String HEADICON = "http://120.24.16.24/tanqin/user.php?action=createheadportrait";
+
+	//删除帖子
+	public static String DELTETIE = "http://120.24.16.24/tanqin/forumtest.php";
 	
 	/**
 	 * 检测网络是否可用

@@ -337,6 +337,10 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
                             }
                             c.setReplyUser(replayuser);
                         }
+
+                        if (comment.has("commentid")){
+                            c.setPlID(comment.getInt("commentid"));
+                        }
                         commentList.add(c);
                     }
                     invitation.setComments(commentList);

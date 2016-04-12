@@ -24,7 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,6 +36,7 @@ import lonng.com.tan8.Entity.Comment;
 import lonng.com.tan8.Entity.Invitation;
 import lonng.com.tan8.Entity.User;
 import lonng.com.tan8.InvotationInfoActivity;
+import lonng.com.tan8.LoginActivity;
 import lonng.com.tan8.MainActivity;
 import lonng.com.tan8.R;
 import lonng.com.tan8.application.TanApplication;
@@ -41,7 +44,10 @@ import lonng.com.tan8.base.BasePage;
 import lonng.com.tan8.control.CirclePublicCommentContral;
 import lonng.com.tan8.control.SwpipeListViewOnScrollListener;
 import lonng.com.tan8.http.SendHttpThreadGet;
+import lonng.com.tan8.http.SendHttpThreadMime;
 import lonng.com.tan8.utils.CommonUtils;
+import lonng.com.tan8.utils.SharePrefUtil;
+
 /**
  * Created by Administrator on 2015/12/16.
  */
@@ -162,7 +168,11 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                updataPage(0,20,true);
+                if (TanApplication.isLogin){
+                    updataPage(0,20,true);
+                }else {
+                    login();
+                }
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
@@ -189,7 +199,6 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
     }
 
     public void updataPage(int fromIndex,int toIndex,boolean isPull_){
-
         isPull = isPull_;
         new SendHttpThreadGet(handler,CommonUtils.GET_INVATATIONLIST+"?from="+fromIndex+"&to="+toIndex ,0).start();
 
@@ -308,6 +317,9 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                                 }
                                 c.setReplyUser(replayuser);
                             }
+                            if (comment.has("commentid")){
+                               c.setPlID(comment.getInt("commentid"));
+                            }
                             commentList.add(c);
                         }
                         invitation.setComments(commentList);
@@ -356,6 +368,64 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
             e.printStackTrace();
         }
 
+
+    }
+    private void login() {
+
+        Map<String, String> map = new HashMap<String, String>();
+        String uid_ = SharePrefUtil.getString(ct, CommonUtils.UID, "-1");
+        if (uid_.equals("-1")){
+            return ;
+        }
+        map.put("uname",SharePrefUtil.getString(ct,CommonUtils.ACCOUNT,"-1"));
+        map.put("userpassword",SharePrefUtil.getString(ct,CommonUtils.PWD,"-1"));
+
+        new SendHttpThreadMime(CommonUtils.LOGINURL, null, new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+
+                //不管登录是否成功都加载帖字列表
+                updataPage(0,20,true);
+
+
+
+                String result = (String) msg.obj;
+                Log.i("tan8","login:"+result);
+                if (result == null || result.equals("")||!result.contains("uid")) {
+                    return;
+                }
+                String uid = "",uname = "",headiconUrl="";
+                try {
+                    JSONObject json = new JSONObject(result);
+                    if (json.has("uid")){
+                        uid = json.getString("uid");
+                        if (uid.equals("-1")){
+                            Toast.makeText(ct, "登录失败", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                    if (json.has("uname")){
+                        uname = json.getString("uname");
+                    }
+                    if (json.has("uprofile")){
+                        if(!json.getString("uprofile").equals("")){
+                            headiconUrl = json.getString("uprofile");
+                        }
+                    }
+
+                    //存入首选项
+
+                    TanApplication.isLogin = true;
+                    TanApplication.curUser .setUserId(uid);
+                    TanApplication.curUser.setUserNickname(uname);
+                    TanApplication.curUser.setHeadiconUrl(headiconUrl);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, map, 0, null).start();
 
     }
 

@@ -42,6 +42,7 @@ import lonng.com.tan8.control.CirclePresenter;
 import lonng.com.tan8.control.CirclePublicCommentContralBank;
 import lonng.com.tan8.control.CommentDialog;
 import lonng.com.tan8.control.ICircleViewUpdate;
+import lonng.com.tan8.http.SendHttpDelete;
 import lonng.com.tan8.http.SendHttpThreadMime;
 import lonng.com.tan8.utils.CommonUtils;
 import lonng.com.tan8.view.AppNoScrollerListView;
@@ -124,7 +125,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
             viewHolder.piclayout = (LinearLayout) convertView.findViewById(R.id.item_czx_pic_layout);
             viewHolder.multiImagView = (MultiImageView) convertView.findViewById(R.id.multiImagView);
             viewHolder.item_czx_pic_layout = (RelativeLayout) convertView.findViewById(R.id.item_czx_pic_pre);
-
+            viewHolder.delete = (TextView)convertView.findViewById(R.id.item_delete);
             convertView.setTag(viewHolder);
 
         } else {
@@ -156,6 +157,28 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
         } else {
             viewHolder.dzpersons.setVisibility(View.GONE);
         }
+
+
+        if (TanApplication.isLogin){
+            //删除按钮
+            if (TanApplication.curUser.getUserId().equals(invitations.get(position).getSendUser().getUserId())){
+                viewHolder.delete.setVisibility(View.VISIBLE);
+            }else{//15931992378
+                viewHolder.delete.setVisibility(View.GONE);
+            }
+        }else {
+            viewHolder.delete.setVisibility(View.GONE);
+        }
+
+
+        viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.deleteCircle(invitations.get(position).getTid()+"");
+            }
+        });
+
+
 
         int fid = invitations.get(position).getBank();
         switch (fid) {
@@ -308,7 +331,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
 
     class ViewHolder {
         ImageView headicom, pic;
-        TextView content, bank, dz, pl, nickname, dzpersons, iv_dz, iv_pl;
+        TextView content, bank, dz, pl, nickname, dzpersons, iv_dz, iv_pl,delete;
         AppNoScrollerListView pllistview;
         LinearLayout piclayout;
         MultiImageView multiImagView;
@@ -384,13 +407,48 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
 
     @Override
     public void update2DeleteCircle(String circleId) {
-//        for(int i=0; i<invitations.size(); i++){
-//            if(circleId.equals(invitations.get(i).getId())){
-//                getDatas().remove(i);
-//                notifyDataSetChanged();
-//                return;
-//            }
-//        }
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("tid", "" + circleId);
+        map.put("uid",TanApplication.curUser.getUserId());
+
+        final  int circleId_ = Integer.parseInt(circleId);
+
+        new SendHttpDelete(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                String result = (String)msg.obj;
+                Log.i("tan8","result:"+result );
+                if (result == null || result.equals("")){
+                    return;
+                }
+                try{
+                    String resultjson = "";
+                    JSONObject json = new JSONObject(result);
+                    if (json.has("result")){
+                        resultjson = json.getString("result");
+                        if (!resultjson.equals("true")){
+                            return;
+                        }
+                    }
+                    for (int i = 0; i <getDatas().size() ; i++) {
+                        Invitation itation = getDatas().get(i);
+                        if (itation.getTid() == circleId_){
+                            getDatas().remove(i);
+                            break;
+                        }
+                    }
+
+                    notifyDataSetChanged();
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        },CommonUtils.DELTETIE+"?tid="+circleId+"&uid="+TanApplication.curUser.getUserId(),0).start();
+
+
     }
 
     @Override
@@ -561,23 +619,45 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
     @Override
     public void update2DeleteComment(final int circlePosition, final String commentId) {
         Map<String, String> map = new HashMap<String, String>();
+        map.put("commentid",commentId);
+        map.put("uid",TanApplication.curUser.getUserId()+"");
+        map.put("type","comment");
+        Log.i("tan8","deletecommenturl:"+CommonUtils.DELTETIE+"?commentid="+commentId+"&type=comment"+"&uid="+TanApplication.curUser.getUserId());
 
-
-        new SendHttpThreadMime(CommonUtils.HTTPHOST, (BankActivity) ct, new Handler() {
+        new SendHttpDelete(new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-
-                for (int i = 0; i < getDatas().get(circlePosition).getComments().size(); i++) {
-                    if (getDatas().get(circlePosition).getComments().get(i).getPlID() == Integer.parseInt(commentId)) {
-                        getDatas().get(circlePosition).getComments().remove(i);
-                        break;
-                    }
+                String result = (String)msg.obj;
+                Log.i("tan8","result:"+result );
+                if (result == null || result.equals("")){
+                    return;
                 }
-                notifyDataSetChanged();
+                try{
+                    String resultjson = "";
+                    JSONObject json = new JSONObject(result);
+                    if (json.has("result")){
+                        resultjson = json.getString("result");
+                        if (!resultjson.equals("true")){
+                            return;
+                        }
+                    }
+                    for (int i = 0; i < getDatas().get(circlePosition).getComments().size(); i++) {
+                        if (getDatas().get(circlePosition).getComments().get(i).getPlID() == Integer.parseInt(commentId)) {
+                            getDatas().get(circlePosition).getComments().remove(i);
+                            break;
+                        }
+                    }
+
+                    notifyDataSetChanged();
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
             }
-        }, map, 0, null).start();
+        },CommonUtils.DELTETIE+"?commentid="+commentId+"&type=comment"+"&uid="+TanApplication.curUser.getUserId(),0).start();
+
     }
 
 }
