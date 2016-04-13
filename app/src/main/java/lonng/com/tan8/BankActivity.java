@@ -61,6 +61,8 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
     TextView back;
     @Bind(R.id.bank_backlayout)
     RelativeLayout bank_backlayout;
+    @Bind(R.id.progress_layout)
+    RelativeLayout progressLayout;
 
     private int mScreenHeight;
     private int mEditTextBodyHeight;
@@ -135,7 +137,7 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
         mCirclePublicCommentContral.setmListView(bankcircleLv);
 
         invitations = new ArrayList<Invitation>();
-        bankAdapter = new BankAdapter(invitations,BankActivity.this);
+        bankAdapter = new BankAdapter(invitations,BankActivity.this,progressLayout);
         bankAdapter.setmCirclePublicCommentContral(mCirclePublicCommentContral);
         bankcircleLv.setAdapter(bankAdapter);
 
@@ -304,6 +306,9 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
                     User user = new User();
                     user.setUserId(js.getString("authorid"));
                     user.setUserNickname(js.getString("authorname"));
+                    if (js.has("authorpic")){
+                        user.setHeadiconUrl(js.getString("authorpic"));
+                    }
                     invitation.setSendUser(user);
                 }
                 if (js.has("message")){
@@ -322,6 +327,7 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
                             if (comment.has("authorid")){
                                 pluser.setUserId(comment.getString("authorid"));
                             }
+
                             c.setPlUser(pluser);
                         }
 

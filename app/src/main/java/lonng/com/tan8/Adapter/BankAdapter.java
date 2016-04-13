@@ -1,6 +1,8 @@
 package lonng.com.tan8.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -60,10 +62,12 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
     private List<Invitation> invitations;
     private Context ct;
     private DisplayImageOptions options;
+    private RelativeLayout  progressLayout;
 
-    public BankAdapter(List<Invitation> invitations, Context ct) {
+    public BankAdapter(List<Invitation> invitations, Context ct,RelativeLayout  progressLayout) {
         this.invitations = invitations;
         this.ct = ct;
+        this.progressLayout = progressLayout;
         mPresenter = new CirclePresenter(this);
         options = new DisplayImageOptions.Builder()
                 .showStubImage(R.mipmap.ic_launcher)
@@ -131,7 +135,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        ImageLoader.getInstance().displayImage(invitations.get(position).getSendUser().getHeadiconUrl(), viewHolder.headicom, options);
+        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+invitations.get(position).getSendUser().getHeadiconUrl(), viewHolder.headicom, options);
         viewHolder.nickname.setText(invitations.get(position).getSendUser().getUserNickname());
         viewHolder.content.setText(invitations.get(position).getContent());
 
@@ -174,6 +178,29 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
         viewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                new AlertDialog.Builder(ct)
+                        .setMessage("确定删除?")
+                        .setPositiveButton("确定",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+
+                                        dialog.dismiss();
+                                        mPresenter.deleteCircle(invitations.get(position).getTid()+"");
+                                    }
+                                })
+                        .setNegativeButton("取消",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).setCancelable(false).show();
                 mPresenter.deleteCircle(invitations.get(position).getTid()+"");
             }
         });
@@ -407,6 +434,8 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
 
     @Override
     public void update2DeleteCircle(String circleId) {
+
+        progressLayout.setVisibility(View.VISIBLE);
         Map<String, String> map = new HashMap<String, String>();
         map.put("tid", "" + circleId);
         map.put("uid",TanApplication.curUser.getUserId());
@@ -417,6 +446,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+                progressLayout.setVisibility(View.GONE);
                 String result = (String)msg.obj;
                 Log.i("tan8","result:"+result );
                 if (result == null || result.equals("")){
@@ -583,17 +613,20 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
                 try {
 
                     JSONObject jsonObject = new JSONObject(result);
-
+                    int commentid = jsonObject.getInt("commentid");
 
                     Comment c = new Comment();
                     if (type == TYPE_PUBLIC_COMMENT){
                         c.setPlUser(TanApplication.curUser);
                         c.setMessage(content_);
+                        c.setPlID(commentid);
 
                     }else if (type == TYPE_REPLY_COMMENT){
                         c.setMessage(content_);
                         c.setReplyUser(replyUser);
                         c.setPlUser(TanApplication.curUser);
+                        c.setPlID(commentid);
+
                     }
 
                     if(getDatas().get(circlePosition).getComments() != null){
@@ -618,6 +651,9 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
 
     @Override
     public void update2DeleteComment(final int circlePosition, final String commentId) {
+
+        progressLayout.setVisibility(View.VISIBLE);
+
         Map<String, String> map = new HashMap<String, String>();
         map.put("commentid",commentId);
         map.put("uid",TanApplication.curUser.getUserId()+"");
@@ -628,6 +664,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+                progressLayout.setVisibility(View.GONE);
                 String result = (String)msg.obj;
                 Log.i("tan8","result:"+result );
                 if (result == null || result.equals("")){

@@ -33,6 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
+                android:textColor="@color/top_bar_normal_bg"
                 android:text="删除" />
         </RelativeLayout>
 

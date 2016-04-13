@@ -23,6 +23,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnErrorListener;
 import android.media.MediaRecorder.OnInfoListener;
@@ -348,25 +349,29 @@ public class RecorderVideoActivity extends Activity implements
 		} else {
 			mediaRecorder.setOrientationHint(90);
 		}
-		// 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4
-		mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-		mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-		// 设置录制的视频编码h263 h264
-		mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-		// 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
-		mediaRecorder.setVideoSize(previewWidth, previewHeight);
-		// 设置视频的比特率
-		mediaRecorder.setVideoEncodingBitRate(384 * 1024);
-		// // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
-		if (defaultVideoFrameRate != -1) {
-			mediaRecorder.setVideoFrameRate(defaultVideoFrameRate);
-		}
 
+		mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+
+
+//		// 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4
+//		mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//		mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+//		// 设置录制的视频编码h263 h264
+//		mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+//		// 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
+//		mediaRecorder.setVideoSize(previewWidth, previewHeight);
+//		// 设置视频的比特率
+//		mediaRecorder.setVideoEncodingBitRate(384 * 1024);
+//		// // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
+//		if (defaultVideoFrameRate != -1) {
+//			mediaRecorder.setVideoFrameRate(defaultVideoFrameRate);
+//		}
+//
 		Log.i("tan8","分辨率:"+previewWidth+"*"+previewHeight+",比特率："+384 * 1024+",帧率："+defaultVideoFrameRate);
 		// 设置视频文件输出的路径
 		localPath = CommonUtils.getPath() + "/"+ System.currentTimeMillis() + ".mp4";
 		mediaRecorder.setOutputFile(localPath);
-		mediaRecorder.setMaxDuration(30000*2*5);
+		mediaRecorder.setMaxDuration(30000*2*1);
 		mediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
 		try {
             mediaRecorder.prepare();

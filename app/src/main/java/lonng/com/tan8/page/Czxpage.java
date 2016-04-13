@@ -1,7 +1,6 @@
 package lonng.com.tan8.page;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
@@ -12,11 +11,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +34,6 @@ import lonng.com.tan8.EditActivity;
 import lonng.com.tan8.Entity.Comment;
 import lonng.com.tan8.Entity.Invitation;
 import lonng.com.tan8.Entity.User;
-import lonng.com.tan8.InvotationInfoActivity;
-import lonng.com.tan8.LoginActivity;
 import lonng.com.tan8.MainActivity;
 import lonng.com.tan8.R;
 import lonng.com.tan8.application.TanApplication;
@@ -114,7 +111,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
 
         if (invitations == null)
             invitations = new ArrayList<Invitation>();
-        czxAdapter = new CzxAdapter(invitations,ct);
+        czxAdapter = new CzxAdapter(invitations,ct,((MainActivity)ct).getProgressLayout());
         czxAdapter.setmCirclePublicCommentContral(mCirclePublicCommentContral);
         mCircleLv.setAdapter(czxAdapter);
         setViewTreeObserver();
@@ -284,6 +281,9 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                     User user = new User();
                     user.setUserId(js.getString("authorid"));
                     user.setUserNickname(js.getString("authorname"));
+                    if (js.has("authorpic")){
+                        user.setHeadiconUrl(js.getString("authorpic"));
+                    }
                     invitation.setSendUser(user);
                 }
                 if (js.has("message")){
@@ -337,6 +337,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                             if (jsup.has("authorname")){
                                user.setUserNickname(jsup.getString("authorname"));
                             }
+
                             upers.add(user);
                         }
                         invitation.setUpUsers(upers);
@@ -375,6 +376,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
         Map<String, String> map = new HashMap<String, String>();
         String uid_ = SharePrefUtil.getString(ct, CommonUtils.UID, "-1");
         if (uid_.equals("-1")){
+            updataPage(0,20,true);
             return ;
         }
         map.put("uname",SharePrefUtil.getString(ct,CommonUtils.ACCOUNT,"-1"));
@@ -387,8 +389,6 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
 
                 //不管登录是否成功都加载帖字列表
                 updataPage(0,20,true);
-
-
 
                 String result = (String) msg.obj;
                 Log.i("tan8","login:"+result);
@@ -415,7 +415,6 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                     }
 
                     //存入首选项
-
                     TanApplication.isLogin = true;
                     TanApplication.curUser .setUserId(uid);
                     TanApplication.curUser.setUserNickname(uname);

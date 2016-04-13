@@ -42,6 +42,8 @@ public class MainActivity extends BaseActivity {
     RadioButton qupu;
     @Bind(R.id.mine)
     RadioButton mine;
+    @Bind(R.id.progress_layout)
+    RelativeLayout progress_layout;
 
 
     private FragmentManager fragmentManager;
@@ -126,6 +128,10 @@ public class MainActivity extends BaseActivity {
 
     public LinearLayout getTitle2Layout(){
         return title2Layout;
+    }
+
+    public RelativeLayout getProgressLayout(){
+        return progress_layout;
     }
 
     @Override

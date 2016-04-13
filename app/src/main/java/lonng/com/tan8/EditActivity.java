@@ -259,7 +259,7 @@ public class EditActivity extends BaseActivity{
 		if (files.containsKey("video")) {
 
 			File videoFile = files.get("video");
-			if (videoSize  > 1024 * 1024 * 5) {
+			if (videoSize  > 1024 * 1024 * 10 ) {
 				Log.i("tan8","压缩");
 				progress_text.setText("正在压缩视频文件。。。");
 				MyThread mThread = new MyThread(videoFile,new Handler(){
@@ -308,7 +308,7 @@ public class EditActivity extends BaseActivity{
 				super.handleMessage(msg);
 				String result = (String) msg.obj;
 
-				Log.i(TAG, result+"");
+				Log.i(TAG, result+"-----------------");
 				if(result != null && result.contains("tid")){
 //					if (files.containsKey("video")){
 //						if (files.get("video").getPath().contains("tan8")){
@@ -366,7 +366,7 @@ public class EditActivity extends BaseActivity{
 
 
 	
-	int videoSize;
+	long videoSize;
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -391,7 +391,7 @@ public class EditActivity extends BaseActivity{
 					if (data != null) {
 						int duration = data.getIntExtra("dur", 0);
 						String videoPath = data.getStringExtra("path");
-						 videoSize = data.getIntExtra("size",0);
+						videoSize = data.getIntExtra("size",0);
 						
 						//file 是保存截图的文件 就是那个图片文件
 						File file = new File(CommonUtils.getPath(),"thvideo" + System.currentTimeMillis());

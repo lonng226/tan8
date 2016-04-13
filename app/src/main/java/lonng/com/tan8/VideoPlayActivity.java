@@ -284,10 +284,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
                     try{
                         Thread.sleep(100);
-                        if(mediaPlayer != null && mediaPlayer.isPlaying()){
-                            int progress = mediaPlayer.getCurrentPosition();
-                            seekBar.setProgress(progress);
-
+                        if(mediaPlayer != null){
                             Message msg = new Message();
                             msg.what = 0;
                             msg.obj = "";
@@ -312,6 +309,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     @Override
     public void onCompletion(MediaPlayer mp) {
 
+        isPlaying = false;
         //mediaplayer 播放完成后出发
         Log.i("tan8","onCompletion");
         int time = mediaPlayer.getDuration();
@@ -352,11 +350,15 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            int progress = mediaPlayer.getCurrentPosition();
-            seekBar.setProgress(progress);
-            int mins = progress/1000/60;
-            int secs = progress/1000-mins*60;
-            curtimetv.setText(String.format("%02d",mins)+":"+String.format("%02d",secs));
+            if (mediaPlayer != null && isPlaying){
+
+//                Log.i("tan8","CurrentPosition:"+mediaPlayer.getCurrentPosition());
+                int progress = mediaPlayer.getCurrentPosition();
+                seekBar.setProgress(progress);
+                int mins = progress/1000/60;
+                int secs = progress/1000-mins*60;
+                curtimetv.setText(String.format("%02d",mins)+":"+String.format("%02d",secs));
+            }
 
 
         }
@@ -365,13 +367,14 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     @Override
     protected void onStop() {
         super.onStop();
+        Log.i("tan8","onStop");
         isPlaying = false;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("tan8","Video onDestroy()");
+        Log.i("tan8","onDestroy");
         isPlaying = false;
     }
 }

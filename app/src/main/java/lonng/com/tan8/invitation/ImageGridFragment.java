@@ -327,9 +327,10 @@ public class ImageGridFragment extends Fragment implements OnItemClickListener {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 100) {
                 Uri uri = data.getParcelableExtra("uri");
-                String[] projects = new String[]{MediaStore.Video.Media.DATA, MediaStore.Video.Media.DURATION};
+                String[] projects = new String[]{MediaStore.Video.Media.DATA, MediaStore.Video.Media.DURATION,MediaStore.Video.Media.SIZE};
                 Cursor cursor = getActivity().getContentResolver().query(uri, projects, null, null, null);
                 int duration = 0;
+                int size = 0;
                 String filePath = null;
 
                 if (cursor.moveToFirst()) {
@@ -337,13 +338,15 @@ public class ImageGridFragment extends Fragment implements OnItemClickListener {
                     filePath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
                     // 总播放时长：MediaStore.Audio.Media.DURATION
                     duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                     size =(int)cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
                 }
                 if (cursor != null) {
                     cursor.close();
                     cursor = null;
                 }
 
-                getActivity().setResult(Activity.RESULT_OK, getActivity().getIntent().putExtra("path", filePath).putExtra("dur", duration));
+                getActivity().setResult(Activity.RESULT_OK, getActivity().getIntent().
+                        putExtra("path", filePath).putExtra("dur", duration).putExtra("size",size));
                 getActivity().finish();
 
             }
