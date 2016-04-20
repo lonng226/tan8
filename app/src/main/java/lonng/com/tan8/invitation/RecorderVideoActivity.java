@@ -350,7 +350,7 @@ public class RecorderVideoActivity extends Activity implements
 			mediaRecorder.setOrientationHint(90);
 		}
 
-		mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+		mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_720P));
 
 
 //		// 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4

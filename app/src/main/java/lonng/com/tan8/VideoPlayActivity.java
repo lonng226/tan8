@@ -283,7 +283,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 //                    }
 
                     try{
-                        Thread.sleep(100);
+                        Thread.sleep(1000);
                         if(mediaPlayer != null){
                             Message msg = new Message();
                             msg.what = 0;
@@ -333,10 +333,10 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     public boolean onError(MediaPlayer mp, int what, int extra) {
         switch (what) {
             case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                Log.v("mysample", "MEDIA_ERROR_SERVER_DIED");
+                Log.v("tan8", "MEDIA_ERROR_SERVER_DIED");
                 break;
             case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-                Log.v("mysample", "MEDIA_ERROR_UNKNOWN");
+                Log.v("tan8", "MEDIA_ERROR_UNKNOWN");
                 break;
             default:
                 break;
@@ -352,7 +352,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
             super.handleMessage(msg);
             if (mediaPlayer != null && isPlaying){
 
-//                Log.i("tan8","CurrentPosition:"+mediaPlayer.getCurrentPosition());
+                Log.i("tan8","CurrentPosition:"+mediaPlayer.getCurrentPosition());
                 int progress = mediaPlayer.getCurrentPosition();
                 seekBar.setProgress(progress);
                 int mins = progress/1000/60;
@@ -368,7 +368,13 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     protected void onStop() {
         super.onStop();
         Log.i("tan8","onStop");
-        isPlaying = false;
+//        isPlaying = false;
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("tan8","onResume");
+//        isPlaying = true;
     }
 
     @Override

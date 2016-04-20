@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ import lonng.com.tan8.utils.CommonUtils;
 
 
 public class EditActivity extends BaseActivity{
-	
+
 	String TAG = "tan8";
 
 	private TextView edit_commit, edit_f, edit_sf;
@@ -126,10 +128,10 @@ public class EditActivity extends BaseActivity{
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void show(int type) {
-		
+
 		if (files == null) {
 			files = new HashMap<String, File>();
 		}
@@ -157,7 +159,7 @@ public class EditActivity extends BaseActivity{
 		}
 	}
 
-	
+
 	@Override
 	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
@@ -230,14 +232,14 @@ public class EditActivity extends BaseActivity{
 				}
 				break;
 
-			
+
 
 		default:
 			break;
 		}
 
 	}
-	
+
 	private void sendToserver(){
 
 		if (!TanApplication.isLogin){
@@ -254,28 +256,50 @@ public class EditActivity extends BaseActivity{
 		}
 
 
-		progress_layout.setVisibility(View.VISIBLE);
+
 
 		if (files.containsKey("video")) {
 
 			File videoFile = files.get("video");
-			if (videoSize  > 1024 * 1024 * 10 ) {
+			MediaMetadataRetriever retr = new MediaMetadataRetriever();
+			retr.setDataSource(videoFile.getAbsolutePath());
+			String byteRate = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+			Log.d("tan8","byteRate is ============================ "+byteRate);
+			if(videoSize>20*1024*1024 && Integer.parseInt(byteRate)<=1.3*1024*1024 ) {
+				String st = getResources().getString(R.string.temporary_does_not);
+				Toast.makeText(this, st, Toast.LENGTH_SHORT).show();
+				return;
+			}
+			progress_layout.setVisibility(View.VISIBLE);
+
+			if(Integer.parseInt(byteRate)>1.3*1024*1024)
+			{
 				Log.i("tan8","压缩");
+				progress_layout.setVisibility(View.VISIBLE);
 				progress_text.setText("正在压缩视频文件。。。");
 				MyThread mThread = new MyThread(videoFile,new Handler(){
 					@Override
 					public void handleMessage(Message msg) {
 						super.handleMessage(msg);
-						progress_text.setText("发送中。。。");
-                         sendToSerVer_(edtext);
-
+						Log.d("tan8",msg.what+"");
+						if(msg.what==0) {
+							progress_text.setText("发送中。。。");
+							sendToSerVer_(edtext);
+						}
+						else
+							if(msg.what==1)
+							{
+								Log.d("tan8","发送大小超过限制3m");
+								progress_layout.setVisibility(View.INVISIBLE);
+							    progress_text.setText("");
+							}
 					}
 				});
 				mThread.start();
 				return;
 			}
 		}
-
+		progress_layout.setVisibility(View.VISIBLE);
 		sendToSerVer_(edtext);
 
 //		new SendHttpThreadGet(new Handler(){
@@ -339,17 +363,50 @@ public class EditActivity extends BaseActivity{
 		}
 
 		@Override
+		public ClassLoader getContextClassLoader() {
+			return super.getContextClassLoader();
+		}
+
+		@Override
 		public void run() {
 			super.run();
 			try{
 			String videopath = videoFile.getAbsolutePath();
-			Log.i("tan8", "vedeopath:" + videopath+",videoFile.getName:"+videoFile.getName());
+			Log.i("tan8", "vedeopath:" + videopath + ",videoFile.getName:" + videoFile.getName());
 			String ffcmd = "ffmpeg -i "+videopath + " -vcodec mpeg4 -b:v 400k -r 15 "+"/storage/emulated/0/tan8/"+videoFile.getName();
 			String[] argv = ffcmd.split(" ");
 			Log.i("tan8","ffcmd:"+ffcmd+",argv:"+argv.length);
 			Integer argc = argv.length;
 			ffmpegcore(argc, argv);
 			Log.i("tan8","ffmpegcore finished");
+				File dF = new File("/storage/emulated/0/tan8/" + videoFile.getName());
+				FileInputStream fis;
+				fis = new FileInputStream(dF);
+				int fileLen = fis.available();
+				Log.d("tan8","file length is "+fileLen);
+				if(fileLen>20*1024*1024)
+				{
+					Log.d("tan8", "file size is more than 20m");
+
+					if(hanlder != null) {
+						Log.d("tan8", "file size is more than 3m hanlder");
+						Message m = new Message();
+						m.obj = "";
+						m.what = 1;
+						hanlder.sendMessage(m);
+
+					}
+//					hanlder.post(new Runnable() {
+//						@Override
+//						public void run() {
+//							progress_layout.setVisibility(View.INVISIBLE);
+//							progress_text.setText("");
+//
+//						}
+//
+//								 });
+					return;
+				}
 			files.put("video",new File("/storage/emulated/0/tan8/"+videoFile.getName()));
 			if(hanlder != null){
 				Message m = new Message();
@@ -365,12 +422,12 @@ public class EditActivity extends BaseActivity{
 
 
 
-	
+
 	long videoSize;
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		  if (resultCode == Activity.RESULT_OK) { 
+		  if (resultCode == Activity.RESULT_OK) {
 	            if (requestCode == REQUEST_CODE_CAMERA) { // 发送照片
 	                if (cameraFile != null && cameraFile.exists()){
 	                	Log.i(TAG, "getAbsolutePath():"+cameraFile.getAbsolutePath());
@@ -384,15 +441,15 @@ public class EditActivity extends BaseActivity{
 	                        sendPicByUri(selectedImage);
 	                    }
 	                }
-	            } 
-	            
+	            }
+
 				switch (requestCode) {
 				case REQUEST_CODE_SELECT_VIDEO: // 发送选中的视频
 					if (data != null) {
 						int duration = data.getIntExtra("dur", 0);
 						String videoPath = data.getStringExtra("path");
 						videoSize = data.getIntExtra("size",0);
-						
+
 						//file 是保存截图的文件 就是那个图片文件
 						File file = new File(CommonUtils.getPath(),"thvideo" + System.currentTimeMillis());
 						Log.i(TAG, "videoPath:"+videoPath);
@@ -437,7 +494,7 @@ public class EditActivity extends BaseActivity{
 
 
 	/**
-	 * 
+	 *
 	 */
 	private void setImage(Bitmap bitmap, File file) {
 
@@ -538,9 +595,9 @@ public class EditActivity extends BaseActivity{
 			}
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param file
 	 */
 	private Bitmap fileToBitmap(File file){
@@ -593,7 +650,7 @@ public class EditActivity extends BaseActivity{
         startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
                 REQUEST_CODE_CAMERA);
     }
-    
+
     /**
      * 从图库获取图片
      */
@@ -607,10 +664,10 @@ public class EditActivity extends BaseActivity{
         }
         startActivityForResult(intent, REQUEST_CODE_LOCAL);
     }
-    
+
     /**
      * 根据图库图片uri发送图片
-     * 
+     *
      * @param selectedImage
      */
     protected void sendPicByUri(Uri selectedImage) {
@@ -630,7 +687,7 @@ public class EditActivity extends BaseActivity{
                 return;
             }
             Log.i(TAG, "picturePath:"+picturePath);
-            File file = new File(picturePath); 
+            File file = new File(picturePath);
 			setFiles(file);
             setImage(null, file);
         } else {
@@ -648,9 +705,9 @@ public class EditActivity extends BaseActivity{
         }
 
     }
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private void startActivityToDialog(){
 		new CustomDialog(EditActivity.this,1,new OnclickOfButton(){
@@ -664,9 +721,9 @@ public class EditActivity extends BaseActivity{
 				show(type);
 			}
 		},null).show();
-		 
+
 	}
-	
+
 	public interface OnclickOfButton{
 		void onclick(int type);
 	}
