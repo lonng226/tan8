@@ -1,5 +1,7 @@
 package lonng.com.tan8.Entity;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 /**
@@ -15,6 +17,17 @@ public class User {
     private int sendInvatationCount;
     //精华帖子数
     private int jhInvatationCount;
+
+    public Bitmap getHeadiconBitmap() {
+        return headiconBitmap;
+    }
+
+    public void setHeadiconBitmap(Bitmap headiconBitmap) {
+        this.headiconBitmap = headiconBitmap;
+    }
+
+    private Bitmap headiconBitmap;
+
 
     public String getHeadiconUrl() {
         return headiconUrl;

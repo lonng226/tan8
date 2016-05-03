@@ -18,6 +18,16 @@ public class Invitation {
     private String videoUrl;
     private String previewimage;
 
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
+
+    private String datetime;
+
 
     public List<User> getUpUsers() {
         return upUsers;

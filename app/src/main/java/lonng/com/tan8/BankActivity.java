@@ -314,6 +314,9 @@ public class BankActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 if (js.has("message")){
                     invitation.setContent(js.getString("message"));
                 }
+                if(js.has("datetime")){
+                    invitation.setDatetime(js.getString("datetime"));
+                }
                 JSONArray comments = js.getJSONArray("comments");
                 if (comments != null && comments.length()>0){
                     List<Comment> commentList = new ArrayList<Comment>();

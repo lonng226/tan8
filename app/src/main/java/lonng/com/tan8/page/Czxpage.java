@@ -34,6 +34,7 @@ import lonng.com.tan8.EditActivity;
 import lonng.com.tan8.Entity.Comment;
 import lonng.com.tan8.Entity.Invitation;
 import lonng.com.tan8.Entity.User;
+import lonng.com.tan8.LoginActivity;
 import lonng.com.tan8.MainActivity;
 import lonng.com.tan8.R;
 import lonng.com.tan8.application.TanApplication;
@@ -132,7 +133,7 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                 if(keyH == TanApplication.mKeyBoardH){//有变化时才处理，否则会陷入死循环
                     return;
                 }
-//                Log.d("tan8", "keyH = " + keyH + " &r.bottom=" + r.bottom + " &top=" + r.top);
+                Log.d("tan8", "keyH = " + keyH + " &r.bottom=" + r.bottom + " &top=" + r.top);
                 TanApplication.mKeyBoardH = keyH;
                 mScreenHeight = screenH;//应用屏幕的高度
                 mEditTextBodyHeight = mEditTextBody.getHeight();
@@ -289,6 +290,9 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                 if (js.has("message")){
                     invitation.setContent(js.getString("message"));
                 }
+                if(js.has("datetime")){
+                    invitation.setDatetime(js.getString("datetime"));
+                }
                     JSONArray comments = js.getJSONArray("comments");
                     if (comments != null && comments.length()>0){
                         List<Comment> commentList = new ArrayList<Comment>();
@@ -414,6 +418,9 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
                         }
                     }
 
+                    //存入首选项
+                    SharePrefUtil.saveString(ct,CommonUtils.UID,uid);
+                    SharePrefUtil.saveString(ct, CommonUtils.ACCOUNT, uname);
                     //存入首选项
                     TanApplication.isLogin = true;
                     TanApplication.curUser .setUserId(uid);

@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 
 import lonng.com.tan8.BankActivity;
 import lonng.com.tan8.MainActivity;
+import lonng.com.tan8.UserCenterActivity;
 import lonng.com.tan8.page.Czxpage;
 
 public class CommonUtils {
@@ -52,6 +53,13 @@ public class CommonUtils {
 
 	//删除帖子
 	public static String DELTETIE = "http://120.24.16.24/tanqin/forumtest.php";
+	//获取关注信息
+	public static String GETGUANZHU = "http://120.24.16.24/tanqin/user.php";
+	//关注
+	public static String GuanZhu = "http://120.24.16.24/tanqin/user.php?action=attention";
+	//获取关注列表
+	public static String GuanZhuList = "http://120.24.16.24/tanqin/user.php";
+
 	
 	/**
 	 * 检测网络是否可用
@@ -126,6 +134,8 @@ public class CommonUtils {
 			((MainActivity)context).getMenuBarView().setVisibility(View.GONE);
 		}else if(isActivity == 1){
 			((BankActivity)context).getRe().setVisibility(View.GONE);
+		}else if (isActivity ==2){
+			((UserCenterActivity)context).getRe().setVisibility(View.GONE);
 		}
 		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
@@ -137,6 +147,8 @@ public class CommonUtils {
 			((MainActivity)context).getMenuBarView().setVisibility(View.VISIBLE);
 		}else if(isActivity == 1) {
 			((BankActivity)context).getRe().setVisibility(View.VISIBLE);
+		}else if (isActivity ==2){
+			((UserCenterActivity)context).getRe().setVisibility(View.VISIBLE);
 		}
 		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0); //强制隐藏键盘

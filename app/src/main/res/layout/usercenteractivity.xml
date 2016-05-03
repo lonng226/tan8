@@ -73,7 +73,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="北京" />
+                            android:text="北京"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
@@ -126,7 +127,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -149,7 +151,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -226,6 +229,16 @@
                     android:id="@+id/center_listview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+                <ListView
+                    android:id="@+id/center_listviewg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"/>
+                <ListView
+                    android:id="@+id/center_listviewf"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/center_null"
@@ -233,7 +246,37 @@
                     android:layout_height="wrap_content"
                     android:text="没有"
                     android:textSize="20dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/editTextBodyLl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="#f6f6f6"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/circleEt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="说点什么..." />
+
+                    <TextView
+                        android:id="@+id/sendTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:background="@android:color/white"
+                        android:padding="8dp"
+                        android:text="发送"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </RelativeLayout>
 
 
@@ -242,12 +285,29 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <RelativeLayout
+        android:id="@+id/bank_backlayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_gray_light">
+
+        <TextView
+            android:id="@+id/bank_back"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/selector_btn_bg"
+            android:gravity="center"
+            android:text="返回"
+            android:textSize="15dp" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/progress_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
         android:background="@color/color_gray_light"
         android:visibility="gone">
 
@@ -255,7 +315,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ProgressBar
                 style="@android:style/Widget.ProgressBar.Small"
@@ -270,7 +330,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
-                android:text="正在获取缩略图。。。"
+                android:text="正在请求。。。"
                 android:textColor="@color/white" />
         </LinearLayout>
     </RelativeLayout>

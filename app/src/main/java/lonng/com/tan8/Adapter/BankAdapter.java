@@ -38,6 +38,7 @@ import lonng.com.tan8.Entity.User;
 import lonng.com.tan8.ImagePagerActivity;
 import lonng.com.tan8.MainActivity;
 import lonng.com.tan8.R;
+import lonng.com.tan8.UserCenterActivity;
 import lonng.com.tan8.VideoPlayActivity;
 import lonng.com.tan8.application.TanApplication;
 import lonng.com.tan8.control.CirclePresenter;
@@ -130,14 +131,36 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
             viewHolder.multiImagView = (MultiImageView) convertView.findViewById(R.id.multiImagView);
             viewHolder.item_czx_pic_layout = (RelativeLayout) convertView.findViewById(R.id.item_czx_pic_pre);
             viewHolder.delete = (TextView)convertView.findViewById(R.id.item_delete);
+            viewHolder.pl_text = (TextView)convertView.findViewById(R.id.pl_text);
+            viewHolder.item_datetime = (TextView)convertView.findViewById(R.id.item_datetime);
             convertView.setTag(viewHolder);
 
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
+        viewHolder.item_datetime.setText(invitations.get(position).getDatetime()+"");
         ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+invitations.get(position).getSendUser().getHeadiconUrl(), viewHolder.headicom, options);
         viewHolder.nickname.setText(invitations.get(position).getSendUser().getUserNickname());
         viewHolder.content.setText(invitations.get(position).getContent());
+
+        viewHolder.headicom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ct, UserCenterActivity.class);
+                intent.putExtra("uid", invitations.get(position).getSendUser().getUserId() + "");
+                ct.startActivity(intent);
+            }
+        });
+        viewHolder.nickname.setText(invitations.get(position).getSendUser().getUserNickname());
+        viewHolder.nickname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ct, UserCenterActivity.class);
+                intent.putExtra("uid", invitations.get(position).getSendUser().getUserId() + "");
+                ct.startActivity(intent);
+            }
+        });
 
         //点赞的user
         List<User> users = invitations.get(position).getUpUsers();
@@ -231,8 +254,11 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
         if (pls != null && pls.size() > 0) {
             viewHolder.pllistview.setAdapter(new PlAdapter(pls, ct));
             viewHolder.pllistview.setVisibility(View.VISIBLE);
+            viewHolder.pl_text.setVisibility(View.VISIBLE);
+
         }else{
             viewHolder.pllistview.setVisibility(View.GONE);
+            viewHolder.pl_text.setVisibility(View.GONE);
         }
 
         //图片
@@ -358,7 +384,7 @@ public class BankAdapter extends BaseAdapter implements ICircleViewUpdate {
 
     class ViewHolder {
         ImageView headicom, pic;
-        TextView content, bank, dz, pl, nickname, dzpersons, iv_dz, iv_pl,delete;
+        TextView content, bank, dz, pl, nickname, dzpersons, iv_dz, iv_pl,delete,item_datetime,pl_text;
         AppNoScrollerListView pllistview;
         LinearLayout piclayout;
         MultiImageView multiImagView;

@@ -123,6 +123,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
             viewHolder.pic = (ImageView) convertView.findViewById(R.id.item_czx_pic);
             viewHolder.dzpersons = (TextView) convertView.findViewById(R.id.item_dzpersons);
             viewHolder.bank = (TextView) convertView.findViewById(R.id.item_czx_bank);
+            viewHolder.item_datetime = (TextView)convertView.findViewById(R.id.item_datetime);
             viewHolder.dz = (TextView) convertView.findViewById(R.id.item_czx_dz);
             viewHolder.pl = (TextView) convertView.findViewById(R.id.item_czx_pl);
             viewHolder.pllistview = (AppNoScrollerListView) convertView.findViewById(R.id.item_czx_listview);
@@ -133,6 +134,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
             viewHolder.multiImagView = (MultiImageView) convertView.findViewById(R.id.multiImagView);
             viewHolder.item_czx_pic_layout = (RelativeLayout) convertView.findViewById(R.id.item_czx_pic_pre);
             viewHolder.delete = (TextView)convertView.findViewById(R.id.item_delete);
+            viewHolder.pl_text = (TextView)convertView.findViewById(R.id.pl_text);
 
 
             convertView.setTag(viewHolder);
@@ -152,6 +154,8 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         }else {
             viewHolder.delete.setVisibility(View.GONE);
         }
+
+        viewHolder.item_datetime.setText(invitations.get(position).getDatetime()+"");
 
 
         viewHolder.delete.setOnClickListener(new View.OnClickListener() {
@@ -197,6 +201,16 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
             }
         });
         viewHolder.nickname.setText(invitations.get(position).getSendUser().getUserNickname());
+        viewHolder.nickname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ct, UserCenterActivity.class);
+                intent.putExtra("uid", invitations.get(position).getSendUser().getUserId() + "");
+                ct.startActivity(intent);
+            }
+        });
+
+
         viewHolder.content.setText(invitations.get(position).getContent());
 
         //点赞的user
@@ -245,8 +259,10 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         if (pls != null && pls.size() > 0) {
             viewHolder.pllistview.setAdapter(new PlAdapter(pls, ct));
             viewHolder.pllistview.setVisibility(View.VISIBLE);
+            viewHolder.pl_text.setVisibility(View.VISIBLE);
         }else{
             viewHolder.pllistview.setVisibility(View.GONE);
+            viewHolder.pl_text.setVisibility(View.GONE);
         }
 
         //图片
@@ -373,7 +389,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
 
     class ViewHolder {
         ImageView headicom, pic;
-        TextView content, bank, dz, pl, nickname, dzpersons, iv_dz, iv_pl,delete;
+        TextView content, bank, dz, pl, nickname, dzpersons, iv_dz, iv_pl,delete,item_datetime,pl_text;
         AppNoScrollerListView pllistview;
         LinearLayout piclayout;
         MultiImageView multiImagView;

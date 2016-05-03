@@ -37,6 +37,7 @@ public class TanApplication extends Application {
 			+ File.separator;
 
 	public static int mKeyBoardH = 0;
+	public static int mKeyBoardH2 = 0;
 
 	private static Context mContext;
 	//是否是登录状态

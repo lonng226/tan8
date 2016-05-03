@@ -2,6 +2,7 @@ package lonng.com.tan8;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -64,6 +65,7 @@ public class MainActivity extends BaseActivity {
 
         fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
+            Log.i("tan8","new SQFragment()");
             SQFragment = new SQFragment();
             KTFragment = new KTFragment();
             QPFragment = new QPFragment();
