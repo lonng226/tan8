@@ -60,6 +60,7 @@ public class CommonUtils {
 	//获取关注列表
 	public static String GuanZhuList = "http://120.24.16.24/tanqin/user.php";
 
+
 	
 	/**
 	 * 检测网络是否可用

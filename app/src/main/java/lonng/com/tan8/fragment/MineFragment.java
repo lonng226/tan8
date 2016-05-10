@@ -206,7 +206,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         guanzhul.setOnClickListener(this);
         fansl.setOnClickListener(this);
         loginview_headicon.setOnClickListener(this);
-        getUserInfo();
+//        getUserInfo();
         setViewTreeObserver();
         return view;
 
@@ -247,7 +247,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 String result = (String)msg.obj;
                 Log.i("tan8","userinfo:"+result);
                 if (result == null || result.equals("")){
-                    Toast.makeText(ct,"获取用户信息失败",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(ct,"获取用户信息失败",Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -633,6 +633,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     }
                 });
             }
+
+            getUserInfo();
             loginview.setVisibility(View.VISIBLE);
             mineRefreshLayout.setVisibility(View.VISIBLE);
 

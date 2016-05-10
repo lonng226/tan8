@@ -62,6 +62,7 @@ import lonng.com.tan8.control.CirclePublicCommentContralBank;
 import lonng.com.tan8.control.CirclePublicCommentContralCenter;
 import lonng.com.tan8.control.SwpipeListViewOnScrollListener;
 import lonng.com.tan8.dialog.CustomDialog;
+import lonng.com.tan8.http.SendHttpDelete;
 import lonng.com.tan8.http.SendHttpThreadGet;
 import lonng.com.tan8.http.SendHttpThreadMime;
 import lonng.com.tan8.invitation.ImageGridActivity;
@@ -159,6 +160,8 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
     private String Uid;
     private DisplayImageOptions options;
 
+    private  boolean attention;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,6 +246,8 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
 
     private void getUserInfo(){
         //http://120.24.16.24/tanqin/user.php?uid=1000&type=self
+        //http://120.24.16.24/tanqin/user.php?type=another&uid=20&opuid=19
+
         new SendHttpThreadGet(new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -275,12 +280,20 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
                     if(json.has("sumattentions")){
                        gCountTv.setText("("+json.getString("sumattentions")+")");
                     }
+                    if(json.has("attentioned")){
+                         attention = json.getBoolean("attentioned");
+                        if (attention){
+                            guanzhuTv.setText("取消关注");
+                        }else {
+                            guanzhuTv.setText("关注");
+                        }
+                    }
 
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
-        },CommonUtils.GETGUANZHU+"?uid="+Uid+"&type=self",0).start();
+        },CommonUtils.GETGUANZHU+"?opuid="+Uid+"&type=another"+"&uid="+TanApplication.curUser.getUserId(),0).start();
 
     }
 
@@ -291,8 +304,7 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
              Toast.makeText(UserCenterActivity.this,"请先登录",Toast.LENGTH_SHORT).show();
             return;
         }
-
-
+        progressLayout.setVisibility(View.VISIBLE);
         Map<String,String> map = new HashMap<String,String>();
         map.put("uid",TanApplication.curUser.getUserId());
         map.put("attentionid",Uid);
@@ -300,6 +312,7 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+                progressLayout.setVisibility(View.GONE);
                 String result = (String)msg.obj;
                 Log.i("tan8","result:"+result );
                 if (result == null || result.equals("")){
@@ -311,6 +324,8 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
                     if (json.has("result")){
                         resultjson = json.getString("result");
                         if (resultjson.equals("success")){
+                            guanzhuTv.setText("取消关注");
+                            attention = true;
                             Toast.makeText(UserCenterActivity.this,"关注成功",Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -321,6 +336,40 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
             }
         }, map, 0, null).start();
 
+    }
+
+    private void cancelGuanzhu(){
+
+        progressLayout.setVisibility(View.VISIBLE);
+
+        new SendHttpDelete(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                progressLayout.setVisibility(View.GONE);
+                String result = (String)msg.obj;
+                Log.i("tan8","result:"+result );
+                if (result == null || result.equals("")){
+                    return;
+                }
+                try{
+                    String resultjson = "";
+                    JSONObject json = new JSONObject(result);
+                    if (json.has("result")){
+                        resultjson = json.getString("result");
+                        if (resultjson.equals("success")){
+                            guanzhuTv.setText("关注");
+                            attention = false;
+                        }
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        },CommonUtils.GETGUANZHU+"?attentionid="+Uid+"&uid="+TanApplication.curUser.getUserId()+"&type=attention",0).start();
+        Log.i("tan8","取消关注"+CommonUtils.GETGUANZHU+"?attentionid="+Uid+"&uid="+TanApplication.curUser.getUserId()+"&type=attention");
     }
 
 
@@ -590,7 +639,11 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
         switch (v.getId()){
             case R.id.center_guanzhubtn:
                 //关注
-              doGuanZhu();
+                if (!attention){
+                    doGuanZhu();
+                }else {
+                    cancelGuanzhu();
+                }
                 break;
             case R.id.center_guanzhu:
                 showPage(2);
