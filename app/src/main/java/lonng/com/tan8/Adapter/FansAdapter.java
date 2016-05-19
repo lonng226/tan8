@@ -1,6 +1,7 @@
 package lonng.com.tan8.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.List;
 import lonng.com.tan8.Entity.ClassVideo;
 import lonng.com.tan8.Entity.User;
 import lonng.com.tan8.R;
+import lonng.com.tan8.UserCenterActivity;
 import lonng.com.tan8.utils.CommonUtils;
 
 /**
@@ -56,7 +58,7 @@ public class FansAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if (convertView == null) {
             convertView = View.inflate(mct, R.layout.fansitemlayout, null);
@@ -71,6 +73,14 @@ public class FansAdapter extends BaseAdapter{
         Log.i("tan8",userList.get(position).getHeadiconUrl());
         ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+userList.get(position).getHeadiconUrl(),holder.iv,options);
 
+        holder.iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mct, UserCenterActivity.class);
+                intent.putExtra("uid", userList.get(position).getUserId() + "");
+                mct.startActivity(intent);
+            }
+        });
         return convertView;
     }
 

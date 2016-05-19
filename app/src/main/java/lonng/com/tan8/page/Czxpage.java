@@ -166,14 +166,14 @@ public class Czxpage extends BasePage implements AbsListView.OnScrollListener,Sw
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                if (TanApplication.isLogin){
-                    updataPage(0,20,true);
-                }else {
-                    login();
-                }
-                mSwipeRefreshLayout.setRefreshing(true);
-            }
-        });
+        if (TanApplication.isLogin){
+            updataPage(0,20,true);
+        }else {
+            login();
+        }
+        mSwipeRefreshLayout.setRefreshing(true);
+    }
+});
 
     }
 

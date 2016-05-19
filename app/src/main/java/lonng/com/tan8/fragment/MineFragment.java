@@ -150,6 +150,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     @Bind(R.id.sendTv)
     TextView sendTv;
 
+    List<LinearLayout> tabs ;
+
     @Override
     protected View initView(LayoutInflater inflater) {
         View view = inflater.inflate(R.layout.frag_me, null);
@@ -209,6 +211,27 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 //        getUserInfo();
         setViewTreeObserver();
         return view;
+
+    }
+
+
+    private void showTab(int type){
+        if (tabs == null){
+            tabs = new ArrayList<LinearLayout>();
+            tabs.add(tiezil);
+            tabs.add(guanzhul);
+            tabs.add(fansl);
+        }
+
+        for (int i = 0;i <tabs.size();i++){
+            LinearLayout l = tabs.get(i);
+            if (i == type){
+                l.setBackgroundColor(ct.getResources().getColor(R.color.top_bar_normal_bg));
+            }else {
+                l.setBackgroundColor(0);
+            }
+        }
+
 
     }
 
@@ -375,6 +398,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 ct.startActivity(in);
                 break;
             case R.id.loginview_tiezi:
+
+                showTab(0);
                 showPage(1);
 //                mineRefreshLayout.setRefreshing(true);
 //                updataPage(0,20,true);
@@ -385,10 +410,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case R.id.loginview_guanzhu:
 //                getData("attentions");
+                showTab(1);
                 showPage(2);
                 break;
             case R.id.loginview_fans:
 //                getData("followers");
+                showTab(2);
                 showPage(3);
                 break;
             case R.id.loginview_headicon:
@@ -476,6 +503,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     fansAdapter = null;
                 fansAdapter = new FansAdapter(ct,fusers);
                 listviewf.setAdapter(fansAdapter);
+
             }
         }
     };

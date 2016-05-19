@@ -162,6 +162,8 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
 
     private  boolean attention;
 
+    private List<LinearLayout> tabs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,7 +244,24 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
         });
     }
 
+    private void showTab(int type) {
+        if (tabs == null) {
+            tabs = new ArrayList<LinearLayout>();
+            tabs.add(tiezil);
+            tabs.add(guanzhul);
+            tabs.add(fansl);
+        }
 
+        for (int i = 0; i < tabs.size(); i++) {
+            LinearLayout l = tabs.get(i);
+            if (i == type) {
+                l.setBackgroundColor(UserCenterActivity.this.getResources().getColor(R.color.top_bar_normal_bg));
+            } else {
+                l.setBackgroundColor(0);
+            }
+        }
+
+    }
 
     private void getUserInfo(){
         //http://120.24.16.24/tanqin/user.php?uid=1000&type=self
@@ -646,10 +665,12 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
                 }
                 break;
             case R.id.center_guanzhu:
+                showTab(1);
                 showPage(2);
                 break;
             case R.id.center_tiezi:
 //                updataPage();
+                showTab(0);
                 showPage(1);
                 break;
             case R.id.center_yuepu:
@@ -657,6 +678,7 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
             case R.id.center_shoucang:
                 break;
             case R.id.center_fans:
+                showTab(2);
                 showPage(3);
                 break;
             case R.id.loginview_headicon:

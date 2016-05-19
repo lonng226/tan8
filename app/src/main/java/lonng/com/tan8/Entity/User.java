@@ -18,6 +18,18 @@ public class User {
     //精华帖子数
     private int jhInvatationCount;
 
+    public int getUpCount() {
+        return upCount;
+    }
+
+    public void setUpCount(int upCount) {
+        this.upCount = upCount;
+    }
+
+    //获取赞 数
+    private int upCount;
+
+
     public Bitmap getHeadiconBitmap() {
         return headiconBitmap;
     }
