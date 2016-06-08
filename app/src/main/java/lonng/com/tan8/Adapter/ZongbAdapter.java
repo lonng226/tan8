@@ -2,6 +2,9 @@ package lonng.com.tan8.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,8 @@ import java.util.List;
 import lonng.com.tan8.Entity.User;
 import lonng.com.tan8.R;
 import lonng.com.tan8.UserCenterActivity;
+import lonng.com.tan8.application.TanApplication;
+import lonng.com.tan8.http.SendHttpThreadGetImage;
 import lonng.com.tan8.utils.CommonUtils;
 
 /**
@@ -86,7 +91,43 @@ public class ZongbAdapter extends BaseAdapter{
             viewHolder =(ViewHolder) convertView.getTag();
         }
 
-        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+userList.get(position).getHeadiconUrl(),viewHolder.iv,options);
+//        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+userList.get(position).getHeadiconUrl(),viewHolder.iv, options);
+
+
+
+        final ImageView iv_ = viewHolder.iv;
+
+
+        if(userList.get(position).getUserId().equals(TanApplication.curUser.getUserId())){
+            try {
+
+                new SendHttpThreadGetImage(new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+
+                        Bitmap bitmap = (Bitmap)msg.obj;
+
+                        if (bitmap != null){
+
+                            iv_.setImageBitmap(bitmap);   //显示图片
+                        }
+                    }
+                },CommonUtils.GET_FILS+userList.get(position).getHeadiconUrl(),0).start();
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS +userList.get(position).getHeadiconUrl(), viewHolder.iv, options);
+        }
+
+
+
+
+
+
         viewHolder.sumpost.setText("发帖总数："+userList.get(position).getSendInvatationCount()+"");
         viewHolder.name.setText(userList.get(position).getUserNickname());
         viewHolder.sumup.setText("获赞数："+userList.get(position).getUpCount()+"");

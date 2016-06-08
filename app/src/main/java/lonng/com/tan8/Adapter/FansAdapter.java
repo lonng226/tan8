@@ -2,6 +2,9 @@ package lonng.com.tan8.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +16,15 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
+import java.io.File;
 import java.util.List;
 
 import lonng.com.tan8.Entity.ClassVideo;
 import lonng.com.tan8.Entity.User;
 import lonng.com.tan8.R;
 import lonng.com.tan8.UserCenterActivity;
+import lonng.com.tan8.application.TanApplication;
+import lonng.com.tan8.http.SendHttpThreadGetImage;
 import lonng.com.tan8.utils.CommonUtils;
 
 /**
@@ -71,7 +77,37 @@ public class FansAdapter extends BaseAdapter{
         }
         holder.name.setText(userList.get(position).getUserNickname());
         Log.i("tan8",userList.get(position).getHeadiconUrl());
-        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+userList.get(position).getHeadiconUrl(),holder.iv,options);
+
+
+//        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+userList.get(position).getHeadiconUrl(),holder.iv, options);
+
+        final ImageView iv_ = holder.iv;
+
+        if(userList.get(position).getUserId().equals(TanApplication.curUser.getUserId())){
+            try {
+
+                new SendHttpThreadGetImage(new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+
+                        Bitmap bitmap = (Bitmap)msg.obj;
+
+                        if (bitmap != null){
+
+                            iv_.setImageBitmap(bitmap);   //显示图片
+                        }
+                    }
+                },CommonUtils.GET_FILS+userList.get(position).getHeadiconUrl(),0).start();
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+userList.get(position).getHeadiconUrl(), holder.iv, options);
+        }
+
 
         holder.iv.setOnClickListener(new View.OnClickListener() {
             @Override

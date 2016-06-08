@@ -1,6 +1,7 @@
 package lonng.com.tan8.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import java.util.List;
 import lonng.com.tan8.Entity.Comment;
 import lonng.com.tan8.Entity.User;
 import lonng.com.tan8.R;
+import lonng.com.tan8.UserCenterActivity;
 
 /**
  * Created by Administrator on 2015/12/21.
@@ -49,7 +51,7 @@ public class PlAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         ViewHolder viewHolder;
         if (convertView == null){
@@ -82,6 +84,20 @@ public class PlAdapter extends BaseAdapter{
         }
 
         viewHolder.plcontent.setText(":"+list.get(position).getMessage());
+
+
+        viewHolder.pluser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, UserCenterActivity.class);
+                intent.putExtra("uid", list.get(position).getPlUser().getUserId() + "");
+                context.startActivity(intent);
+             }
+        });
+
+
+
+
         return convertView;
     }
 

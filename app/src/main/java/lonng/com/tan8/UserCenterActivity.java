@@ -1,7 +1,10 @@
 package lonng.com.tan8;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -64,6 +67,7 @@ import lonng.com.tan8.control.SwpipeListViewOnScrollListener;
 import lonng.com.tan8.dialog.CustomDialog;
 import lonng.com.tan8.http.SendHttpDelete;
 import lonng.com.tan8.http.SendHttpThreadGet;
+import lonng.com.tan8.http.SendHttpThreadGetImage;
 import lonng.com.tan8.http.SendHttpThreadMime;
 import lonng.com.tan8.invitation.ImageGridActivity;
 import lonng.com.tan8.utils.CommonUtils;
@@ -116,6 +120,8 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
     EditText mEditText;
     @Bind(R.id.sendTv)
     TextView sendTv;
+    @Bind(R.id.loginview_nickname)
+    TextView loginview_nickname;
 
 
     private View footerview;
@@ -170,6 +176,9 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.usercenteractivity);
         ButterKnife.bind(this);
+
+
+        registerReceiver(receiver,getIntentFilter());
 
         options = new DisplayImageOptions.Builder()
                 .showStubImage(R.mipmap.ic_launcher)
@@ -228,6 +237,11 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
 
 
         Uid = getIntent().getStringExtra("uid");
+        if (TanApplication.isLogin){
+            if(Uid.equals(TanApplication.curUser.getUserId())){
+                guanzhuTv.setVisibility(View.GONE);
+            }
+        }
         getUserInfo();
 //        if (TanApplication.isLogin) {
 //            if (Uid.equals(TanApplication.curUser.getUserId())) {
@@ -284,11 +298,46 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
 
                     if (json.has("userpic")){
                          String upic = json.getString("userpic");
-                        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + upic.replace("\\",""), loginview_headicon, options);
+//                        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + upic.replace("\\",""), loginview_headicon, options);
+
+                        if (TanApplication.isLogin){
+
+                            if (Uid.equals(TanApplication.curUser.getUserId())){
+                                try {
+
+                                    new SendHttpThreadGetImage(new Handler(){
+                                        @Override
+                                        public void handleMessage(Message msg) {
+                                            super.handleMessage(msg);
+
+                                            Bitmap bitmap = (Bitmap)msg.obj;
+
+                                            if (bitmap != null){
+
+                                                loginview_headicon.setImageBitmap(bitmap);   //显示图片
+                                            }
+                                        }
+                                    },CommonUtils.GET_FILS + upic.replace("\\", ""),0).start();
+
+
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }else {
+                                ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + upic.replace("\\",""), loginview_headicon, options);
+                            }
+                        }else {
+                            ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + upic.replace("\\",""), loginview_headicon, options);
+                        }
+
+
+
                     }
                     if (json.has("username")){
                          String uname = json.getString("username");
                         titlename.setText(uname+"的主页");
+                        loginview_nickname.setText(uname+"");
+
                     }
                     if (json.has("sumpost")){
                       tCountTv.setText("("+json.getString("sumpost")+")");
@@ -685,7 +734,11 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
                 //更改头像
                 break;
             case R.id.bank_back:
-                UserCenterActivity.this.finish();
+
+                Intent intent = new Intent("finish");
+                UserCenterActivity.this.sendBroadcast(intent);
+
+//                UserCenterActivity.this.finish();
                 break;
         }
 
@@ -797,5 +850,29 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+
+    private IntentFilter getIntentFilter(){
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("finish");
+        return intentFilter;
+    }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+                if (action!=null && action.equals("finish")){
+                    UserCenterActivity.this.finish();
+                }
+        }
+    };
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

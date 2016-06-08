@@ -34,14 +34,19 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +70,7 @@ import lonng.com.tan8.control.CirclePublicCommentContralMine;
 import lonng.com.tan8.control.SwpipeListViewOnScrollListener;
 import lonng.com.tan8.dialog.CustomDialog;
 import lonng.com.tan8.http.SendHttpThreadGet;
+import lonng.com.tan8.http.SendHttpThreadGetImage;
 import lonng.com.tan8.http.SendHttpThreadMime;
 import lonng.com.tan8.utils.CommonUtils;
 
@@ -196,8 +202,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         options = new DisplayImageOptions.Builder()
                 .showStubImage(R.mipmap.ic_launcher)
                 .showImageForEmptyUri(R.mipmap.ic_launcher)
-                .showImageOnFail(R.mipmap.ic_launcher).cacheInMemory()
-                .cacheOnDisc().displayer(new RoundedBitmapDisplayer(5)).build();
+                .showImageOnFail(R.mipmap.ic_launcher).cacheInMemory(false).cacheInMemory(false).cacheOnDisk(false)
+                .cacheOnDisc(true).displayer(new RoundedBitmapDisplayer(5)).build();
 
         loginbtn.setOnClickListener(this);
 
@@ -216,12 +222,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 
 
     private void showTab(int type){
-        if (tabs == null){
-            tabs = new ArrayList<LinearLayout>();
-            tabs.add(tiezil);
-            tabs.add(guanzhul);
-            tabs.add(fansl);
+        if (tabs != null){
+            tabs.clear();
+            tabs = null;
         }
+        tabs = new ArrayList<LinearLayout>();
+        tabs.add(tiezil);
+        tabs.add(guanzhul);
+        tabs.add(fansl);
 
         for (int i = 0;i <tabs.size();i++){
             LinearLayout l = tabs.get(i);
@@ -231,7 +239,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 l.setBackgroundColor(0);
             }
         }
-
 
     }
 
@@ -280,11 +287,33 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 
                     if (json.has("userpic")){
                         String upic = json.getString("userpic");
-                        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + upic.replace("\\",""), loginview_headicon, options);
+//                        ImageLoader.getInstance().getDiskCache().get(CommonUtils.GET_FILS + upic.replace("\\","")).delete();
+//                        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + upic.replace("\\",""), loginview_headicon, options);
+                        try {
+
+                            new SendHttpThreadGetImage(new Handler(){
+                                @Override
+                                public void handleMessage(Message msg) {
+                                    super.handleMessage(msg);
+
+                                    Bitmap bitmap = (Bitmap)msg.obj;
+
+                                    if (bitmap != null){
+
+                                        loginview_headicon.setImageBitmap(bitmap);   //显示图片
+                                    }
+                                }
+                            },CommonUtils.GET_FILS + upic.replace("\\", ""),0).start();
+
+
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
                     }
                     if (json.has("username")){
                         String uname = json.getString("username");
-//                        titlename.setText(uname+"的主页");
+                        loginview_nickname.setText(TanApplication.curUser.getUserNickname());
                     }
                     if (json.has("sumpost")){
                         tieziCount.setText("("+json.getString("sumpost")+")");
@@ -667,13 +696,15 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             mineRefreshLayout.setVisibility(View.VISIBLE);
 
             nologinview.setVisibility(View.GONE);
-            if (TanApplication.curUser.getHeadiconBitmap() != null){
-                  loginview_headicon.setImageBitmap(TanApplication.curUser.getHeadiconBitmap());
-            }else {
-                ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + TanApplication.curUser.getHeadiconUrl(), loginview_headicon, options);
-            }
+//            if (TanApplication.curUser.getHeadiconBitmap() != null){
+//                Log.i("tan8","curUser.getHeadiconBitmap()");
+//                  loginview_headicon.setImageBitmap(TanApplication.curUser.getHeadiconBitmap());
+//            }else {
+//                Log.i("tan8","curUser.getHeadiconUrl()");
+//                ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + TanApplication.curUser.getHeadiconUrl(), loginview_headicon, options);
+//            }
 //            loginview_headicon.setImageResource(R.mipmap.ic_launcher);
-            loginview_nickname.setText(TanApplication.curUser.getUserNickname());
+//            loginview_nickname.setText(TanApplication.curUser.getUserNickname());
 //            loginview_address.setText("北京");
         }else {
             loginview.setVisibility(View.GONE);
@@ -771,7 +802,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 if (cameraFile != null && cameraFile.exists()){
                     Log.i("tan8", "getAbsolutePath():" + cameraFile.getAbsolutePath());
                     setImage(null, cameraFile);
-                    setFiles(cameraFile);
+//                    setFiles(cameraFile);
                 }
             } else if (requestCode == REQUEST_CODE_LOCAL) { // 发送本地图片
                 if (data != null) {
@@ -808,7 +839,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             Log.i("tan8", "picturePath:"+picturePath);
             File file = new File(picturePath);
             setImage(null, file);
-            setFiles(file);
+//            setFiles(file);
         } else {
             File file = new File(selectedImage.getPath());
             if (!file.exists()) {
@@ -820,12 +851,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             }
             Log.i("tan8", "picturePath2:"+file.getAbsolutePath());
             setImage(null, file);
-            setFiles(file);
+//            setFiles(file);
         }
 
     }
 
-    private void setImage(Bitmap bitmap, File file) {
+    private void setImage(Bitmap bitmap, final File file) {
 
         Bitmap bp = null;
         if (bitmap != null) {
@@ -849,21 +880,23 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
                     progress_layout.setVisibility(View.GONE);
-                    loginview_headicon.setImageBitmap(b_);
-                    TanApplication.curUser.setHeadiconBitmap(b_);
+                    loginview_headicon.setImageBitmap(lastb_);
+                    TanApplication.curUser.setHeadiconBitmap(lastb_);
+                    setFiles(file);
                 }
             });
             mbt.start();
             return;
         }
 
-
-        loginview_headicon.setImageBitmap(bp);
-        TanApplication.curUser.setHeadiconBitmap(bp);
+        lastb_ = bp;
+        loginview_headicon.setImageBitmap(lastb_);
+        TanApplication.curUser.setHeadiconBitmap(lastb_);
+        setFiles(file);
     }
 
 
-    Bitmap b_;
+    Bitmap lastb_;
     class MyBitmapThread extends Thread{
 
         private Bitmap b;
@@ -880,7 +913,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             try{
 
 //                b_ = compressImage(b);
-                b_ = ThumbnailUtils.extractThumbnail(b, 100, 100);
+                lastb_ = ThumbnailUtils.extractThumbnail(b, 100, 100);
 
                 if(hanlder != null){
                     Message m = new Message();
@@ -904,6 +937,23 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         }
         return BitmapFactory.decodeFile(file.getAbsolutePath());
     }
+
+
+
+    public void saveBitmapFile(Bitmap bitmap,File file){
+        //将要保存图片的路径
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     private Bitmap compressImage(Bitmap image) {
 
@@ -929,7 +979,22 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void setFiles(File file){
-        filesMap.put("userpic",file);
+
+
+        File filetemp = null;
+
+        if (lastb_ != null){
+            filetemp = new File(TanApplication.DEFAULT_SAVE_IMAGE_PATH+"temp");
+            Log.i("tan8","lastb_  != null");
+            saveBitmapFile(lastb_, filetemp);
+        }
+
+        if (filetemp != null){
+            filesMap.put("userpic",filetemp);
+        }else {
+            filesMap.put("userpic",file);
+        }
+
 
         Map<String,String> map = new HashMap<String,String>();
         map.put("userid",TanApplication.curUser.getUserId());
@@ -943,8 +1008,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 //				sendComplete.sendOk();
 //                progress_layout.setVisibility(View.GONE);
                 if (result.contains("success")){
+//                    ImageLoader.getInstance().getDiskCache().get(CommonUtils.GET_FILS +"/data/user/"+TanApplication.curUser.getUserId()+"/"+TanApplication.curUser.getUserId()+".jpg").delete();
+//                    ImageLoader.getInstance().clearMemoryCache();
+//                    ImageLoader.getInstance().clearDiskCache();
 
-                    Toast.makeText(mainActivity,"设置成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mainActivity, "设置成功", Toast.LENGTH_SHORT).show();
+                    loginview_headicon.setImageBitmap(lastb_);
+                    TanApplication.curUser.setHeadiconBitmap(lastb_);
                 }
 
             }
@@ -963,28 +1033,26 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             mineListview.setVisibility(View.INVISIBLE);
             listviewf.setVisibility(View.INVISIBLE);
             listviewg.setVisibility(View.VISIBLE);
-            if (gusers == null){
-                gusers = new ArrayList<User>();
+            if (gusers != null){
                 gusers.clear();
-
-                getG();
-
+                gusers = null;
             }
+            gusers = new ArrayList<User>();
 
-
+            getG();
         }else if (type == 3){
             //粉丝
             mineListview.setVisibility(View.INVISIBLE);
             listviewf.setVisibility(View.VISIBLE);
             listviewg.setVisibility(View.INVISIBLE);
 
-            if (fusers == null){
-
-                fusers = new ArrayList<User>();
-                fusers.clear();
-
-                getF();
+            if (fusers != null){
+                fusers.clear();;
+                fusers = null;
             }
+            fusers = new ArrayList<User>();
+
+            getF();
         }else if (type == 1){
             //帖子
             mineListview.setVisibility(View.VISIBLE);

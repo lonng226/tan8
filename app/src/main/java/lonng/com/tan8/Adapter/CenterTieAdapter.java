@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -43,6 +44,7 @@ import lonng.com.tan8.control.CirclePublicCommentContralCenter;
 import lonng.com.tan8.control.CommentDialog;
 import lonng.com.tan8.control.ICircleViewUpdate;
 import lonng.com.tan8.http.SendHttpDelete;
+import lonng.com.tan8.http.SendHttpThreadGetImage;
 import lonng.com.tan8.http.SendHttpThreadMime;
 import lonng.com.tan8.utils.CommonUtils;
 import lonng.com.tan8.view.AppNoScrollerListView;
@@ -135,8 +137,33 @@ public class CenterTieAdapter extends BaseAdapter implements ICircleViewUpdate {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.item_datetime.setText(invitations.get(position).getDatetime()+"");
-        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+invitations.get(position).getSendUser().getHeadiconUrl(), viewHolder.headicom, options);
+//        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + invitations.get(position).getSendUser().getHeadiconUrl(), viewHolder.headicom, options);
+        if(invitations.get(position).getSendUser().getUserId().equals(TanApplication.curUser.getUserId())){
+            try {
+
+                new SendHttpThreadGetImage(new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+
+                        Bitmap bitmap = (Bitmap)msg.obj;
+
+                        if (bitmap != null){
+
+                            viewHolder.headicom.setImageBitmap(bitmap);   //显示图片
+                        }
+                    }
+                },CommonUtils.GET_FILS+invitations.get(position).getSendUser().getHeadiconUrl(),0).start();
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+invitations.get(position).getSendUser().getHeadiconUrl(), viewHolder.headicom, options);
+        }
+
+        viewHolder.item_datetime.setText(invitations.get(position).getDatetime() + "");
         viewHolder.nickname.setText(invitations.get(position).getSendUser().getUserNickname());
         viewHolder.content.setText(invitations.get(position).getContent());
 
