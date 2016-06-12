@@ -65,8 +65,9 @@ public class ApprecAdapter extends BaseAdapter{
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.name.setText(apprecList.get(position).getcEnjoyName());
-        holder.des.setText(apprecList.get(position).getcEnjoyDiscription());
+
+        holder.name.setText(apprecList.get(position).getcEnjoyName()+"");
+        holder.des.setText(apprecList.get(position).getcEnjoyDiscription()+"");
         ImageLoader.getInstance().displayImage(apprecList.get(position).getcEnjoyPreviewImageUrl(),holder.iv,options);
 
         return convertView;

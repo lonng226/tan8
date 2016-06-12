@@ -59,6 +59,8 @@ public class CommonUtils {
 	public static String GuanZhu = "http://120.24.16.24/tanqin/user.php?action=attention";
 	//获取关注列表
 	public static String GuanZhuList = "http://120.24.16.24/tanqin/user.php";
+	//获取课堂赏析
+	public static String KtShangxi = "http://120.24.16.24/tanqin/album.php";
 
 
 	

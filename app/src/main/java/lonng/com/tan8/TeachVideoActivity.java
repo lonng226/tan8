@@ -1,6 +1,7 @@
 package lonng.com.tan8;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -52,7 +53,8 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
 
     private List<ClassVideo> list;
 
-    private int classid;
+    private String type;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,8 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
         footerview = LayoutInflater.from(this).inflate(R.layout.footer_layout, null);
         footer_tv = (TextView)footerview.findViewById(R.id.footer_tv);
         progressBar = (ProgressBar)footerview.findViewById(R.id.footer_progressbar);
-        teachacircleLv.addFooterView(footerview);
+//        teachacircleLv.addFooterView(footerview);
+
         teachacircleLv.setOnScrollListener(new SwpipeListViewOnScrollListener(teachSwipeRefreshLayout,this));
 
         teachSwipeRefreshLayout.setOnRefreshListener(this);
@@ -77,20 +80,24 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
         teachVideoAdapter = new TeachVideoAdapter(TeachVideoActivity.this,list);
         teachacircleLv.setAdapter(teachVideoAdapter);
 
-        classid = getIntent().getIntExtra("classid",0);
+        type = getIntent().getStringExtra("type");
+        name = getIntent().getStringExtra("album");
+
         teachSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
 
-//                teachSwipeRefreshLayout.setRefreshing(true);
-//                updataPage(0,20,true);
+                teachSwipeRefreshLayout.setRefreshing(true);
+                updataPage(0,20,true);
             }
         });
 
         teachacircleLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(TeachVideoActivity.this,VideoPlayActivity.class);
+                intent.putExtra("filepath",list.get(position).getVideoUrl());
+                TeachVideoActivity.this.startActivity(intent);
             }
         });
 
@@ -100,7 +107,7 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.bank_back:
+            case R.id.teacha_back:
                 TeachVideoActivity.this.finish();
                 break;
         }
@@ -109,7 +116,7 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
     @Override
     public void onRefresh() {
             teachSwipeRefreshLayout.setRefreshing(true);
-//        updataPage(0,20,true);
+        updataPage(0,20,true);
     }
 
     @Override
@@ -131,7 +138,7 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
 //        Log.i("tan8","lastitemIndex:"+lastitemIndex);
     }
 
-    private boolean isPull;
+    private boolean isPull = true;
 
     public void updataPage(int fromIndex, int toIndex, boolean isPull_) {
 
@@ -147,7 +154,9 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
                 }
 
                 Log.i("tan8", "invatationslistjson:" + result);
-
+                parseJson(result);
+                startIndex = list.size();
+                teachSwipeRefreshLayout.setRefreshing(false);
                 if (!isPull) {
                     progressBar.setVisibility(View.GONE);
                     if (result.equals("[]")) {
@@ -159,11 +168,9 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
                 } else {
                     teachacircleLv.setAdapter(teachVideoAdapter);
                 }
-                parseJson(result);
-                startIndex = list.size();
-                teachSwipeRefreshLayout.setRefreshing(false);
+
             }
-        }, CommonUtils.GET_INVATATIONLIST+"?classid="+classid, 0).start();
+        }, CommonUtils.KtShangxi+"?type="+type+"&album="+name, 0).start();
 
     }
 
@@ -178,14 +185,28 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
                 for (int i = 0; i < jsa.length(); i++) {
                     JSONObject js = (JSONObject)jsa.get(i);
                     ClassVideo cVideo = new ClassVideo();
-                    if (js.has("classenjoyvideoname")){
-                        cVideo.setVideoName(js.getString("classenjoyvideoname"));
+
+                    if (js.has("type")){
+                        cVideo.setType(js.getString("type"));
                     }
-                    if (js.has("classenjoyvideopreviewimage")){
-                        cVideo.setPreviewimageUrl(js.getString("classenjoyvideopreviewimage"));
+
+                    if (js.has("name")){
+                        cVideo.setVideoName(js.getString("name"));
                     }
-                    if (js.has("classenjoyvideopath")){
-                        String purl = js.getString("classenjoyvideopath");
+
+                    if (js.has("albumname")){
+                       cVideo.setAlbumname(js.getString("albumname")+"");
+                    }
+
+                    if (js.has("description")){
+                        cVideo.setDescription(js.getString("description")+"");
+                    }
+
+                    if (js.has("preview")){
+                        cVideo.setPreviewimageUrl(js.getString("preview")+"");
+                    }
+                    if (js.has("path")){
+                        String purl = js.getString("path");
                         cVideo.setVideoUrl(purl.replace("//", ""));
                     }
                     list.add(cVideo);

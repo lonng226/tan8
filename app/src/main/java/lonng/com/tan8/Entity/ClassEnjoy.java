@@ -5,16 +5,16 @@ package lonng.com.tan8.Entity;
  */
 public class ClassEnjoy {
 
-    private int cEnjoyId;
+    private String cEnjoyId;
     private String cEnjoyName;
     private String cEnjoyDiscription;
     private String cEnjoyPreviewImageUrl;
 
-    public int getcEnjoyId() {
+    public String getcEnjoyId() {
         return cEnjoyId;
     }
 
-    public void setcEnjoyId(int cEnjoyId) {
+    public void setcEnjoyId(String cEnjoyId) {
         this.cEnjoyId = cEnjoyId;
     }
 

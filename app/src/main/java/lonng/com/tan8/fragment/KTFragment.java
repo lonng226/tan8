@@ -48,11 +48,15 @@ public class KTFragment extends BaseFragment implements View.OnClickListener {
 
         mainActivity = (MainActivity) ct;
         mainActivity.titlename.setText("课堂");
-        apprecPage = new ApprecPage(ct);
-        teachPage = new TeachPage(ct);
-        pages.clear();
-        pages.add(apprecPage);
-        pages.add(teachPage);
+
+        if (pages == null || pages.size()==0){
+            apprecPage = new ApprecPage(ct);
+            teachPage = new TeachPage(ct);
+            pages.clear();
+            pages.add(apprecPage);
+            pages.add(teachPage);
+        }
+
         ktDetail.setAdapter(new KTAdapter(ct, pages));
         ktDetail.setOffscreenPageLimit(0);
         appreciation.setOnClickListener(this);

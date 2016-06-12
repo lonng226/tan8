@@ -72,7 +72,7 @@ public class ApprecPage extends BasePage implements SwipeRefreshLayout.OnRefresh
         footerview = inflater.inflate(R.layout.footer_layout, null);
         footer_tv = (TextView) footerview.findViewById(R.id.footer_tv);
         progressBar = (ProgressBar) footerview.findViewById(R.id.footer_progressbar);
-        apprec_list.addFooterView(footerview);
+//        apprec_list.addFooterView(footerview);
 
         apprec_list.setOnScrollListener(new SwpipeListViewOnScrollListener(apprecRefreshLayout, this));
 
@@ -80,7 +80,7 @@ public class ApprecPage extends BasePage implements SwipeRefreshLayout.OnRefresh
             list = new ArrayList<ClassEnjoy>();
         }
 
-        readyData();
+//        readyData();
         apprecAdapter = new ApprecAdapter(ct, list);
         apprec_list.setAdapter(apprecAdapter);
 
@@ -98,7 +98,8 @@ public class ApprecPage extends BasePage implements SwipeRefreshLayout.OnRefresh
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(ct, TeachVideoActivity.class);
-                intent.putExtra("classid",list.get(position).getcEnjoyId());
+                intent.putExtra("type",list.get(position).getcEnjoyId());
+                intent.putExtra("album",list.get(position).getcEnjoyName());
                 ct.startActivity(intent);
             }
         });
@@ -113,18 +114,18 @@ public class ApprecPage extends BasePage implements SwipeRefreshLayout.OnRefresh
 
     }
 
-    private void readyData() {
-        for (int i = 0; i <= 20; i++) {
-            ClassEnjoy c = new ClassEnjoy();
-            c.setcEnjoyId(0);
-            c.setcEnjoyDiscription("今天天气很好，为什么不出去玩");
-            c.setcEnjoyName("今天的天气");
-            c.setcEnjoyPreviewImageUrl("");
-            list.add(c);
-        }
-
-
-    }
+//    private void readyData() {
+//        for (int i = 0; i <= 20; i++) {
+//            ClassEnjoy c = new ClassEnjoy();
+//            c.setcEnjoyId(0);
+//            c.setcEnjoyDiscription("今天天气很好，为什么不出去玩");
+//            c.setcEnjoyName("今天的天气");
+//            c.setcEnjoyPreviewImageUrl("");
+//            list.add(c);
+//        }
+//
+//
+//    }
 
     @Override
     public void onRefresh() {
@@ -153,7 +154,7 @@ public class ApprecPage extends BasePage implements SwipeRefreshLayout.OnRefresh
 //              Log.i("tan8","lastitemIndex:"+lastitemIndex);
     }
 
-    private boolean isPull;
+    private boolean isPull = true;
 
     public void updataPage(int fromIndex, int toIndex, boolean isPull_) {
 
@@ -169,7 +170,9 @@ public class ApprecPage extends BasePage implements SwipeRefreshLayout.OnRefresh
                 }
 
                 Log.i("tan8", "invatationslistjson:" + result);
-
+                parseJson(result);
+                startIndex = list.size();
+                apprecRefreshLayout.setRefreshing(false);
                 if (!isPull) {
                     progressBar.setVisibility(View.GONE);
                     if (result.equals("[]")) {
@@ -181,11 +184,9 @@ public class ApprecPage extends BasePage implements SwipeRefreshLayout.OnRefresh
                 } else {
                     apprec_list.setAdapter(apprecAdapter);
                 }
-                parseJson(result);
-                startIndex = list.size();
-                apprecRefreshLayout.setRefreshing(false);
+
             }
-        }, CommonUtils.GET_INVATATIONLIST, 0).start();
+        }, CommonUtils.KtShangxi+"?type=赏析", 0).start();
 
     }
 
@@ -200,18 +201,18 @@ public class ApprecPage extends BasePage implements SwipeRefreshLayout.OnRefresh
                 for (int i = 0; i < jsa.length(); i++) {
                     JSONObject js = (JSONObject)jsa.get(i);
                     ClassEnjoy cEnjoy = new ClassEnjoy();
-                    if (js.has("classenjoyid")){
-                        cEnjoy.setcEnjoyId(js.getInt("classenjoyid"));
+                    if (js.has("type")){
+                        cEnjoy.setcEnjoyId(js.getString("type")+"");
                     }
-                    if (js.has("classenjoyname")){
-                        cEnjoy.setcEnjoyName(js.getString("classenjoyname"));
+                    if (js.has("name")){
+                        cEnjoy.setcEnjoyName(js.getString("name")+"");
                     }
-                    if (js.has("classenjoydiscription")){
-                        cEnjoy.setcEnjoyDiscription(js.getString("classenjoydiscription"));
+                    if (js.has("description")){
+                        cEnjoy.setcEnjoyDiscription(js.getString("description")+"");
                     }
-                    if (js.has("classenjoyPreviewImage")){
-                        String purl = js.getString("classenjoyPreviewImage");
-                         cEnjoy.setcEnjoyPreviewImageUrl(purl.replace("//",""));
+                    if (js.has("preview")){
+                        String purl = js.getString("preview");
+                         cEnjoy.setcEnjoyPreviewImageUrl(purl.replace("//","")+"");
                     }
                     list.add(cEnjoy);
                 }
