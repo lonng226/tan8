@@ -132,6 +132,7 @@ public class CenterTieAdapter extends BaseAdapter implements ICircleViewUpdate {
             viewHolder.delete = (TextView)convertView.findViewById(R.id.item_delete);
             viewHolder.pl_text = (TextView)convertView.findViewById(R.id.pl_text);
             viewHolder.item_datetime = (TextView)convertView.findViewById(R.id.item_datetime);
+            viewHolder.item_zanlayout = (LinearLayout)convertView.findViewById(R.id.item_zanlayout);
             convertView.setTag(viewHolder);
 
         } else {
@@ -187,14 +188,11 @@ public class CenterTieAdapter extends BaseAdapter implements ICircleViewUpdate {
 
         //点赞的user
         List<User> users = invitations.get(position).getUpUsers();
-        if (users != null) {
+        if (users != null && users.size()>0) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < users.size(); i++) {
                 String nickName = users.get(i).getUserNickname();
                 if (nickName != null && !nickName.equals("")) {
-                    if(i==0){
-                        sb.append("赞：");
-                    }
                     sb.append(nickName);
                     if (i != users.size() - 1) {
                         sb.append(",");
@@ -203,9 +201,9 @@ public class CenterTieAdapter extends BaseAdapter implements ICircleViewUpdate {
             }
 
             viewHolder.dzpersons.setText(sb.toString());
-            viewHolder.dzpersons.setVisibility(View.VISIBLE);
+            viewHolder.item_zanlayout.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.dzpersons.setVisibility(View.GONE);
+            viewHolder.item_zanlayout.setVisibility(View.GONE);
         }
 
 
@@ -326,9 +324,9 @@ public class CenterTieAdapter extends BaseAdapter implements ICircleViewUpdate {
         boolean isZan = false;
         if (TanApplication.isLogin) {
             //当前用户是否赞
-            if (users != null) {
+            if (users != null&& users.size()>0) {
                 for (int i = 0; i < users.size(); i++) {
-                    if (users.get(i).getUserId() == TanApplication.curUser.getUserId()) {
+                    if (users.get(i).getUserId() .equals(TanApplication.curUser.getUserId())) {
                         isZan = true;
                         break;
                     }
@@ -408,7 +406,7 @@ public class CenterTieAdapter extends BaseAdapter implements ICircleViewUpdate {
         ImageView headicom, pic;
         TextView content, bank, dz, pl, nickname, dzpersons, iv_dz, iv_pl,delete,item_datetime,pl_text;
         AppNoScrollerListView pllistview;
-        LinearLayout piclayout;
+        LinearLayout piclayout,item_zanlayout;
         MultiImageView multiImagView;
         RelativeLayout item_czx_pic_layout;
 
