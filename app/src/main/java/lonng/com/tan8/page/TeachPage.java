@@ -200,7 +200,7 @@ public class TeachPage extends BasePage implements SwipeRefreshLayout.OnRefreshL
                     }
                     if (js.has("preview")){
                         String purl = js.getString("preview");
-                        cEnjoy.setcEnjoyPreviewImageUrl(purl.replace("//","")+"");
+                        cEnjoy.setcEnjoyPreviewImageUrl(purl.replace("\\","")+"");
                     }
                     list.add(cEnjoy);
                 }

@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.net.URLEncoder;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import lonng.com.tan8.utils.CommonUtils;
@@ -78,9 +80,16 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         String filepath = getIntent().getStringExtra("filepath");
         try{
 //            Cache cache = new FileCache(new File(getExternalCacheDir(), VIDEO_CACHE_NAME));
+//              filepath = "http:120.24.16.24/tanqin/uploads/%E6%95%99%E5%AD%A6/test/VID_20160415_202230.mp4";
+            Log.i("tan8","initView--filepath==="+filepath);
+            if(filepath.contains("http")){
+                Log.i("tan8","filepath.contains(\"http\")");
+//                filepath=URLEncoder.encode(filepath, "utf-8");
+                mediaPlayer.setDataSource(filepath);
+            }else {
+                mediaPlayer.setDataSource(CommonUtils.GET_FILS+filepath);
+            }
 
-            Log.i("tan8","initView");
-            mediaPlayer.setDataSource(CommonUtils.GET_FILS+filepath);
 //            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 //            mediaPlayer.getDuration();
 
