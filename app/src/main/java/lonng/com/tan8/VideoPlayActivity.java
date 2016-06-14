@@ -3,6 +3,7 @@ package lonng.com.tan8;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -14,7 +15,14 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 
 import butterknife.Bind;
@@ -46,8 +54,9 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     int vWidth,vHeight,mSurfaceViewHeight,mSurfaceViewWidth;
     int currPosition;
     boolean isPlaying;
+    String path;
 
-
+    boolean isCache;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,15 +86,36 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         mediaPlayer.setOnSeekCompleteListener(this);
         mediaPlayer.setOnVideoSizeChangedListener(this);
 
-        String filepath = getIntent().getStringExtra("filepath");
+       String filepath = getIntent().getStringExtra("filepath");
+
+
+        if (android.os.Environment.getExternalStorageState().equals(
+                android.os.Environment.MEDIA_MOUNTED)) {
+            String localpath = Environment.getExternalStorageDirectory()
+                    .getAbsolutePath() + "/TanVideoCache/" + filepath.substring(filepath.lastIndexOf("/")+1,filepath.length());
+            Log.i("tan8","localpath:"+localpath);
+            File f = new File(localpath);
+            if (!f.exists()) {
+                path = filepath;
+                isCache = false;
+            } else {
+                path = localpath;
+                isCache = true;
+            }
+        }else{
+            path = filepath;
+            Log.i("tan8","path = filepath");
+        }
+
+
         try{
 //            Cache cache = new FileCache(new File(getExternalCacheDir(), VIDEO_CACHE_NAME));
 //              filepath = "http:120.24.16.24/tanqin/uploads/%E6%95%99%E5%AD%A6/test/VID_20160415_202230.mp4";
-            Log.i("tan8","initView--filepath==="+filepath);
+            Log.i("tan8","initView--path==="+path);
             if(filepath.contains("http")){
                 Log.i("tan8","filepath.contains(\"http\")");
 //                filepath=URLEncoder.encode(filepath, "utf-8");
-                mediaPlayer.setDataSource(filepath);
+                mediaPlayer.setDataSource(path);
             }else {
                 mediaPlayer.setDataSource(CommonUtils.GET_FILS+filepath);
             }
@@ -312,6 +342,10 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         }).start();
 
         mediaPlayer.start();
+
+         if (!isCache){
+             writeMedia();
+         }
     }
 
 
@@ -391,5 +425,99 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         super.onDestroy();
         Log.i("tan8","onDestroy");
         isPlaying = false;
+    }
+
+
+
+
+    private String localUrl;
+
+    private long mediaLength = 0;
+    private long readSize = 0;
+
+    private void writeMedia() {
+        // TODO Auto-generated method stub
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                FileOutputStream out = null;
+                InputStream is = null;
+
+                try {
+                    URL url = null;
+                    if(path.contains("http")){
+                         url = new URL(path);
+                    }else {
+                         url = new URL(CommonUtils.GET_FILS+path);
+                    }
+                    HttpURLConnection httpConnection = (HttpURLConnection) url
+                            .openConnection();
+
+                    if (localUrl == null) {
+                        localUrl = Environment.getExternalStorageDirectory()
+                                .getAbsolutePath()
+                                + "/TanVideoCache/"
+                                + path.substring(path.lastIndexOf("/")+1,path.length());
+                    }
+                    Log.i("tan8","localUrl:"+localUrl);
+
+                    File cacheFile = new File(localUrl);
+
+                    if (!cacheFile.exists()) {
+                        cacheFile.getParentFile().mkdirs();
+                        cacheFile.createNewFile();
+                    }
+
+                    readSize = cacheFile.length();
+                    out = new FileOutputStream(cacheFile, true);
+
+                    httpConnection.setRequestProperty("User-Agent", "NetFox");
+                    httpConnection.setRequestProperty("RANGE", "bytes="
+                            + readSize + "-");
+
+                    is = httpConnection.getInputStream();
+
+                    mediaLength = httpConnection.getContentLength();
+                    if (mediaLength == -1) {
+                        return;
+                    }
+
+                    mediaLength += readSize;
+
+                    byte buf[] = new byte[4 * 1024];
+                    int size = 0;
+
+                    while ((size = is.read(buf)) != -1) {
+                        try {
+                            out.write(buf, 0, size);
+                            readSize += size;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (IOException e) {
+                            //
+                        }
+                    }
+
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            //
+                        }
+                    }
+                }
+
+            }
+        }).start();
     }
 }
