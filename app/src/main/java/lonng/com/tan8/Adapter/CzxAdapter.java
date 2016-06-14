@@ -8,6 +8,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +48,7 @@ import lonng.com.tan8.Entity.User;
 import lonng.com.tan8.ImagePagerActivity;
 import lonng.com.tan8.MainActivity;
 import lonng.com.tan8.R;
+import lonng.com.tan8.TestActivity;
 import lonng.com.tan8.UserCenterActivity;
 import lonng.com.tan8.VideoPlayActivity;
 import lonng.com.tan8.application.TanApplication;
@@ -197,7 +205,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         if(invitations.get(position).getSendUser().getUserId().equals(TanApplication.curUser.getUserId())){
             try {
 
-             new SendHttpThreadGetImage(new Handler(){
+             new SendHttpThreadGetImage(ct,new Handler(){
                  @Override
                  public void handleMessage(Message msg) {
                      super.handleMessage(msg);
@@ -244,17 +252,18 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
         //点赞的user
         List<User> users = invitations.get(position).getUpUsers();
         if (users != null&&users.size()>0) {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < users.size(); i++) {
-                String nickName = users.get(i).getUserNickname();
-                if (nickName != null && !nickName.equals("")) {
-                    sb.append(nickName);
-                    if (i != users.size() - 1) {
-                        sb.append(",");
-                    }
-                }
-            }
-            viewHolder.dzpersons.setText(sb.toString());
+//            StringBuffer sb = new StringBuffer();
+//            for (int i = 0; i < users.size(); i++) {
+//                String nickName = users.get(i).getUserNickname();
+//                if (nickName != null && !nickName.equals("")) {
+//                    sb.append(nickName);
+//                    if (i != users.size() - 1) {
+//                        sb.append(",");
+//                    }
+//                }
+//            }
+//            viewHolder.dzpersons.setText(sb.toString());
+            setUpUsers(users,viewHolder.dzpersons);
             viewHolder.item_zanlayout.setVisibility(View.VISIBLE);
         } else {
             viewHolder.item_zanlayout.setVisibility(View.GONE);
@@ -746,6 +755,75 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
             }
         },CommonUtils.DELTETIE+"?commentid="+commentId+"&type=comment"+"&uid="+TanApplication.curUser.getUserId(),0).start();
 
+    }
+
+    private class TextViewURLSpan extends ClickableSpan {
+        private String clickString;
+
+        public TextViewURLSpan(String clickString) {
+            this.clickString = clickString;
+        }
+
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+//            ds.setColor(TestActivity.this.getResources().getColor(R.color.colorAccent));
+            ds.setUnderlineText(false); //去掉下划线
+            ds.bgColor = ct.getResources().getColor(R.color.graybg);
+
+        }
+        @Override
+        public void onClick(View widget) {
+
+            Log.i("tan8","clickString:"+clickString);
+            Intent intent = new Intent(ct, UserCenterActivity.class);
+            intent.putExtra("uid", clickString+ "");
+            ct.startActivity(intent);
+
+//            if (clickString.equals("张三")) {
+//                Toast.makeText(ct, clickString, Toast.LENGTH_LONG).show();
+//            } else if (clickString.equals("李四")) {
+//                Toast.makeText(ct, clickString, Toast.LENGTH_LONG).show();
+//            }
+        }
+    }
+
+    private void setUpUsers(List<User> users,TextView mTextView){
+
+        StringBuilder actionText = new StringBuilder();
+
+
+        for (int i = 0;i<users.size();i++){
+            if(i == users.size()-1){
+                actionText.append("<a style=\"color:#000000;background-color:transparent!important;text-decoration:none;\" href='"+users.get(i).getUserId()+"'>" + users.get(i).getUserNickname() + "</a>");
+            }else {
+
+                actionText.append("<a style=\"color:#000000;background-color:transparent!important;text-decoration:none;\" href='"+users.get(i).getUserId()+"'>" + users.get(i).getUserNickname()+"," + "</a>");
+            }
+        }
+
+//        actionText.append("<a style=\"color:#000000;background-color:transparent!important;text-decoration:none;\" href='张三'>" + "张三," + "</a>");
+//        actionText.append("<a style=\"color:#000000;background-color:#000000;text-decoration:none;\"  href='李四'>" + "李四 " + "</a>");
+
+
+
+        mTextView.setText(Html.fromHtml(actionText.toString()));
+        mTextView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        CharSequence text = mTextView.getText();
+        int ends = text.length();
+        Spannable spannable = (Spannable) mTextView.getText();
+
+        URLSpan[] urlspan = spannable.getSpans(0, ends, URLSpan.class);
+        SpannableStringBuilder stylesBuilder = new SpannableStringBuilder(text);
+        stylesBuilder.clearSpans(); // should clear old spans
+        for (URLSpan url : urlspan) {
+            TextViewURLSpan myURLSpan = new TextViewURLSpan(url.getURL());
+            stylesBuilder.setSpan(myURLSpan, spannable.getSpanStart(url),spannable.getSpanEnd(url), spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+
+        mTextView.setText(stylesBuilder);
     }
 
 }

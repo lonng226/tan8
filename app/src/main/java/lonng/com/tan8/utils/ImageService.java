@@ -1,5 +1,6 @@
 package lonng.com.tan8.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -10,13 +11,20 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import lonng.com.tan8.R;
+
 /**
  * Created by Administrator on 2016/6/7.
  */
 public class ImageService {
 
-    public static Bitmap getImage(String path) throws IOException {
+    public static Bitmap getImage(Context context ,String path) throws IOException {
         Log.i("tan8","imagepath:"+path);
+
+        if (path.equals(CommonUtils.GET_FILS)){
+            return BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        }
+
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection)url.openConnection();
         conn.setRequestMethod("GET");   //设置请求方法为GET

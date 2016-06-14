@@ -291,7 +291,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 //                        ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS + upic.replace("\\",""), loginview_headicon, options);
                         try {
 
-                            new SendHttpThreadGetImage(new Handler(){
+                            new SendHttpThreadGetImage(ct,new Handler(){
                                 @Override
                                 public void handleMessage(Message msg) {
                                     super.handleMessage(msg);

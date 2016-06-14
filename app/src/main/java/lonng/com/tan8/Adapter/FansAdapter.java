@@ -86,7 +86,7 @@ public class FansAdapter extends BaseAdapter{
         if(userList.get(position).getUserId().equals(TanApplication.curUser.getUserId())){
             try {
 
-                new SendHttpThreadGetImage(new Handler(){
+                new SendHttpThreadGetImage(mct,new Handler(){
                     @Override
                     public void handleMessage(Message msg) {
                         super.handleMessage(msg);

@@ -305,7 +305,7 @@ public class UserCenterActivity extends Activity implements SwipeRefreshLayout.O
                             if (Uid.equals(TanApplication.curUser.getUserId())){
                                 try {
 
-                                    new SendHttpThreadGetImage(new Handler(){
+                                    new SendHttpThreadGetImage(UserCenterActivity.this,new Handler(){
                                         @Override
                                         public void handleMessage(Message msg) {
                                             super.handleMessage(msg);
