@@ -286,8 +286,7 @@ public class EditActivity extends BaseActivity{
 							progress_text.setText("发送中。。。");
 							sendToSerVer_(edtext);
 						}
-						else
-							if(msg.what==1)
+						else if(msg.what==1)
 							{
 								Log.d("tan8","发送大小超过限制3m");
 								progress_layout.setVisibility(View.INVISIBLE);
@@ -389,7 +388,7 @@ public class EditActivity extends BaseActivity{
 					Log.d("tan8", "file size is more than 20m");
 
 					if(hanlder != null) {
-						Log.d("tan8", "file size is more than 3m hanlder");
+						Log.d("tan8", "file size is more than 20m hanlder");
 						Message m = new Message();
 						m.obj = "";
 						m.what = 1;

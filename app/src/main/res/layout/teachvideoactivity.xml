@@ -35,13 +35,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:cacheColorHint="@android:color/transparent"
-                android:divider="@null"
-                android:dividerHeight="0px"
                 android:fadingEdge="none"
                 android:fadingEdgeLength="0dp"
                 android:focusable="true"
                 android:listSelector="@android:color/transparent"
-                android:transcriptMode="normal"></ListView>
+                android:transcriptMode="normal"/>
 
 
         </RelativeLayout>

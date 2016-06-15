@@ -67,9 +67,14 @@ public class TeachVideoAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
 
+        if (apprecList.get(position).getDescription().equals("null")){
+            holder.video_item_dec.setText(apprecList.get(position).getVideoName()+"");
+        }else {
+
+            holder.video_item_dec.setText(apprecList.get(position).getDescription()+"");
+        }
 
         holder.name.setText(apprecList.get(position).getVideoName()+"");
-        holder.video_item_dec.setText(apprecList.get(position).getDescription()+"");
         ImageLoader.getInstance().displayImage(apprecList.get(position).getPreviewimageUrl(),holder.iv,options);
 
         return convertView;

@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import lonng.com.tan8.R;
+import lonng.com.tan8.application.TanApplication;
 
 /**
  * Created by Administrator on 2016/6/7.
