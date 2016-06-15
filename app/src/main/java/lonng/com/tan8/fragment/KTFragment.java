@@ -47,7 +47,7 @@ public class KTFragment extends BaseFragment implements View.OnClickListener {
     protected void initData(Bundle savedInstanceState) {
 
         mainActivity = (MainActivity) ct;
-        mainActivity.titlename.setText("课堂");
+        mainActivity.titlename.setText("课堂教学专辑列表");
 
         if (pages == null || pages.size()==0){
             apprecPage = new ApprecPage(ct);

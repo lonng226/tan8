@@ -84,6 +84,8 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
         type = getIntent().getStringExtra("type");
         name = getIntent().getStringExtra("album");
 
+        teachatitle.setText(name);
+
         teachSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -101,7 +103,6 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
                 TeachVideoActivity.this.startActivity(intent);
             }
         });
-
     }
 
 
