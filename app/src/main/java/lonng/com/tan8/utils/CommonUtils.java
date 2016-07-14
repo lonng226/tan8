@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.io.File;
 import java.text.DecimalFormat;
 
 import lonng.com.tan8.BankActivity;
@@ -61,6 +62,8 @@ public class CommonUtils {
 	public static String GuanZhuList = "http://120.24.16.24/tanqin/user.php";
 	//获取课堂赏析
 	public static String KtShangxi = "http://120.24.16.24/tanqin/album.php";
+	//获取曲谱
+	public static String QUPU = "http://120.24.16.24/tanqin/melody.php";
 
 
 	
@@ -93,6 +96,11 @@ public class CommonUtils {
 
 
 	public static String getPath(){
+
+		File dir = new File(Environment.getExternalStorageDirectory().getPath()+"/community");
+		if (!dir.exists())
+            dir.mkdirs();
+
 		return Environment.getExternalStorageDirectory().getPath()+"/community";
 	}
 

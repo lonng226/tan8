@@ -53,6 +53,7 @@
             <RadioButton
                 android:id="@+id/qupu"
                 style="@style/main_tab_bottom"
+                android:visibility="visible"
                 android:text="曲谱" />
 
             <RadioButton

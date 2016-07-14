@@ -1,6 +1,7 @@
 package lonng.com.tan8;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -8,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -15,16 +17,12 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import lonng.com.tan8.utils.CommonUtils;
@@ -70,6 +68,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     }
 
 
+    String filepath = null;
     protected void initView() {
 
         videoplay_back.setOnClickListener(this);
@@ -86,15 +85,15 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         mediaPlayer.setOnSeekCompleteListener(this);
         mediaPlayer.setOnVideoSizeChangedListener(this);
 
-       String filepath = getIntent().getStringExtra("filepath");
-
-
+        filepath = getIntent().getStringExtra("filepath");
+        File f = null;
+        String localpath="";
         if (android.os.Environment.getExternalStorageState().equals(
                 android.os.Environment.MEDIA_MOUNTED)) {
-            String localpath = Environment.getExternalStorageDirectory()
+             localpath = Environment.getExternalStorageDirectory()
                     .getAbsolutePath() + "/TanVideoCache/" + filepath.substring(filepath.lastIndexOf("/")+1,filepath.length());
             Log.i("tan8","localpath:"+localpath);
-            File f = new File(localpath);
+             f = new File(localpath);
             if (!f.exists()) {
                 path = filepath;
                 isCache = false;
@@ -104,22 +103,30 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
             }
         }else{
             path = filepath;
+            isCache = false;
             Log.i("tan8","path = filepath");
         }
+
 
 
         try{
 //            Cache cache = new FileCache(new File(getExternalCacheDir(), VIDEO_CACHE_NAME));
 //              filepath = "http:120.24.16.24/tanqin/uploads/%E6%95%99%E5%AD%A6/test/VID_20160415_202230.mp4";
             Log.i("tan8","initView--path==="+path);
-            if(filepath.contains("http")){
-                Log.i("tan8","filepath.contains(\"http\")");
-//                filepath=URLEncoder.encode(filepath, "utf-8");
-                mediaPlayer.setDataSource(path);
-            }else {
-                mediaPlayer.setDataSource(CommonUtils.GET_FILS+filepath);
-            }
-
+//            if(filepath.contains("http")){
+//                Log.i("tan8","filepath.contains(\"http\")");
+////                filepath=URLEncoder.encode(filepath, "utf-8");
+//                mediaPlayer.setDataSource(path);
+//            }else {
+//                if(isCache){
+//                     // 本地存在
+//                    mediaPlayer.setDataSource(path);
+//                }else {
+//                    mediaPlayer.setDataSource(CommonUtils.GET_FILS+path);
+//                }
+//
+//            }
+//              mediaPlayer.setDataSource(localpath);
 //            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 //            mediaPlayer.getDuration();
 
@@ -136,6 +143,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
         start_stop.setOnClickListener(this);
         seekBar.setOnSeekBarChangeListener(change);
+
     }
 
 
@@ -192,7 +200,12 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
             //在这里我们指定MediaPlayer在当前的Surface中进行播放
             mediaPlayer.setDisplay(holder);
             //在指定了MediaPlayer播放的容器后，我们就可以使用prepare或者prepareAsync来准备播放了
-            mediaPlayer.prepareAsync();
+//            mediaPlayer.prepareAsync();
+            try {
+                writeMedia();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
         }
 
@@ -250,15 +263,40 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
         Log.i("tan8","onInfo");
+        Log.i("tan8","what:"+what);
+
+//        showProgressDialog();
+//        mediaPlayer.pause();
+
         // 当一些特定信息出现或者警告时触发
         switch(what){
             case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
+                Log.i("tan8","MEDIA_INFO_BAD_INTERLEAVING");
                 break;
             case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
+                Log.i("tan8","MEDIA_INFO_METADATA_UPDATE");
                 break;
             case MediaPlayer.MEDIA_INFO_VIDEO_TRACK_LAGGING:
+                Log.i("tan8","MEDIA_INFO_VIDEO_TRACK_LAGGING");
                 break;
             case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
+                Log.i("tan8","MEDIA_INFO_NOT_SEEKABLE");
+                break;
+            case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                Log.i("tan8","MEDIA_INFO_BUFFERING_END");
+                break;
+            case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+               // MediaPlayer暂停播放等待缓冲更多数据。
+                Log.i("tan8","MEDIA_INFO_BUFFERING_START");
+//                showProgressDialog();
+//                mediaPlayer.pause();
+
+                break;
+            case MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+//                mediaPlayer.pause();
+//
+//                mediaPlayer.reset();
+
                 break;
         }
         return false;
@@ -272,9 +310,10 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         vWidth = mediaPlayer.getVideoWidth();
         vHeight = mediaPlayer.getVideoHeight();
         int time = mediaPlayer.getDuration();
+        int hour = time/1000/60/60;
         int mins = time/1000/60;
         int secs = time/1000-mins*60;
-        timetv.setText(String.format("%02d",mins)+":"+String.format("%02d",secs));
+        timetv.setText(String.format("%02d:%02d:%02d", hour,mins, secs));
 
         Log.i("tan8", "总时长：" + mediaPlayer.getDuration() /1000/60);
         Log.i("tan8","vWidth:"+vWidth+",vHeight:"+vHeight);
@@ -291,11 +330,6 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
             vWidth = (int) Math.ceil((float) vWidth / ratio);
             vHeight = (int) Math.ceil((float) vHeight / ratio);
 
-//        }else{
-//
-//        }
-
-
         Log.i("tan8","vWidth："+vWidth+",vHeight:"+vHeight);
         //设置surfaceView的布局参数
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(vWidth, vHeight);
@@ -308,44 +342,12 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
         isPlaying = true;
 
+        seekBar.setProgress(curPosition);
+        mediaPlayer.seekTo(curPosition);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                while (isPlaying){
-
-//                    if (mediaPlayer == null ||!mediaPlayer.isPlaying()){
-//
-//                        Log.i("tan8","mediaPlayer break");
-//                            break;
-//                    }
-
-                    try{
-                        Thread.sleep(1000);
-                        if(mediaPlayer != null){
-                            Message msg = new Message();
-                            msg.what = 0;
-                            msg.obj = "";
-                            hprogress.sendMessage(msg);
-
-//                            Log.i("tan8","progress:"+progress);
-                        }else{
-                            break;
-                        }
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-
+        dismissProgressDialog();
         mediaPlayer.start();
 
-         if (!isCache){
-             writeMedia();
-         }
     }
 
 
@@ -356,11 +358,14 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         //mediaplayer 播放完成后出发
         Log.i("tan8","onCompletion");
         int time = mediaPlayer.getDuration();
+        int hour = time/1000/60/60;
         int mins = time/1000/60;
         int secs = time/1000-mins*60;
-        curtimetv.setText(String.format("%02d",mins)+":"+String.format("%02d",secs));
+        curtimetv.setText(String.format("%02d:%02d:%02d", hour, mins, secs));
+
         mediaPlayer.stop();
         mediaPlayer.release();
+        mediaPlayer = null;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -374,6 +379,30 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     //"videopath":"\/data\/attachments\/24DFD7FB-4508-E073-2F8B-E6B39A4139BE\/video\/VID_20160312_104056.mp4
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+
+        Log.i("tan8","onError--------------------------------------------------------------------------"+what+","+extra);
+
+        iserror = true;
+        errCount ++;
+        mediaPlayer.pause();
+        mediaPlayer.reset();
+        showProgressDialog();
+
+        if (isloadfinish){
+             new Handler().postDelayed(new Runnable() {
+                 @Override
+                 public void run() {
+                     try{
+                         mediaPlayer.setDataSource(localUrl);
+                         mediaPlayer.prepareAsync();
+                     }catch (Exception e){
+                         e.printStackTrace();
+                     }
+                 }
+             },1500);
+        }
+
+
         switch (what) {
             case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
                 Log.v("tan8", "MEDIA_ERROR_SERVER_DIED");
@@ -384,7 +413,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
             default:
                 break;
         }
-        return false;
+        return true;
     }
 
 
@@ -425,6 +454,11 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         super.onDestroy();
         Log.i("tan8","onDestroy");
         isPlaying = false;
+        if (mHandler != null){
+            mHandler.removeMessages(VIDEO_STATE_UPDATE);
+        }
+
+
     }
 
 
@@ -436,9 +470,10 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
     private long readSize = 0;
 
     private void writeMedia() {
-        // TODO Auto-generated method stub
-        new Thread(new Runnable() {
 
+        showProgressDialog();
+
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 FileOutputStream out = null;
@@ -446,13 +481,15 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
                 try {
                     URL url = null;
-                    if(path.contains("http")){
-                         url = new URL(path);
+
+
+                    if(filepath.contains("http")){
+                        url = new URL(filepath);
                     }else {
-                         url = new URL(CommonUtils.GET_FILS+path);
+                        url = new URL(CommonUtils.GET_FILS+filepath);
                     }
-                    HttpURLConnection httpConnection = (HttpURLConnection) url
-                            .openConnection();
+
+                    HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
 
                     if (localUrl == null) {
                         localUrl = Environment.getExternalStorageDirectory()
@@ -472,31 +509,60 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
                     readSize = cacheFile.length();
                     out = new FileOutputStream(cacheFile, true);
 
+
                     httpConnection.setRequestProperty("User-Agent", "NetFox");
-                    httpConnection.setRequestProperty("RANGE", "bytes="
-                            + readSize + "-");
+                    httpConnection.setRequestProperty("RANGE", "bytes="+ readSize + "-");
 
-                    is = httpConnection.getInputStream();
 
+                    mHandler.sendEmptyMessage(VIDEO_STATE_UPDATE);
                     mediaLength = httpConnection.getContentLength();
-                    if (mediaLength == -1) {
+                    Log.i("tan8","mediaLength:"+mediaLength+",readSize:"+readSize);
+                    if (mediaLength == -1 && readSize>0) {
+                        isloadfinish = true;
+                        mHandler.sendEmptyMessage(CACHE_VIDEO_END);
                         return;
                     }
+
+                    if (mediaLength == -1){
+                        mHandler.sendEmptyMessage(VIDEO_SIZE0);
+                        return;
+                    }
+
+                    is = httpConnection.getInputStream();
 
                     mediaLength += readSize;
 
                     byte buf[] = new byte[4 * 1024];
                     int size = 0;
+                    long lastReadSize = 0;
+
 
                     while ((size = is.read(buf)) != -1) {
                         try {
                             out.write(buf, 0, size);
                             readSize += size;
+//                        Log.i("tan8","readSize:"+readSize);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
 
+                        if (!isready) {
+                            if (mediaLength<READY_BUFF ||(readSize - lastReadSize) > READY_BUFF) {
+                                isready = true;
+                                lastReadSize = readSize;
+                                Log.i("tan8", "CACHE_VIDEO_READY");
+                                mHandler.sendEmptyMessage(CACHE_VIDEO_READY);
+                            }
+                        } else {
+                            if ((readSize - lastReadSize) > CACHE_BUFF* (0 + 1)) {
+                                lastReadSize = readSize;
+                                Log.i("tan8","CACHE_VIDEO_UPDATE");
+                                mHandler.sendEmptyMessage(CACHE_VIDEO_UPDATE);
+                            }
+
+                        }
+                    }
+                           mHandler.sendEmptyMessage(CACHE_VIDEO_END);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -519,5 +585,154 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
             }
         }).start();
+
+
+    }
+
+
+    private final static int VIDEO_STATE_UPDATE = 0;
+    private final static int CACHE_VIDEO_READY = 1;
+    private final static int CACHE_VIDEO_UPDATE = 2;
+    private final static int CACHE_VIDEO_END = 3;
+    private final static int VIDEO_SIZE0 = 4;
+
+    //1MB(兆字节)=1024KB(千字节)
+    //	1KB(千字节)=1024B(字节)
+
+    private static final int READY_BUFF = 1000 * 1024;
+    private static final int CACHE_BUFF = 1000 * 1024;
+    private int errCount = 0;
+
+    int curPosition;
+    boolean isready = false;
+    boolean iserror = false;
+    boolean isloadfinish = false;
+
+    private  Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case VIDEO_STATE_UPDATE:
+                    double cachepercent = readSize * 100.00 / mediaLength * 1.0;
+                    if (mediaLength == -1){
+                        cachepercent = 0;
+                    }
+                    String s = String.format("已缓存: [%.2f%%]", cachepercent);
+
+                    if (mediaPlayer!= null &&mediaPlayer.isPlaying() ) {
+                        curPosition = mediaPlayer.getCurrentPosition();
+                        int duration = mediaPlayer.getDuration();
+                        duration = duration == 0 ? 1 : duration;
+
+                        double playpercent = curPosition * 100.00 / duration * 1.0;
+
+                        int i = curPosition / 1000;
+                        int hour = i / (60 * 60);
+                        int minute = i / 60 % 60;
+                        int second = i % 60;
+
+                        curtimetv.setText(String.format("%02d:%02d:%02d", hour, minute, second));
+                        seekBar.setProgress(curPosition);
+                        s += String.format(" 播放: %02d:%02d:%02d [%.2f%%]", hour, minute, second, playpercent);
+                    }
+
+                    Log.i("tan8","s:"+s);
+
+                    if (mHandler != null){
+                        mHandler.sendEmptyMessageDelayed(VIDEO_STATE_UPDATE, 1000);
+                    }
+                    break;
+
+                case CACHE_VIDEO_READY:
+                    isready = true;
+                    try{
+                        Log.i("tan8","CACHE_VIDEO_READY1");
+                        mediaPlayer.setDataSource(localUrl);
+                        mediaPlayer.prepareAsync();
+                        dismissProgressDialog();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case CACHE_VIDEO_UPDATE:
+                    try {
+                        Log.i("tan8","CACHE_VIDEO_UPDATE1");
+                        if (iserror){
+
+                            mediaPlayer.setDataSource(localUrl);
+                            mediaPlayer.prepareAsync();
+                            dismissProgressDialog();
+                            iserror = false;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case CACHE_VIDEO_END:
+                    isloadfinish = true;
+                     try{
+                         Log.i("tan8","CACHE_VIDEO_END1");
+                         if (iserror || !mediaPlayer.isPlaying()){
+                             Log.i("tan8","CACHE_VIDEO_END2");
+                             mediaPlayer.setDataSource(localUrl);
+                             mediaPlayer.prepareAsync();
+                             dismissProgressDialog();
+                             iserror = false;
+                         }
+
+                     }catch (Exception e){
+                         e.printStackTrace();
+                     }
+                    break;
+                case VIDEO_SIZE0:
+                    VideoPlayActivity.this.finish();
+                    break;
+            }
+
+            super.handleMessage(msg);
+        }
+    };
+
+    private ProgressDialog progressDialog = null;
+
+    private void showProgressDialog() {
+        mHandler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                if (progressDialog == null) {
+                    progressDialog = ProgressDialog.show(VideoPlayActivity.this,
+                            "视频缓存", "正在努力加载中 ...", true, false);
+                }
+            }
+        });
+    }
+
+    private void dismissProgressDialog() {
+        mHandler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            Log.i("tan8","KEYCODE_BACK");
+            mediaPlayer.pause();
+
+            VideoPlayActivity.this.finish();
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 }

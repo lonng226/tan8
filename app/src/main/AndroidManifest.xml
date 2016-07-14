@@ -47,6 +47,7 @@
             />
         <activity android:name=".VideoPlayActivity"/>
         <activity android:name=".TeachVideoActivity"/>
+        <activity android:name=".VideoViewPlayAcitivity"/>
     </application>
 
 </manifest>

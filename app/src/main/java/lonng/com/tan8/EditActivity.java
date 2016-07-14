@@ -96,6 +96,8 @@ public class EditActivity extends BaseActivity{
 		edit_tv1.setText("添加");
 		int type = getIntent().getIntExtra("type", 0);
 		show(type);
+
+
 	}
 
 	public native int ffmpegcore(int argc,String[] argv);
@@ -204,7 +206,7 @@ public class EditActivity extends BaseActivity{
 			break;
 		case R.id.edit_tv2:
 			if(isContainVideo){
-				Toast.makeText(EditActivity.this,"视屏只能发一个",Toast.LENGTH_SHORT).show();
+				Toast.makeText(EditActivity.this,"视频只能发一个",Toast.LENGTH_SHORT).show();
 				return;
 			}
 			if (addFileCount == 1) {
@@ -265,6 +267,7 @@ public class EditActivity extends BaseActivity{
 			retr.setDataSource(videoFile.getAbsolutePath());
 			String byteRate = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
 			Log.d("tan8","byteRate is ============================ "+byteRate);
+			//20m,比特率
 			if(videoSize>20*1024*1024 && Integer.parseInt(byteRate)<=1.3*1024*1024 ) {
 				String st = getResources().getString(R.string.temporary_does_not);
 				Toast.makeText(this, st, Toast.LENGTH_SHORT).show();
@@ -288,7 +291,7 @@ public class EditActivity extends BaseActivity{
 						}
 						else if(msg.what==1)
 							{
-								Log.d("tan8","发送大小超过限制3m");
+								Log.d("tan8","发送大小超过限制20m");
 								progress_layout.setVisibility(View.INVISIBLE);
 							    progress_text.setText("");
 							}
@@ -345,8 +348,6 @@ public class EditActivity extends BaseActivity{
 					EditActivity.this.startActivity(intent);
 					EditActivity.this.finish();
 				}
-
-
 			}
 		}, param, 0,files).start();
 	}
@@ -362,7 +363,7 @@ public class EditActivity extends BaseActivity{
 		}
 
 		@Override
-		public ClassLoader getContextClassLoader() {
+		 public ClassLoader getContextClassLoader() {
 			return super.getContextClassLoader();
 		}
 
@@ -370,6 +371,14 @@ public class EditActivity extends BaseActivity{
 		public void run() {
 			super.run();
 			try{
+
+
+//				if(1 ==1){
+//					Te();
+//                  return;
+//				}
+//
+
 			String videopath = videoFile.getAbsolutePath();
 			Log.i("tan8", "vedeopath:" + videopath + ",videoFile.getName:" + videoFile.getName());
 			String ffcmd = "ffmpeg -i "+videopath + " -vcodec mpeg4 -b:v 400k -r 15 "+"/storage/emulated/0/tan8/"+videoFile.getName();
@@ -418,8 +427,6 @@ public class EditActivity extends BaseActivity{
 			}
 		}
 	}
-
-
 
 
 	long videoSize;
@@ -742,6 +749,24 @@ public class EditActivity extends BaseActivity{
 		void clikBank(int bankType);
 	}
 
+	private void Te(){
+
+try {
+
+	File file = new File("/storage/emulated/0/TanVideoCache/1467190697300.mp4");
+//	String ffcmd = "ffmpeg -i "+file.getAbsolutePath()+" -movflags faststart "+file.getAbsolutePath();
+	String ffcmd = "ffmpeg -i "+file.getAbsolutePath()+" -vcodec copy -acodec copy -movflags faststart "+file.getAbsolutePath();
+	String[] argv = ffcmd.split(" ");
+	Log.i("tan8", "ffcmd:" + ffcmd + ",argv:" + argv.length);
+	Integer argc = argv.length;
+	ffmpegcore(argc, argv);
+}catch (Exception e){
+	e.printStackTrace();
+}
+
+
+
+	}
 
 
 }

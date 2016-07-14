@@ -7,6 +7,61 @@
     android:orientation="vertical"
     tools:context="lonng.com.tan8.MainActivity">
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/qupuRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/qupu_circleLv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="@android:color/transparent"
+
+                android:divider="@color/gray"
+                android:dividerHeight="1px"
+                android:fadingEdge="none"
+                android:fadingEdgeLength="0dp"
+                android:focusable="true"
+                android:listSelector="@android:color/transparent"
+                android:transcriptMode="normal"/>
+
+            <LinearLayout
+                android:id="@+id/editTextBodyLl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#f6f6f6"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/circleEt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="说点什么..." />
+                <TextView
+                    android:id="@+id/sendTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:background="@android:color/white"
+                    android:padding="8dp"
+                    android:text="发送"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
     <TextView
         android:id="@+id/testText"
         android:layout_width="match_parent"
@@ -14,6 +69,7 @@
         android:gravity="center"
         android:text="考级"
         android:textColor="#000000"
-        android:textSize="50dp" />
+        android:textSize="50dp"
+        android:visibility="invisible"/>
 
 </LinearLayout>

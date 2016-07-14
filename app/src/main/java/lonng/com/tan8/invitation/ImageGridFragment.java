@@ -317,7 +317,6 @@ public class ImageGridFragment extends Fragment implements OnItemClickListener {
             cursor = null;
         }
 
-
     }
 
 

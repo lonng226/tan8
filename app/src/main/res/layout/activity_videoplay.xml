@@ -8,25 +8,25 @@
         android:id="@+id/videoplay_back"
         android:layout_width="50dp"
         android:layout_height="30dp"
-        android:gravity="center"
-        android:text="返回"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/selector_btn_bg"
         android:clickable="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp"
-        android:textSize="20sp"
+        android:gravity="center"
+        android:text="返回"
         android:textColor="@color/white"
-        android:layout_marginTop="10dp"/>
+        android:textSize="20sp" />
 
     <SurfaceView
         android:id="@+id/surfaceview"
         android:layout_width="match_parent"
-        android:layout_centerInParent="true"
+        android:layout_height="match_parent"
         android:layout_below="@id/videoplay_back"
-        android:layout_height="match_parent" />
+        android:layout_centerInParent="true" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -37,35 +37,41 @@
 
         <Button
             android:id="@+id/start_stop"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
             android:gravity="center"
             android:text="pause" />
 
         <TextView
             android:id="@+id/curtimetv"
+            android:layout_toRightOf="@id/start_stop"
             android:layout_width="wrap_content"
+            android:layout_marginLeft="5dp"
             android:layout_height="wrap_content"
-            android:text="00:00"
-            android:textColor="@color/white"
-            android:paddingBottom="8dp"/>
+            android:layout_centerVertical="true"
+            android:text="00:00:00"
+            android:textColor="@color/white" />
 
         <SeekBar
             android:id="@+id/seekbar"
-            android:layout_width="170dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_toRightOf="@id/curtimetv"
             android:maxHeight="2dp"
             android:minHeight="2dp"
-            android:progressDrawable="@drawable/seekbar_style"
-            />
-       <TextView
-           android:id="@+id/timetv"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="00:00"
-           android:textColor="@color/white"
-           android:paddingBottom="8dp"/>
+            android:progressDrawable="@drawable/seekbar_style" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/timetv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="00:00:00"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
 </RelativeLayout>
