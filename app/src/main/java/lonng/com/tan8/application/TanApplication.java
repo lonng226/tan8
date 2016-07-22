@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
@@ -46,6 +47,8 @@ public class TanApplication extends Application {
 
 	public static User curUser = new User();
 
+	public static int SCREENWITH = 0;
+	public static int SCREENHEIGHT = 0;
 
 	@Override
 	public void onCreate() {
@@ -53,6 +56,8 @@ public class TanApplication extends Application {
 //		login();
 		mContext = getApplicationContext();
 		initImageLoader();
+
+
 	}
 
 	public static Context getContext() {

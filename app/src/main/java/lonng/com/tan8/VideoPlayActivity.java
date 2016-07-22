@@ -1,7 +1,10 @@
 package lonng.com.tan8;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +16,8 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -64,7 +69,6 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
         Log.i("tan8","onCreate");
         initView();
-
     }
 
 
@@ -148,11 +152,14 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
 
 
+    boolean isActivityRunning = true;
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.start_stop){
             startOrStop();
         }else if(v.getId() ==R.id.videoplay_back){
+            isActivityRunning = false;
             VideoPlayActivity.this.finish();
         }
     }
@@ -695,7 +702,9 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         }
     };
 
-    private ProgressDialog progressDialog = null;
+//    private ProgressDialog progressDialog = null;
+
+      private AlertDialog progressDialog;
 
     private void showProgressDialog() {
         mHandler.post(new Runnable() {
@@ -703,8 +712,44 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
             @Override
             public void run() {
                 if (progressDialog == null) {
-                    progressDialog = ProgressDialog.show(VideoPlayActivity.this,
-                            "视频缓存", "正在努力加载中 ...", true, false);
+//                    progressDialog = ProgressDialog.show(VideoPlayActivity.this,
+//                            "视频缓存", "正在努力加载中 ...", true, false);
+
+//                    progressDialog = new ProgressDialog(VideoPlayActivity.this);
+
+
+//                    AlertDialog alertDialog;
+
+                    if (!isActivityRunning){
+                        return;
+                    }
+                    progressDialog = new AlertDialog.Builder(VideoPlayActivity.this).create();
+
+
+                    progressDialog.show();
+
+                    progressDialog.setContentView(R.layout.progressdialog);
+
+
+                    progressDialog.getWindow().setBackgroundDrawable(new
+
+                            ColorDrawable(Color.TRANSPARENT));
+
+                    progressDialog.setCanceledOnTouchOutside(false);
+
+//                    alertDialog.set
+
+//                            Window window = alertDialog.getWindow();
+//
+//                    WindowManager.LayoutParams lp = window.getAttributes();
+//
+//                    // 设置透明度为0.3
+//
+//                    lp.alpha = 1.0f;
+//
+//                    window.setAttributes(lp);
+
+//                    alertDialog.show();
                 }
             }
         });

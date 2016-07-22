@@ -1,9 +1,11 @@
 package lonng.com.tan8;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -62,6 +64,12 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+
+        WindowManager wm = (WindowManager)this.getSystemService(Context.WINDOW_SERVICE);
+        TanApplication.SCREENWITH = wm.getDefaultDisplay().getWidth();
+        TanApplication.SCREENHEIGHT = wm.getDefaultDisplay().getHeight();
+        Log.i("tan8","SCREENWITH:"+TanApplication.SCREENWITH+",SCREENHEIGHT:"+TanApplication.SCREENHEIGHT);
 
         fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {

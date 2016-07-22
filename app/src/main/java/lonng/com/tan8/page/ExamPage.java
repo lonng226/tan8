@@ -35,6 +35,7 @@ import lonng.com.tan8.Entity.Qupu;
 import lonng.com.tan8.ImagePagerActivity;
 import lonng.com.tan8.MainActivity;
 import lonng.com.tan8.R;
+import lonng.com.tan8.application.TanApplication;
 import lonng.com.tan8.base.BasePage;
 import lonng.com.tan8.control.CirclePublicCommentContral;
 import lonng.com.tan8.control.CirclePublicCommentContralBank;
@@ -74,7 +75,7 @@ public class ExamPage extends BasePage implements SwipeRefreshLayout.OnRefreshLi
         qupuLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ImagePagerActivity.imageSize = new ImageSize(400, 600);
+                ImagePagerActivity.imageSize = new ImageSize(TanApplication.SCREENWITH, TanApplication.SCREENHEIGHT);
                 ImagePagerActivity.startImagePagerActivity(ct, qupus.get(position).getPics(), position);
             }
         });
@@ -152,7 +153,10 @@ public class ExamPage extends BasePage implements SwipeRefreshLayout.OnRefreshLi
                     qupu.setDescription(json.getString("description"));
                 }
                 if (json.has("path")){
-                    qupu.setPath(json.getString("path"));
+                    String path = json.getString("path");
+                    qupu.setPath(path.replace("\\", ""));
+
+                    Log.i("tan8","path:"+path);
                 }
 
                 List<String> pics = new ArrayList<String>();

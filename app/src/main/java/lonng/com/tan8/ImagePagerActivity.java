@@ -170,7 +170,13 @@ public class ImagePagerActivity extends Activity implements View.OnClickListener
                 ((FrameLayout)view).addView(loading);
 
                 final String imgurl = datas.get(position);
-                ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+imgurl, imageView, options, new SimpleImageLoadingListener(){
+                final String imgurl_;
+                if(imgurl.contains("http")){
+                    imgurl_ = imgurl;
+                }else{
+                    imgurl_=CommonUtils.GET_FILS+imgurl;
+                }
+                ImageLoader.getInstance().displayImage(imgurl_, imageView, options, new SimpleImageLoadingListener(){
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
                         //获取内存中的缩略图
