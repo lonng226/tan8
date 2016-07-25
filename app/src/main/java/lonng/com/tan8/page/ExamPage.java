@@ -145,6 +145,7 @@ public class ExamPage extends BasePage implements SwipeRefreshLayout.OnRefreshLi
                 }
                 if (json.has("type")){
                     qupu.setType(json.getString("type"));
+                    Log.i("tan8","type:"+json.getString("type"));
                 }
                 if (json.has("name")){
                     qupu.setName(json.getString("name"));

@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import lonng.com.tan8.utils.CommonUtils;
@@ -90,6 +93,20 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
         mediaPlayer.setOnVideoSizeChangedListener(this);
 
         filepath = getIntent().getStringExtra("filepath");
+
+        try {
+
+//            filepath = URLEncoder.encode(filepath,"utf-8");
+            filepath = filepath.replace("+","%20");
+//            filepath = URLDecoder.decode(filepath,"utf-8");
+            Log.i("tan8","filepath 转义:"+filepath);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
+//        filepath = "http://120.24.16.24/tanqin/uploads/%E6%95%99%E5%AD%A6/%E5%B0%8F%E6%8F%90%E7%90%B4%E8%A7%86%E9%A2%91%E8%B5%8F%E6%9E%90/MIDORI%20%E8%95%AD%E9%82%A6%E5%A4%9C%E6%9B%B2%20%E5%B0%8F%E6%8F%90%E7%90%B4%E6%BC%94%E5%A5%8F_.mp4";
         File f = null;
         String localpath="";
         if (android.os.Environment.getExternalStorageState().equals(
@@ -488,8 +505,6 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
                 try {
                     URL url = null;
-
-
                     if(filepath.contains("http")){
                         url = new URL(filepath);
                     }else {
@@ -561,7 +576,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
                                 mHandler.sendEmptyMessage(CACHE_VIDEO_READY);
                             }
                         } else {
-                            if ((readSize - lastReadSize) > CACHE_BUFF* (0 + 1)) {
+                            if ((readSize - lastReadSize) > CACHE_BUFF* ( errCount + 1)) {
                                 lastReadSize = readSize;
                                 Log.i("tan8","CACHE_VIDEO_UPDATE");
                                 mHandler.sendEmptyMessage(CACHE_VIDEO_UPDATE);

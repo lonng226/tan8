@@ -18,6 +18,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,11 +210,17 @@ public class TeachVideoActivity extends Activity implements SwipeRefreshLayout.O
                     }
                     if (js.has("path")){
                         String purl = js.getString("path");
+                        Log.i("tan8",""+cVideo.getType()+","+cVideo.getVideoName()+","+cVideo.getAlbumname());
                         purl = purl.replace(cVideo.getType(), URLEncoder.encode(cVideo.getType(),"utf-8"));
-//                        purl = purl.replace(cVideo.getVideoName(),URLEncoder.encode(cVideo.getVideoName(),"utf-8"));
+                        purl = purl.replace(cVideo.getVideoName(),URLEncoder.encode(cVideo.getVideoName(),"UTF-8") );
                         purl = purl.replace(cVideo.getAlbumname(),URLEncoder.encode(cVideo.getAlbumname(),"utf-8"));
-                        cVideo.setVideoUrl(purl.replace("\\", ""));
-                        Log.i("tan8",cVideo.getVideoUrl());
+
+                        purl = purl.replace("\\", "");
+                        Log.i("tan8",URLEncoder.encode(purl,"utf-8")+","+URLDecoder.decode(purl,"utf-8"));
+                        cVideo.setVideoUrl(purl);
+
+
+                        Log.i("tan8", cVideo.getVideoUrl());
                     }
                     list.add(cVideo);
                 }
