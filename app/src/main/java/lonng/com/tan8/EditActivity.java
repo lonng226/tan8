@@ -382,7 +382,21 @@ public class EditActivity extends BaseActivity{
 			String videopath = videoFile.getAbsolutePath();
 			Log.i("tan8", "vedeopath:" + videopath + ",videoFile.getName:" + videoFile.getName());
 			String ffcmd = "ffmpeg -i "+videopath + " -vcodec mpeg4 -b:v 400k -r 15 "+"/storage/emulated/0/tan8/"+videoFile.getName();
-			String[] argv = ffcmd.split(" ");
+//				String[] argv = ffcmd.split(" ");
+				String[] argv = new String[10];
+				argv[0] = "ffmpeg";
+				argv[1] = "-i";
+				argv[2] = videopath;
+				argv[3] = "-vcodec";
+				argv[4] = "mpeg4";
+				argv[5] = "-b:v";
+				argv[6] = "400k";
+				argv[7] = "-r";
+				argv[8] = "15";
+				argv[9] = "/storage/emulated/0/tan8/"+videoFile.getName();
+
+
+
 			Log.i("tan8","ffcmd:"+ffcmd+",argv:"+argv.length);
 			Integer argc = argv.length;
 			ffmpegcore(argc, argv);
@@ -454,6 +468,16 @@ public class EditActivity extends BaseActivity{
 					if (data != null) {
 						int duration = data.getIntExtra("dur", 0);
 						String videoPath = data.getStringExtra("path");
+//						if (videoPath.contains(" ")){
+//                            if (rename(videoPath)){
+//                              videoPath = videoPath.replace(" ","_");
+//							}else {
+//								Toast.makeText(EditActivity.this,"文件名称含有非法字符，请更改后上传！",Toast.LENGTH_SHORT).show();
+//							}
+//						}
+
+
+
 						videoSize = data.getIntExtra("size",0);
 
 						//file 是保存截图的文件 就是那个图片文件
@@ -487,6 +511,16 @@ public class EditActivity extends BaseActivity{
 					break;
 				}
 	        }
+	}
+
+	private boolean rename(String path){
+//		videoPath = videoPath.replace("/","\\");
+		///storage/emulated/0/a b c d.mp4
+		File video_ = new File(path);
+		File video3 = new File(path.replace(" ","_"));
+		boolean isset = video_.renameTo(video3);
+		Log.i("tan8","isRenameSuc:"+isset);
+		return  isset;
 	}
 
 
