@@ -98,6 +98,7 @@ public class VideoPlayActivity  extends Activity implements MediaPlayer.OnComple
 
 //            filepath = URLEncoder.encode(filepath,"utf-8");
             filepath = filepath.replace("+","%20");
+            filepath = filepath.replace(" ","%20");
 //            filepath = URLDecoder.decode(filepath,"utf-8");
             Log.i("tan8","filepath 转义:"+filepath);
         }catch (Exception e){
