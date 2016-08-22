@@ -156,7 +156,7 @@ public class ImageGridFragment extends Fragment implements OnItemClickListener {
         } else {
             VideoEntity vEntty = mList.get(position - 1);
             // 限制大小不能超过300M
-            if (vEntty.size > 1024 * 1024 * 300) {
+            if (vEntty.size > 1024 * 1024 * 200) {
                 String st = getResources().getString(R.string.temporary_does_not);
                 Toast.makeText(getActivity(), st, Toast.LENGTH_SHORT).show();
                 return;

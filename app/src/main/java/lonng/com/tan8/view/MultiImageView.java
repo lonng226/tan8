@@ -2,6 +2,7 @@ package lonng.com.tan8.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -113,6 +114,7 @@ public class MultiImageView extends LinearLayout {
 	private void initImageLayoutParams() {
 
 		onePicPara = new LayoutParams(pxOneWidth, pxOneHeight);
+		onePicPara = new LayoutParams(pxOneWidth, pxOneHeight);
 
 		morePara = new LayoutParams(pxMoreWandH, pxMoreWandH);
 		morePara.setMargins(0, 0, pxImagePadding, 0);
@@ -142,8 +144,9 @@ public class MultiImageView extends LinearLayout {
 				ImageView imageView = new ImageView(getContext());
 				imageView.setId(url.hashCode());// 指定id
 				imageView.setLayoutParams(onePicPara);
+				Log.i("tan8","onePicPara:"+onePicPara.width+","+onePicPara.height);
 				imageView.setMinimumWidth(pxMoreWandH);
-				imageView.setScaleType(ScaleType.CENTER_CROP);
+				imageView.setScaleType(ScaleType.FIT_XY);
 				ImageLoader.getInstance().displayImage(CommonUtils.GET_FILS+url, imageView);
 
 				int position = 0;

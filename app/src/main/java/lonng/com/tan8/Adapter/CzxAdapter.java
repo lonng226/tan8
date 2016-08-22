@@ -327,6 +327,7 @@ public class CzxAdapter extends BaseAdapter implements ICircleViewUpdate {
             viewHolder.multiImagView.setOnItemClickListener(new MultiImageView.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
+                    Log.i("tan8","onePicPara:"+view.getWidth()+","+view.getHeight());
                     ImagePagerActivity.imageSize = new ImageSize(view.getWidth(), view.getHeight());
                     ImagePagerActivity.startImagePagerActivity(ct, picurls, position);
                 }

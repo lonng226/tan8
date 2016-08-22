@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +31,10 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +49,9 @@ public class ImagePagerActivity extends Activity implements View.OnClickListener
     private List<View> guideViewList = new ArrayList<View>();
     private LinearLayout guideGroup;
     public static ImageSize imageSize;
-    private TextView imagepager_back;
+    private TextView imagepager_back,imagepager_save;
+    ArrayList<String> imgUrls = new ArrayList<String>();
+
 
 
     public static void startImagePagerActivity(Context context, List<String> imgUrls, int position){
@@ -57,11 +67,15 @@ public class ImagePagerActivity extends Activity implements View.OnClickListener
         setContentView(R.layout.activity_imagepager);
         imagepager_back = (TextView)findViewById(R.id.imagepager_back);
         imagepager_back.setOnClickListener(this);
+
+        imagepager_save = (TextView)findViewById(R.id.imagepager_save);
+        imagepager_save.setOnClickListener(this);
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         guideGroup = (LinearLayout) findViewById(R.id.guideGroup);
 
         int startPos = getIntent().getIntExtra(INTENT_POSITION, 0);
-        ArrayList<String> imgUrls = getIntent().getStringArrayListExtra(INTENT_IMGURLS);
+        imgUrls = getIntent().getStringArrayListExtra(INTENT_IMGURLS);
 
         ImageAdapter mAdapter = new ImageAdapter(this);
         mAdapter.setDatas(imgUrls);
@@ -75,6 +89,14 @@ public class ImagePagerActivity extends Activity implements View.OnClickListener
 
             @Override
             public void onPageSelected(int position) {
+
+                Log.i("tan8","postion："+position);
+                curImageUrl = imgUrls.get(position);
+                if(curImageUrl.contains("http")){
+                }else{
+                    curImageUrl=CommonUtils.GET_FILS+curImageUrl;
+                }
+
                 for(int i=0; i<guideViewList.size(); i++){
                     guideViewList.get(i).setSelected(i==position ? true : false);
                 }
@@ -96,6 +118,18 @@ public class ImagePagerActivity extends Activity implements View.OnClickListener
             case R.id.imagepager_back:
                 ImagePagerActivity.this.finish();
                 break;
+            case R.id.imagepager_save:
+                Log.i("tan8","curImageUrl"+curImageUrl);
+                if (curImageUrl == null){
+                    curImageUrl = imgUrls.get(0);
+                    if(curImageUrl.contains("http")){
+                    }else{
+                        curImageUrl=CommonUtils.GET_FILS+curImageUrl;
+                    }
+                }
+               Bitmap bitmap =  ImageLoader.getInstance().loadImageSync(curImageUrl);
+               saveImageToGallery(ImagePagerActivity.this,bitmap);
+                break;
         }
     }
 
@@ -115,6 +149,8 @@ public class ImagePagerActivity extends Activity implements View.OnClickListener
         }
     }
 
+
+    private  static String curImageUrl = null;
     private static class ImageAdapter extends PagerAdapter {
 
         private List<String> datas = new ArrayList<String>();
@@ -176,6 +212,8 @@ public class ImagePagerActivity extends Activity implements View.OnClickListener
                 }else{
                     imgurl_=CommonUtils.GET_FILS+imgurl;
                 }
+
+
                 ImageLoader.getInstance().displayImage(imgurl_, imageView, options, new SimpleImageLoadingListener(){
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
@@ -226,5 +264,37 @@ public class ImagePagerActivity extends Activity implements View.OnClickListener
         }
 
 
+    }
+
+
+    public static void saveImageToGallery(Context context, Bitmap bmp) {
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), "tan8picture");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file.getAbsolutePath())));
+        Log.i("tan8","path=="+file.getAbsolutePath());
     }
 }
